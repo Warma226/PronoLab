@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Suivi des élèves</title>
+<meta name="description" content="Suivi des élèves en anglais : présences, notes, niveaux CECRL et bilans imprimables.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@800&display=swap">
+<style>
+:root{
+  --bg:#f3f5f9; --surface:#fff; --soft:#e8eefb; --ink:#1d2433; --muted:#667085; --line:#e3e7ef;
+  --accent:#2f5bd3; --accent-ink:#fff; --good:#1f9d6a; --warn:#d98b1c; --bad:#d64545; --shadow:0 6px 22px rgba(29,36,51,.07);
+  --display:"Nunito",system-ui,sans-serif; --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11141b; --surface:#1a1f2a; --soft:#202a40; --ink:#e8ecf4; --muted:#9aa4b8; --line:#2a3140;
+  --accent:#7d9cff; --accent-ink:#0e1424; --good:#4cc792; --warn:#f0b04f; --bad:#f07a7a; --shadow:0 6px 22px rgba(0,0,0,.3)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--body);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + env(safe-area-inset-top,0px)) 16px 6px}
+.top-in{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:10px}
+h1{font:800 1.35rem var(--display);margin:0;flex:1}
+h1 span{color:var(--accent)}
+.tabs{max-width:860px;margin:8px auto 0;display:flex;gap:6px;overflow-x:auto}
+.tabs button{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:999px;padding:8px 16px;font-weight:600;white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+main{max-width:860px;margin:0 auto;padding:12px 16px 90px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.bar input,.bar select{flex:1;min-width:140px}
+input,select,textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;min-height:42px}
+textarea{min-height:80px;resize:vertical}
+label{display:grid;gap:4px;font-size:.85rem;font-weight:600;color:var(--muted)}
+.btn{border:0;border-radius:12px;padding:10px 16px;font-weight:700;background:var(--accent);color:var(--accent-ink);min-height:42px}
+.btn.alt{background:var(--soft);color:var(--ink)}
+.btn.danger{background:none;color:var(--bad);border:1px solid var(--line)}
+.btn.sm{padding:6px 12px;min-height:34px;font-size:.85rem}
+.card{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:12px}
+.stat b{display:block;font:800 1.4rem var(--display)}
+.stat span{font-size:.78rem;color:var(--muted)}
+.row{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;text-align:left;padding:0}
+.av{width:42px;height:42px;border-radius:50%;background:var(--soft);color:var(--accent);display:grid;place-items:center;font-weight:800;flex:none}
+.grow{flex:1;min-width:0}
+.grow b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sub{font-size:.82rem;color:var(--muted)}
+.lvl{display:inline-block;font-weight:800;font-size:.78rem;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--accent)}
+.kpis{display:flex;gap:14px;text-align:right;font-size:.8rem;color:var(--muted)}
+.kpis b{display:block;font-size:1rem;color:var(--ink)}
+.ok{color:var(--good)}.mid{color:var(--warn)}.ko{color:var(--bad)}
+.empty{text-align:center;color:var(--muted);padding:40px 16px}
+.sechead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:18px 0 8px}
+.sechead h2,.sechead h3{margin:0;font-size:1.05rem}
+.list .item{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.list .item:first-child{border-top:0}
+.att{display:flex;gap:4px}
+.att button{border:1px solid var(--line);background:var(--surface);border-radius:10px;width:40px;height:36px;font-weight:700}
+.att button[aria-pressed="true"][data-v="P"]{background:var(--good);border-color:var(--good);color:#fff}
+.att button[aria-pressed="true"][data-v="R"]{background:var(--warn);border-color:var(--warn);color:#fff}
+.att button[aria-pressed="true"][data-v="A"]{background:var(--bad);border-color:var(--bad);color:#fff}
+.chip{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--soft)}
+.fab{position:fixed;right:max(16px,calc(50% - 414px));bottom:calc(18px + env(safe-area-inset-bottom,0px));border-radius:999px;padding:14px 20px;box-shadow:0 8px 24px rgba(47,91,211,.35)}
+dialog{border:0;border-radius:20px;padding:0;width:min(560px,calc(100% - 24px));background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(10,14,24,.45)}
+dialog form{display:grid;gap:12px;padding:18px}
+dialog h2{margin:0;font-size:1.15rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.back{border:0;background:none;color:var(--accent);font-weight:700;padding:6px 0}
+.bars{display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:8px}
+.bars div{flex:1;display:grid;justify-items:center;gap:4px;font-size:.7rem;color:var(--muted)}
+.bars i{display:block;width:100%;max-width:34px;border-radius:6px 6px 2px 2px;background:var(--accent)}
+.note{font-size:.82rem;color:var(--muted)}
+#print{display:none}
+@media (max-width:520px){.kpis .hide-s{display:none}.grid2{grid-template-columns:1fr}}
+@media print{
+  body{background:#fff;color:#000;font-size:12pt}
+  .top,main,.fab,dialog{display:none!important}
+  #print{display:block;padding:0 6mm}
+  #print h1{font-size:18pt;margin:0 0 4pt}
+  #print table{width:100%;border-collapse:collapse;margin:6pt 0 14pt}
+  #print th,#print td{border:1px solid #999;padding:4pt 6pt;text-align:left;font-size:10.5pt}
+  #print th{background:#eee}
+  #print .meta{color:#444;margin:0 0 12pt}
+  #print .sig{margin-top:30pt;display:flex;justify-content:space-between}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in"><h1>Suivi des <span>élèves</span></h1><button class="btn alt sm" id="backupBtn" type="button">Sauvegarde</button></div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="eleves" aria-selected="true">Élèves</button>
+    <button role="tab" data-tab="seances" aria-selected="false">Séances</button>
+    <button role="tab" data-tab="groupes" aria-selected="false">Groupes</button>
+  </nav>
+</header>
+<main id="app"></main>
+<button class="btn fab" id="fab" type="button">+ Élève</button>
+<div id="print"></div>
+
+<dialog id="dlg"><form method="dialog" id="dlgForm"></form></dialog>
+
+<script>
+/* Suivi des élèves — données enregistrées sur cet appareil (localStorage), sauvegarde/restauration en fichier JSON. */
+const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+const SKILLS = ["Compréhension orale", "Compréhension écrite", "Expression orale", "Expression écrite", "Grammaire", "Vocabulaire", "Examen"];
+const KEY = "cours_data_v1";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const today = () => new Date().toISOString().slice(0, 10);
+const dFmt = d => new Date(d + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+const num = n => (Math.round(n * 10) / 10).toString().replace(".", ",");
+
+let db = { students: [], sessions: [], grades: [] };
+try { db = Object.assign(db, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { alert("Enregistrement impossible sur cet appareil (mémoire pleine ou navigation privée)."); } };
+
+let tab = "eleves", current = null, q = "", gFilter = "";
+
+/* ---------- Calculs ---------- */
+const groups = () => [...new Set(db.students.filter(s => !s.archived).map(s => s.group).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr"));
+const student = id => db.students.find(s => s.id === id);
+function attendance(sid) {
+  const rec = db.sessions.map(x => x.att && x.att[sid]).filter(Boolean);
+  const p = rec.filter(v => v === "P").length, r = rec.filter(v => v === "R").length, a = rec.filter(v => v === "A").length;
+  return { n: rec.length, p, r, a, rate: rec.length ? (p + r) / rec.length : null };
+}
+function average(sid, list = db.grades.filter(g => g.sid === sid)) {
+  if (!list.length) return null;
+  return list.reduce((s, g) => s + 20 * g.score / g.max, 0) / list.length;   // moyenne ramenée sur 20
+}
+const cls = (v, hi, lo) => v == null ? "" : v >= hi ? "ok" : v >= lo ? "mid" : "ko";
+const pct = r => r == null ? "–" : Math.round(r * 100) + " %";
+const avg = v => v == null ? "–" : num(v) + "/20";
+const initials = n => n.split(/\s+/).map(w => w[0] || "").join("").slice(0, 2).toUpperCase();
+
+/* ---------- Affichage ---------- */
+function render() {
+  document.querySelectorAll("[data-tab]").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === tab && !current));
+  $("fab").hidden = false;
+  if (current) return renderStudent(current);
+  if (tab === "eleves") { $("fab").textContent = "+ Élève"; return renderStudents(); }
+  if (tab === "seances") { $("fab").textContent = "+ Séance"; return renderSessions(); }
+  $("fab").hidden = true; renderGroups();
+}
+
+function renderStudents() {
+  const act = db.students.filter(s => !s.archived);
+  const all = db.sessions.flatMap(x => Object.values(x.att || {}));
+  const rate = all.length ? all.filter(v => v !== "A").length / all.length : null;
+  const avgs = act.map(s => average(s.id)).filter(v => v != null);
+  const gs = groups();
+  let list = act.filter(s => (!gFilter || s.group === gFilter) && (!q || (s.name + " " + (s.group || "")).toLowerCase().includes(q.toLowerCase())));
+  list.sort((a, b) => a.name.localeCompare(b.name, "fr"));
+  const arch = db.students.filter(s => s.archived);
+  $("app").innerHTML = `
+    <div class="stats">
+      <div class="stat"><b>${act.length}</b><span>élève${act.length > 1 ? "s" : ""} actif${act.length > 1 ? "s" : ""}</span></div>
+      <div class="stat"><b class="${cls(rate, .85, .7)}">${pct(rate)}</b><span>assiduité</span></div>
+      <div class="stat"><b class="${cls(avgs.length ? avgs.reduce((s, v) => s + v, 0) / avgs.length : null, 14, 10)}">${avgs.length ? avg(avgs.reduce((s, v) => s + v, 0) / avgs.length) : "–"}</b><span>moyenne générale</span></div>
+    </div>
+    <div class="bar">
+      <input type="search" id="q" placeholder="Rechercher un élève…" value="${esc(q)}" aria-label="Rechercher">
+      ${gs.length ? `<select id="gf" aria-label="Groupe"><option value="">Tous les groupes</option>${gs.map(g => `<option ${g === gFilter ? "selected" : ""}>${esc(g)}</option>`).join("")}</select>` : ""}
+    </div>
+    ${list.length ? list.map(s => { const a = attendance(s.id), m = average(s.id);
+      return `<div class="card"><button class="row" data-open="${s.id}"><span class="av">${esc(initials(s.name))}</span>
+        <span class="grow"><b>${esc(s.name)}</b><span class="sub"><span class="lvl">${esc(s.level)}</span> ${s.group ? "· " + esc(s.group) : ""}</span></span>
+        <span class="kpis"><span class="hide-s"><b class="${cls(a.rate, .85, .7)}">${pct(a.rate)}</b>présence</span><span><b class="${cls(m, 14, 10)}">${avg(m)}</b>moyenne</span></span></button></div>`; }).join("")
+      : `<div class="empty">${act.length ? "Aucun élève ne correspond à la recherche." : "Aucun élève pour le moment.<br>Touchez « + Élève » pour ajouter le premier."}</div>`}
+    ${arch.length ? `<details class="card"><summary class="sub">Élèves archivés (${arch.length})</summary><div class="list">${arch.map(s => `<div class="item"><span>${esc(s.name)} <span class="lvl">${esc(s.level)}</span></span><button class="btn alt sm" data-unarch="${s.id}">Réactiver</button></div>`).join("")}</div></details>` : ""}`;
+  const qi = $("q"); qi.oninput = () => { q = qi.value; renderStudents(); const n = $("q"); n.focus(); n.setSelectionRange(n.value.length, n.value.length); };
+  if ($("gf")) $("gf").onchange = e => { gFilter = e.target.value; renderStudents(); };
+}
+
+function renderStudent(id) {
+  const s = student(id); if (!s) { current = null; return render(); }
+  $("fab").hidden = true;
+  const a = attendance(id), grades = db.grades.filter(g => g.sid === id).sort((x, y) => y.date.localeCompare(x.date)), m = average(id);
+  const bySkill = SKILLS.map(k => [k, average(id, grades.filter(g => g.skill === k))]).filter(x => x[1] != null);
+  const sess = db.sessions.filter(x => x.att && x.att[id]).sort((x, y) => y.date.localeCompare(x.date));
+  const lab = { P: ["Présent", "ok"], R: ["En retard", "mid"], A: ["Absent", "ko"] };
+  $("app").innerHTML = `
+    <button class="back" data-home>‹ Tous les élèves</button>
+    <div class="card"><div class="row"><span class="av">${esc(initials(s.name))}</span>
+      <span class="grow"><b>${esc(s.name)}</b><span class="sub">${[s.group, s.phone].filter(Boolean).map(esc).join(" · ") || "—"}</span></span>
+      <span class="lvl" style="font-size:1rem">${esc(s.level)}</span></div>
+      ${s.notes ? `<p class="note" style="white-space:pre-wrap;margin:10px 0 0">${esc(s.notes)}</p>` : ""}
+      <div class="acts" style="margin-top:12px"><button class="btn alt sm" data-edit="${id}">Modifier</button><button class="btn alt sm" data-print="${id}">Imprimer le bilan</button></div></div>
+    <div class="stats">
+      <div class="stat"><b class="${cls(m, 14, 10)}">${avg(m)}</b><span>moyenne (${grades.length} note${grades.length > 1 ? "s" : ""})</span></div>
+      <div class="stat"><b class="${cls(a.rate, .85, .7)}">${pct(a.rate)}</b><span>présence (${a.n} séance${a.n > 1 ? "s" : ""})</span></div>
+      <div class="stat"><b>${a.a}</b><span>absence${a.a > 1 ? "s" : ""} · ${a.r} retard${a.r > 1 ? "s" : ""}</span></div>
+    </div>
+    ${bySkill.length ? `<div class="card"><h3 style="margin:0">Moyenne par compétence</h3><div class="bars">${bySkill.map(([k, v]) => `<div title="${esc(k)} : ${avg(v)}"><span>${num(v)}</span><i style="height:${Math.max(6, v / 20 * 60)}px;background:var(--${v >= 14 ? "good" : v >= 10 ? "warn" : "bad"})"></i><span>${esc(k.split(" ").map(w => w[0]).join("").toUpperCase())}</span></div>`).join("")}</div>
+      <p class="note">${bySkill.map(([k]) => esc(k.split(" ").map(w => w[0]).join("").toUpperCase()) + " = " + esc(k)).join(" · ")}</p></div>` : ""}
+    <div class="sechead"><h3>Notes</h3><button class="btn sm" data-addgrade="${id}">+ Note</button></div>
+    <div class="card list">${grades.length ? grades.map(g => `<div class="item"><span><b>${esc(g.title || g.skill)}</b><br><span class="sub">${dFmt(g.date)} · ${esc(g.skill)}</span></span>
+      <span style="text-align:right"><b class="${cls(20 * g.score / g.max, 14, 10)}">${num(g.score)}/${num(g.max)}</b><br><button class="back" style="padding:0;font-size:.8rem" data-delgrade="${g.id}">Supprimer</button></span></div>`).join("") : '<p class="sub" style="margin:0">Aucune note pour le moment.</p>'}</div>
+    <div class="sechead"><h3>Évolution du niveau</h3><button class="btn sm alt" data-level="${id}">Changer de niveau</button></div>
+    <div class="card list">${(s.levelHistory || []).slice().reverse().map(h => `<div class="item"><span>${dFmt(h.date)}</span><span class="lvl">${esc(h.level)}</span></div>`).join("")}</div>
+    <div class="sechead"><h3>Présences</h3></div>
+    <div class="card list">${sess.length ? sess.map(x => `<div class="item"><span>${dFmt(x.date)}${x.topic ? `<br><span class="sub">${esc(x.topic)}</span>` : ""}</span><b class="${lab[x.att[id]][1]}">${lab[x.att[id]][0]}</b></div>`).join("") : '<p class="sub" style="margin:0">Aucune séance enregistrée.</p>'}</div>
+    <div class="acts" style="margin-top:16px"><button class="btn danger sm" data-archive="${id}">Archiver l'élève</button><button class="btn danger sm" data-delstudent="${id}">Supprimer définitivement</button></div>`;
+}
+
+function renderSessions() {
+  const list = db.sessions.slice().sort((x, y) => y.date.localeCompare(x.date) || (y.at || 0) - (x.at || 0));
+  $("app").innerHTML = list.length ? list.map(x => {
+    const v = Object.values(x.att || {}), p = v.filter(k => k === "P").length, r = v.filter(k => k === "R").length, a = v.filter(k => k === "A").length;
+    return `<div class="card"><button class="row" data-session="${x.id}"><span class="grow"><b>${dFmt(x.date)}${x.group ? " · " + esc(x.group) : ""}</b>
+      <span class="sub">${esc(x.topic || "Sans thème")}${x.homework ? " · Devoirs : " + esc(x.homework) : ""}</span></span>
+      <span class="kpis"><span><b class="ok">${p}</b>présents</span><span><b class="mid">${r}</b>retards</span><span><b class="ko">${a}</b>absents</span></span></button></div>`; }).join("")
+    : `<div class="empty">Aucune séance enregistrée.<br>Touchez « + Séance » pour faire l'appel.</div>`;
+}
+
+function renderGroups() {
+  const gs = groups(), none = db.students.filter(s => !s.archived && !s.group);
+  const block = (name, st) => { const ms = st.map(s => average(s.id)).filter(v => v != null), rs = st.map(s => attendance(s.id).rate).filter(v => v != null);
+    const lv = LEVELS.map(l => [l, st.filter(s => s.level === l).length]).filter(x => x[1]);
+    return `<div class="card"><div class="row"><span class="grow"><b>${esc(name)}</b><span class="sub">${st.length} élève${st.length > 1 ? "s" : ""} · ${lv.map(([l, n]) => n + " " + l).join(", ")}</span></span>
+      <span class="kpis"><span><b class="${cls(rs.length ? rs.reduce((s, v) => s + v, 0) / rs.length : null, .85, .7)}">${rs.length ? pct(rs.reduce((s, v) => s + v, 0) / rs.length) : "–"}</b>présence</span><span><b>${ms.length ? avg(ms.reduce((s, v) => s + v, 0) / ms.length) : "–"}</b>moyenne</span></span></div>
+      <div class="acts" style="margin-top:10px"><button class="btn alt sm" data-showgroup="${esc(name)}">Voir les élèves</button><button class="btn alt sm" data-printgroup="${esc(name)}">Imprimer la liste</button></div></div>`; };
+  $("app").innerHTML = (gs.length ? gs.map(g => block(g, db.students.filter(s => !s.archived && s.group === g))).join("") : "")
+    + (none.length ? block("Sans groupe", none) : "")
+    + (!gs.length && !none.length ? `<div class="empty">Les groupes apparaissent ici dès que vous indiquez un groupe sur la fiche d'un élève (ex. « Terminale A », « Adultes du soir »).</div>` : "");
+}
+
+/* ---------- Formulaires ---------- */
+function dialog(html, onSubmit) {
+  const f = $("dlgForm"); f.innerHTML = html; $("dlg").showModal();
+  f.onsubmit = e => { if (e.submitter && e.submitter.value === "cancel") return; e.preventDefault(); if (onSubmit(new FormData(f)) !== false) { $("dlg").close(); save(); render(); } };
+}
+const cancel = '<button class="btn alt" value="cancel" formnovalidate>Annuler</button>';
+const opts = (arr, sel) => arr.map(x => `<option ${x === sel ? "selected" : ""}>${esc(x)}</option>`).join("");
+
+function editStudent(id) {
+  const s = id ? student(id) : { name: "", phone: "", group: gFilter, level: "A1", notes: "" };
+  dialog(`<h2>${id ? "Modifier l'élève" : "Nouvel élève"}</h2>
+    <label>Nom et prénom<input name="name" required maxlength="80" value="${esc(s.name)}"></label>
+    <div class="grid2"><label>Groupe / classe<input name="group" list="glist" maxlength="40" value="${esc(s.group)}" placeholder="ex. Terminale A"></label>
+      <label>Niveau CECRL<select name="level">${opts(LEVELS, s.level)}</select></label></div>
+    <datalist id="glist">${groups().map(g => `<option value="${esc(g)}">`).join("")}</datalist>
+    <label>Téléphone (facultatif)<input name="phone" inputmode="tel" maxlength="30" value="${esc(s.phone)}"></label>
+    <label>Remarques (objectifs, points à travailler…)<textarea name="notes" maxlength="1000">${esc(s.notes)}</textarea></label>
+    <div class="acts">${cancel}<button class="btn">Enregistrer</button></div>`, fd => {
+    const v = Object.fromEntries(fd); v.name = v.name.trim(); v.group = v.group.trim();
+    if (id) { if (v.level !== s.level) (s.levelHistory = s.levelHistory || []).push({ date: today(), level: v.level }); Object.assign(s, v); }
+    else db.students.push({ id: uid(), ...v, levelHistory: [{ date: today(), level: v.level }], createdAt: today() });
+  });
+}
+
+function addGrade(sid) {
+  dialog(`<h2>Nouvelle note · ${esc(student(sid).name)}</h2>
+    <label>Intitulé<input name="title" maxlength="80" placeholder="ex. Test unité 3 – Present perfect"></label>
+    <div class="grid2"><label>Compétence<select name="skill">${opts(SKILLS)}</select></label><label>Date<input type="date" name="date" required value="${today()}"></label></div>
+    <div class="grid2"><label>Note<input name="score" required inputmode="decimal" placeholder="ex. 14,5"></label><label>Sur<input name="max" required inputmode="decimal" value="20"></label></div>
+    <p class="msg ko" id="gerr" style="margin:0"></p>
+    <div class="acts">${cancel}<button class="btn">Ajouter</button></div>`, fd => {
+    const score = parseFloat(String(fd.get("score")).replace(",", ".")), max = parseFloat(String(fd.get("max")).replace(",", "."));
+    if (!(max > 0) || isNaN(score) || score < 0 || score > max) { $("gerr").textContent = "La note doit être comprise entre 0 et " + (max > 0 ? num(max) : "le maximum") + "."; return false; }
+    db.grades.push({ id: uid(), sid, date: fd.get("date"), title: fd.get("title").trim(), skill: fd.get("skill"), score, max });
+  });
+}
+
+function changeLevel(sid) {
+  const s = student(sid);
+  dialog(`<h2>Changer de niveau · ${esc(s.name)}</h2>
+    <div class="grid2"><label>Nouveau niveau<select name="level">${opts(LEVELS, s.level)}</select></label><label>Date<input type="date" name="date" required value="${today()}"></label></div>
+    <div class="acts">${cancel}<button class="btn">Enregistrer</button></div>`, fd => {
+    s.level = fd.get("level"); (s.levelHistory = s.levelHistory || []).push({ date: fd.get("date"), level: s.level });
+    s.levelHistory.sort((a, b) => a.date.localeCompare(b.date));
+  });
+}
+
+function editSession(id) {
+  const x = id ? db.sessions.find(y => y.id === id) : { date: today(), group: gFilter || groups()[0] || "", topic: "", homework: "", att: {} };
+  const draw = g => {
+    const st = db.students.filter(s => !s.archived && (!g || s.group === g)).sort((a, b) => a.name.localeCompare(b.name, "fr"));
+    return st.length ? st.map(s => { const v = x.att[s.id] || (id ? "" : "P");
+      return `<div class="item" style="align-items:center"><span>${esc(s.name)}</span><span class="att" data-sid="${s.id}">${["P", "R", "A"].map(k => `<button type="button" data-v="${k}" aria-pressed="${v === k}" title="${{ P: "Présent", R: "En retard", A: "Absent" }[k]}">${k}</button>`).join("")}</span></div>`; }).join("")
+      : '<p class="sub">Aucun élève dans ce groupe.</p>';
+  };
+  dialog(`<h2>${id ? "Modifier la séance" : "Nouvelle séance · appel"}</h2>
+    <div class="grid2"><label>Date<input type="date" name="date" required value="${x.date}"></label>
+      <label>Groupe<select name="group" id="sg"><option value="">Tous les élèves</option>${opts(groups(), x.group)}</select></label></div>
+    <label>Thème de la séance<input name="topic" maxlength="120" value="${esc(x.topic)}" placeholder="ex. Simple past vs present perfect"></label>
+    <label>Devoirs<input name="homework" maxlength="160" value="${esc(x.homework)}" placeholder="ex. Exercices p. 42"></label>
+    <div><span class="sub">P = présent · R = en retard · A = absent</span><div class="list" id="attList">${draw(x.group)}</div></div>
+    <div class="acts">${id ? '<button class="btn danger" value="delete" formnovalidate>Supprimer</button>' : ""}${cancel}<button class="btn">Enregistrer</button></div>`, fd => {
+    const att = {}; document.querySelectorAll("#attList .att").forEach(r => { const b = r.querySelector('[aria-pressed="true"]'); if (b) att[r.dataset.sid] = b.dataset.v; });
+    const v = { date: fd.get("date"), group: fd.get("group"), topic: fd.get("topic").trim(), homework: fd.get("homework").trim(), att };
+    if (id) Object.assign(x, v); else db.sessions.push({ id: uid(), at: Date.now(), ...v });
+  });
+  $("sg").onchange = e => { x.group = e.target.value; $("attList").innerHTML = draw(e.target.value); };
+  const del = $("dlgForm").querySelector('[value="delete"]');
+  if (del) del.onclick = e => { e.preventDefault(); if (confirm("Supprimer cette séance et ses présences ?")) { db.sessions = db.sessions.filter(y => y.id !== id); save(); $("dlg").close(); render(); } };
+}
+
+function backup() {
+  dialog(`<h2>Sauvegarde</h2>
+    <p class="note" style="margin:0">Les données sont enregistrées uniquement sur cet appareil. Téléchargez régulièrement une sauvegarde : elle permet de les retrouver après un changement de téléphone ou d'ordinateur.</p>
+    <button class="btn" type="button" id="exp">Télécharger la sauvegarde</button>
+    <label>Restaurer une sauvegarde (remplace les données actuelles)<input type="file" id="imp" accept="application/json,.json"></label>
+    <div class="acts">${cancel}</div>`, () => {});
+  $("exp").onclick = () => {
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(db, null, 1)], { type: "application/json" }));
+    a.download = "suivi-eleves-" + today() + ".json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  $("imp").onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try { const d = JSON.parse(await f.text()); if (!Array.isArray(d.students)) throw 0;
+      if (!confirm(`Remplacer les données actuelles par cette sauvegarde (${d.students.length} élèves) ?`)) return;
+      db = { students: d.students, sessions: d.sessions || [], grades: d.grades || [] }; save(); $("dlg").close(); current = null; render();
+    } catch (err) { alert("Ce fichier n'est pas une sauvegarde valide."); }
+  };
+}
+
+/* ---------- Bilans imprimables ---------- */
+function printStudent(id) {
+  const s = student(id), a = attendance(id), grades = db.grades.filter(g => g.sid === id).sort((x, y) => x.date.localeCompare(y.date)), m = average(id);
+  const bySkill = SKILLS.map(k => [k, average(id, grades.filter(g => g.skill === k)), grades.filter(g => g.skill === k).length]).filter(x => x[1] != null);
+  $("print").innerHTML = `<h1>Bilan de l'élève · ${esc(s.name)}</h1>
+    <p class="meta">${s.group ? "Groupe : " + esc(s.group) + " · " : ""}Niveau actuel : <b>${esc(s.level)}</b> · Bilan édité le ${dFmt(today())}</p>
+    <table><tr><th>Moyenne générale</th><th>Présence</th><th>Absences</th><th>Retards</th></tr>
+      <tr><td>${avg(m)}</td><td>${pct(a.rate)} (${a.n} séances)</td><td>${a.a}</td><td>${a.r}</td></tr></table>
+    ${bySkill.length ? `<table><tr><th>Compétence</th><th>Notes</th><th>Moyenne</th></tr>${bySkill.map(([k, v, n]) => `<tr><td>${esc(k)}</td><td>${n}</td><td>${avg(v)}</td></tr>`).join("")}</table>` : ""}
+    ${grades.length ? `<table><tr><th>Date</th><th>Évaluation</th><th>Compétence</th><th>Note</th></tr>${grades.map(g => `<tr><td>${dFmt(g.date)}</td><td>${esc(g.title || "—")}</td><td>${esc(g.skill)}</td><td>${num(g.score)}/${num(g.max)}</td></tr>`).join("")}</table>` : ""}
+    <table><tr><th>Évolution du niveau</th></tr><tr><td>${(s.levelHistory || []).map(h => dFmt(h.date) + " : " + esc(h.level)).join(" → ")}</td></tr></table>
+    <p><b>Appréciation :</b></p><div style="border:1px solid #999;min-height:70pt;padding:6pt">${esc(s.notes || "")}</div>
+    <div class="sig"><span>Le formateur</span><span>Signature</span></div>`;
+  window.print();
+}
+function printGroup(g) {
+  const st = db.students.filter(s => !s.archived && (g === "Sans groupe" ? !s.group : s.group === g)).sort((a, b) => a.name.localeCompare(b.name, "fr"));
+  $("print").innerHTML = `<h1>${esc(g)}</h1><p class="meta">${st.length} élèves · édité le ${dFmt(today())}</p>
+    <table><tr><th>#</th><th>Élève</th><th>Niveau</th><th>Présence</th><th>Absences</th><th>Moyenne</th></tr>
+    ${st.map((s, i) => { const a = attendance(s.id); return `<tr><td>${i + 1}</td><td>${esc(s.name)}</td><td>${esc(s.level)}</td><td>${pct(a.rate)}</td><td>${a.a}</td><td>${avg(average(s.id))}</td></tr>`; }).join("")}</table>`;
+  window.print();
+}
+
+/* ---------- Événements ---------- */
+document.addEventListener("click", e => {
+  const t = e.target, c = sel => t.closest(sel);
+  let b;
+  if ((b = c("[data-tab]"))) { tab = b.dataset.tab; current = null; render(); window.scrollTo(0, 0); }
+  else if ((b = c("[data-open]"))) { current = b.dataset.open; render(); window.scrollTo(0, 0); }
+  else if (c("[data-home]")) { current = null; render(); }
+  else if ((b = c("[data-edit]"))) editStudent(b.dataset.edit);
+  else if ((b = c("[data-addgrade]"))) addGrade(b.dataset.addgrade);
+  else if ((b = c("[data-level]"))) changeLevel(b.dataset.level);
+  else if ((b = c("[data-print]"))) printStudent(b.dataset.print);
+  else if ((b = c("[data-printgroup]"))) printGroup(b.dataset.printgroup);
+  else if ((b = c("[data-showgroup]"))) { tab = "eleves"; gFilter = b.dataset.showgroup === "Sans groupe" ? "" : b.dataset.showgroup; render(); }
+  else if ((b = c("[data-session]"))) editSession(b.dataset.session);
+  else if ((b = c("[data-delgrade]"))) { if (confirm("Supprimer cette note ?")) { db.grades = db.grades.filter(g => g.id !== b.dataset.delgrade); save(); render(); } }
+  else if ((b = c("[data-archive]"))) { if (confirm("Archiver cet élève ? Il n'apparaîtra plus dans les listes, mais ses notes et présences sont conservées.")) { student(b.dataset.archive).archived = true; current = null; save(); render(); } }
+  else if ((b = c("[data-unarch]"))) { student(b.dataset.unarch).archived = false; save(); render(); }
+  else if ((b = c("[data-delstudent]"))) { const id = b.dataset.delstudent;
+    if (confirm("Supprimer définitivement cet élève, ses notes et ses présences ? Cette action est irréversible.")) {
+      db.students = db.students.filter(s => s.id !== id); db.grades = db.grades.filter(g => g.sid !== id); db.sessions.forEach(x => { if (x.att) delete x.att[id]; });
+      current = null; save(); render(); } }
+  else if ((b = c(".att button"))) b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+});
+$("fab").onclick = () => tab === "seances" ? editSession() : editStudent();
+$("backupBtn").onclick = backup;
+render();
+</script>
+</body>
+</html>

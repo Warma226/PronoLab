@@ -1,5 +1,6 @@
 /* Prono Lab — application autonome (matchs + comptes + abonnements) */
 const CFG = window.PL_CONFIG || {};
+const LOC = window.PL_LOCALE || "fr-FR", tx = window.PL_T || (s => s); // langue d'affichage (voir i18n.js)
 const PLANS = CFG.plans;
 const LG = { ALL: "Tous", PL: "Premier League", LIGA: "Liga", SA: "Serie A", BL: "Bundesliga", L1: "Ligue 1", NHL: "NHL", KHL: "KHL", SHL: "SHL", LIIGA: "Liiga", NL: "National League", DEL: "DEL" };
 const LGS = { PL: "PL", LIGA: "Liga", SA: "Serie A", BL: "Bundes.", L1: "L1", NHL: "NHL", KHL: "KHL", SHL: "SHL", LIIGA: "Liiga", NL: "NL", DEL: "DEL" };
@@ -7,9 +8,9 @@ const PAYS = [["orange", "Orange Money"], ["moov", "Moov Money"], ["wave", "Wave
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const pc = p => Math.round(p * 100);
-const fmt = (n, d = 2) => n.toFixed(d).replace(".", ",");
-const cfa = n => n.toLocaleString("fr-FR") + " F CFA";
-const dFmt = d => new Date(d).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+const fmt = (n, d = 2) => LOC === "fr-FR" ? n.toFixed(d).replace(".", ",") : n.toFixed(d);
+const cfa = n => n.toLocaleString(LOC) + " F CFA";
+const dFmt = d => new Date(d).toLocaleDateString(LOC, { weekday: "long", day: "numeric", month: "long" });
 const digits = s => String(s || "").replace(/\D/g, "");
 const normPhone = s => { let d = digits(s); if (d.startsWith("00")) d = d.slice(2); if (d.length === 8) d = "226" + d; return d; };
 const phoneEmail = s => normPhone(s) + "@pronolab.app";
@@ -66,8 +67,8 @@ const analyseAny = m => m.sport === "hockey" ? analyseH(m) : analyse(m);
 
 /* ---------- Affichage des matchs ---------- */
 const formHtml = f => '<span class="form" aria-label="Forme : ' + esc(f) + '">' + [...String(f || "")].map(v => '<i class="f' + v + '"></i>').join("") + "</span>";
-const dayFmt = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" });
-const hFmt = new Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" });
+const dayFmt = new Intl.DateTimeFormat(LOC, { weekday: "long", day: "numeric", month: "long" });
+const hFmt = new Intl.DateTimeFormat(LOC, { hour: "2-digit", minute: "2-digit" });
 const CL = { fort: "Fort", moyen: "Moyen", risque: "Risqué" };
 const LOCKD = `<div class="lockdet"><span>Buts attendus, scores probables et marchés : réservé aux membres.</span><button class="cta" data-join>Devenir membre</button></div>`;
 
@@ -157,7 +158,7 @@ function renderDays() {
     const nextOk = vis.filter(m => canSee(m) && dayDiff(m.date) >= 0).sort((x, y) => x.date - y.date)[0];
     selDay = keys.includes(today) ? today : nextOk ? dayKey(nextOk.date) : (keys.find(k => dayDiff(vis.find(m => dayKey(m.date) === k).date) >= 0) || keys[keys.length - 1]);
   }
-  const wd = new Intl.DateTimeFormat("fr-FR", { weekday: "short" });
+  const wd = new Intl.DateTimeFormat(LOC, { weekday: "short" });
   $("days").innerHTML = keys.map(k => { const d = vis.find(m => dayKey(m.date) === k).date, dd = dayDiff(d), locked = dd >= maxDays();
     const lab = dd === 0 ? "Auj." : dd === 1 ? "Dem." : wd.format(d).replace(".", "");
     return `<button role="tab" data-day="${k}" aria-selected="${k === selDay}" class="${locked ? "lockd" : ""}"><small>${lab}</small><b>${d.getDate()}</b>${locked ? '<i class="lk">🔒</i>' : ""}</button>`; }).join("");
@@ -219,7 +220,7 @@ function applySport() {
   matches = allData[sport]; filter = "ALL"; selDay = null;
   document.querySelectorAll("[data-sport]").forEach(b => b.setAttribute("aria-pressed", b.dataset.sport === sport));
   const x = dataMeta[sport];
-  $("upd").textContent = x ? (sport === "hockey" ? "Période du " : "Week-end du ") + (x.weekend || "") + " · mis à jour le " + new Date(x.updatedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long" }) : "";
+  $("upd").textContent = x ? (sport === "hockey" ? "Période du " : "Week-end du ") + (x.weekend || "") + " · mis à jour le " + new Date(x.updatedAt).toLocaleDateString(LOC, { day: "numeric", month: "long" }) : "";
 
   if (!matches.length) {
     $("list").innerHTML = `<div class="empty">${sport === "hockey" ? "Aucun match de hockey programmé pour le moment. Le programme est actualisé chaque matin." : "Aucun match programmé pour le moment. Le programme est actualisé chaque semaine."}</div>`;
@@ -281,7 +282,7 @@ function subscribeHtml(req, title, sub) {
       <div class="step"><b>1 · Choisis ta formule</b>
         <div class="plans" role="radiogroup" aria-label="Formule">
           <label class="plan" for="pWeek"><input type="radio" name="plan" id="pWeek" value="week" ${selPlan === "week" ? "checked" : ""}><span>${PLANS.week.label} · ${PLANS.week.days} jours</span><b>${cfa(PLANS.week.price)}</b><em class="pts">+${LOYAL.week} pts</em></label>
-          <label class="plan" for="pMonth"><input type="radio" name="plan" id="pMonth" value="month" ${selPlan === "month" ? "checked" : ""}><span>${PLANS.month.label} · ${PLANS.month.days} jours</span><b>${cfa(PLANS.month.price)}</b>${save > 0 ? `<em>${save.toLocaleString("fr-FR")} F d'économie</em>` : ""}<em class="pts">+${LOYAL.month} pts</em></label>
+          <label class="plan" for="pMonth"><input type="radio" name="plan" id="pMonth" value="month" ${selPlan === "month" ? "checked" : ""}><span>${PLANS.month.label} · ${PLANS.month.days} jours</span><b>${cfa(PLANS.month.price)}</b>${save > 0 ? `<em>${save.toLocaleString(LOC)} F d'économie</em>` : ""}<em class="pts">+${LOYAL.month} pts</em></label>
         </div>
         <b>2 · Envoie le montant</b>
         ${nums.length ? nums.map(([k, l]) => `<div class="pay"><span>${l}</span><code>${esc(payment[k])}</code><button class="mini" data-copy="${esc(payment[k])}">Copier</button></div>`).join("") : `<p class="msg">Pour payer, contacte l'assistance WhatsApp dans l'onglet Aide.</p>`}
@@ -319,7 +320,7 @@ function renderClub() {
   const redeemPending = req && req.status === "pending" && req.type === "redeem";
   const hist = (mem.history || []).slice().reverse().slice(0, 8);
   const refCode = digits(myAcc.phone).slice(-8);
-  const wa = "https://wa.me/?text=" + encodeURIComponent(`Je suis les pronos foot sur Prono Lab. Inscris-toi avec mon code parrain ${refCode} : ${location.origin + location.pathname}?ref=${refCode}`);
+  const wa = "https://wa.me/?text=" + encodeURIComponent(tx(`Je suis les pronos foot sur Prono Lab. Inscris-toi avec mon code parrain ${refCode} : ${location.origin + location.pathname}?ref=${refCode}`));
   c.className = "acct";
   c.innerHTML = `
     <div class="profile">
@@ -339,10 +340,10 @@ function renderClub() {
     </div>
 
     <div class="loyal">
-      <div class="clubhead"><div><h2>Programme fidélité</h2><p class="msg">Niveau ${lv[0]}${lv[2] > 1 ? ` · points ×${String(lv[2]).replace(".", ",")}` : ""}${nx ? ` · encore ${(nx[1] - life).toLocaleString("fr-FR")} pts pour le niveau ${nx[0]}` : " · niveau maximum"}</p></div>
-        <div class="price">${pts.toLocaleString("fr-FR")}<small> pts</small></div></div>
+      <div class="clubhead"><div><h2>Programme fidélité</h2><p class="msg">Niveau ${lv[0]}${lv[2] > 1 ? ` · points ×${String(lv[2]).replace(".", ",")}` : ""}${nx ? ` · encore ${(nx[1] - life).toLocaleString(LOC)} pts pour le niveau ${nx[0]}` : " · niveau maximum"}</p></div>
+        <div class="price">${pts.toLocaleString(LOC)}<small> pts</small></div></div>
       <div class="meter gold"><i style="width:${Math.min(100, 100 * pts / LOYAL.reward)}%"></i></div>
-      <p class="msg">${pts >= LOYAL.reward ? "Tu peux échanger tes points contre une semaine offerte." : `Encore ${(LOYAL.reward - pts).toLocaleString("fr-FR")} pts pour une semaine offerte.`}</p>
+      <p class="msg">${pts >= LOYAL.reward ? "Tu peux échanger tes points contre une semaine offerte." : `Encore ${(LOYAL.reward - pts).toLocaleString(LOC)} pts pour une semaine offerte.`}</p>
       <button class="cta" id="redeemBtn" ${pts < LOYAL.reward || redeemPending ? "disabled" : ""}>${redeemPending ? "Échange en cours de validation" : `Échanger ${LOYAL.reward} pts contre ${LOYAL.rewardDays} jours offerts`}</button>
       <div class="earn">
         <div><b>+${LOYAL.week}</b><span>abonnement Hebdo</span></div>
@@ -356,11 +357,11 @@ function renderClub() {
         <span class="msg">Ton ami saisit ce code à l'inscription. Dès son premier abonnement, tu gagnes ${LOYAL.referral} pts.${mem.referrals ? ` Déjà ${mem.referrals} ami${mem.referrals > 1 ? "s" : ""} parrainé${mem.referrals > 1 ? "s" : ""}.` : ""}</span>
       </div>
       <details class="lvls"><summary>Les niveaux</summary>
-        ${LEVELS.map(l => `<div class="kv"><span><span class="lvl" style="--lv:${l[3]}">${l[0]}</span></span><span>${l[1] ? "dès " + l[1].toLocaleString("fr-FR") + " pts cumulés" : "dès l'inscription"}${l[2] > 1 ? " · points ×" + String(l[2]).replace(".", ",") : ""}</span></div>`).join("")}
+        ${LEVELS.map(l => `<div class="kv"><span><span class="lvl" style="--lv:${l[3]}">${l[0]}</span></span><span>${l[1] ? "dès " + l[1].toLocaleString(LOC) + " pts cumulés" : "dès l'inscription"}${l[2] > 1 ? " · points ×" + String(l[2]).replace(".", ",") : ""}</span></div>`).join("")}
       </details>
     </div>
 
-    ${hist.length ? `<div class="club"><h2>Historique</h2>${hist.map(x => `<div class="kv"><span>${esc(new Date(x.at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }))} · ${esc(x.label)}</span><span>${x.pts ? (x.pts > 0 ? "+" : "") + x.pts + " pts" : ""}</span></div>`).join("")}</div>` : ""}
+    ${hist.length ? `<div class="club"><h2>Historique</h2>${hist.map(x => `<div class="kv"><span>${esc(new Date(x.at).toLocaleDateString(LOC, { day: "numeric", month: "short" }))} · ${esc(x.label)}</span><span>${x.pts ? (x.pts > 0 ? "+" : "") + x.pts + " pts" : ""}</span></div>`).join("")}</div>` : ""}
 
     <div class="club">
       <button class="settog" id="setBtn" aria-expanded="${showSettings}"><h2>Paramètres</h2><span>${showSettings ? "–" : "+"}</span></button>
@@ -386,20 +387,20 @@ function renderAdmin() {
     const m = members[r.id], act = m && new Date(m.until) > new Date(), pl = PLANS[r.plan] || PLANS.week, acc = accounts[r.id];
     if (r.type === "redeem") return `<div class="req"><div class="who"><b>${acc ? esc(acc.name) : "Client"} · échange de points</b>
       <span>${(m && m.points) || 0} pts disponibles · demande ${LOYAL.rewardDays} jours offerts contre ${LOYAL.reward} pts</span>
-      <span>Envoyée le ${esc(new Date(r.at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }))}</span></div>
+      <span>Envoyée le ${esc(new Date(r.at).toLocaleString(LOC, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }))}</span></div>
       <div class="act"><button class="cta alt" data-ok="${esc(r.id)}">Offrir ${LOYAL.rewardDays} jours</button><button class="mini" data-no="${esc(r.id)}">Refuser</button></div></div>`;
     const ref = acc && acc.referredBy ? Object.values(accounts).find(x => digits(x.phone).endsWith(acc.referredBy)) : null;
     return `<div class="req"><div class="who"><b>${acc ? esc(acc.name) : "Client"}</b>
       <span>${pl.label} · ${cfa(pl.price)} · ${esc((PAYS.find(p => p[0] === r.method) || [, r.method])[1])} · ${esc(r.phone)} · réf. ${esc(r.ref)}</span>
       ${acc ? `<span>Compte : ${esc(acc.phone)}${acc.city ? " · " + esc(acc.city) : ""}</span>` : ""}
       ${ref && !(m && m.paid) ? `<span>Parrainé par ${esc(ref.name)} (+${LOYAL.referral} pts pour lui à la validation)</span>` : ""}
-      <span>Envoyée le ${esc(new Date(r.at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }))}${act ? " · déjà membre jusqu'au " + esc(dFmt(m.until)) : ""}</span></div>
+      <span>Envoyée le ${esc(new Date(r.at).toLocaleString(LOC, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }))}${act ? " · déjà membre jusqu'au " + esc(dFmt(m.until)) : ""}</span></div>
       <div class="act"><button class="cta alt" data-ok="${esc(r.id)}">Valider ${pl.days} jours</button><button class="mini" data-no="${esc(r.id)}">Refuser</button></div></div>`;
   }).join("") : '<p class="msg">Aucune demande pour le moment.</p>';
   const act = Object.entries(members).filter(([, m]) => m.until && new Date(m.until) > new Date()).sort((a, b) => a[1].until.localeCompare(b[1].until));
   const exp = Object.entries(members).filter(([, m]) => m.until && new Date(m.until) <= new Date() && Date.now() - new Date(m.until) < 30 * 864e5);
-  $("expd").innerHTML = exp.length ? exp.map(([id, m]) => `<div class="kv"><span>${esc((accounts[id] && accounts[id].name) || "Client")} · ${esc((accounts[id] && accounts[id].phone) || "")}</span><span>fini le ${esc(new Date(m.until).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }))}</span></div>`).join("") : '<p class="msg">Aucun abonnement expiré ces 30 derniers jours.</p>';
-  $("mems").innerHTML = act.length ? act.map(([id, m]) => `<div class="kv"><span>${esc((accounts[id] && accounts[id].name) || "Client")} · ${esc((accounts[id] && accounts[id].phone) || "")}</span><span>jusqu'au ${esc(new Date(m.until).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }))}</span></div>`).join("") : '<p class="msg">Aucun membre actif.</p>';
+  $("expd").innerHTML = exp.length ? exp.map(([id, m]) => `<div class="kv"><span>${esc((accounts[id] && accounts[id].name) || "Client")} · ${esc((accounts[id] && accounts[id].phone) || "")}</span><span>fini le ${esc(new Date(m.until).toLocaleDateString(LOC, { day: "numeric", month: "short" }))}</span></div>`).join("") : '<p class="msg">Aucun abonnement expiré ces 30 derniers jours.</p>';
+  $("mems").innerHTML = act.length ? act.map(([id, m]) => `<div class="kv"><span>${esc((accounts[id] && accounts[id].name) || "Client")} · ${esc((accounts[id] && accounts[id].phone) || "")}</span><span>jusqu'au ${esc(new Date(m.until).toLocaleDateString(LOC, { day: "numeric", month: "short" }))}</span></div>`).join("") : '<p class="msg">Aucun membre actif.</p>';
 }
 function renderAll() { renderTop(); renderWelcome(); renderClub(); renderAdmin(); render(); renderCombos(); }
 
@@ -779,7 +780,7 @@ function renderLive() {
     }).join("");
     return `<div class="lgcard"><div class="lghead"><span class="flag live">LIVE</span><div><b>${esc(b.name)}</b></div></div>${rows}</div>`;
   }).join("") + "</div>";
-  $("liveUpd").textContent = "Actualisé à " + new Date().toLocaleTimeString("fr-FR");
+  $("liveUpd").textContent = "Actualisé à " + new Date().toLocaleTimeString(LOC);
 }
 
 
@@ -1009,8 +1010,8 @@ function build(pool0, target, sizes) {
 }
 function ticketText(id) {
   const c = combos.find(x => x.id === id); if (!c) return "";
-  return `Prono Lab · ${c.title} du ${c.dayLabel} (cote estimée ${fmt(c.odds)})\n` + c.legs.map((l, i) =>
-    `${i + 1}. ${l.m.home.name} - ${l.m.away.name} (${hFmt.format(l.m.date)})\n   ${l.bk}`).join("\n");
+  return tx(`Prono Lab · ${c.title} du ${c.dayLabel} (cote estimée ${fmt(c.odds)})\n` + c.legs.map((l, i) =>
+    `${i + 1}. ${l.m.home.name} - ${l.m.away.name} (${hFmt.format(l.m.date)})\n   ${l.bk}`).join("\n"));
 }
 function legState(l) {
   const res = resultOf(l.m); if (!res || res.state === "pre") return { cls: "", txt: "" };
@@ -1022,7 +1023,7 @@ function renderCombos() {
   const box = $("combos"); if (!box || !matches.length) return;
   const base = new Date(); base.setUTCDate(base.getUTCDate() + comboDay);
   const key = ymdUTC(base);
-  const dayLabel = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(base);
+  const dayLabel = new Intl.DateTimeFormat(LOC, { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(base);
   $("comboDays").innerHTML = [[-1, "Hier"], [0, "Aujourd'hui"]].map(([o, l]) => { const x = new Date(); x.setUTCDate(x.getUTCDate() + o);
     return `<button role="tab" data-cday="${o}" aria-selected="${o === comboDay}"><small>${l}</small><b>${x.getUTCDate()}</b></button>`; }).join("");
   const dayMatches = matches.filter(m => ymdUTC(m.date) === key);
@@ -1070,7 +1071,7 @@ const FAQ = [
 ];
 function renderHelp() {
   const n = normPhone(CFG.adminPhone), pretty = "+" + n.slice(0, 3) + " " + n.slice(3).replace(/(\d{2})(?=\d)/g, "$1 ");
-  const wa = "https://wa.me/" + n + "?text=" + encodeURIComponent("Bonjour, j'ai une question sur Prono Lab : ");
+  const wa = "https://wa.me/" + n + "?text=" + encodeURIComponent(tx("Bonjour, j'ai une question sur Prono Lab : "));
   $("help").innerHTML = `
     <div class="assist">
       <div><h2>Assistance</h2><p class="msg">Une question sur un paiement, ton compte ou un prono ? Notre équipe te répond sur WhatsApp.</p></div>

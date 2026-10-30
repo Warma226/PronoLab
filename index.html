@@ -166,6 +166,9 @@ form input:focus,form select:focus,#aPass:focus{border-color:var(--pitch);outlin
 /* Présentation (3 slides) */
 .intro{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
 .intro .skipx{align-self:flex-end;background:none;border:0;color:var(--muted);font-weight:600;padding:8px}
+.introtop{display:flex;justify-content:space-between;align-items:center}
+.langbtn{font-size:.78rem;font-weight:700;letter-spacing:.04em;color:var(--ink)}
+.cguhead .langbtn{margin-left:auto}
 .slides{flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 calc(-1 * max(20px,env(safe-area-inset-left,0px)))}
 .slides::-webkit-scrollbar{display:none}
 .slide{flex:0 0 100%;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px;padding:0 28px}
@@ -450,7 +453,7 @@ h1 span{background:linear-gradient(120deg,var(--pitch),var(--apricot));-webkit-b
 </head>
 <body>
 <div class="intro cgu" id="cgu" hidden role="dialog" aria-modal="true" aria-labelledby="cguTitle">
-  <div class="cguhead"><h2 id="cguTitle">Conditions d'utilisation</h2><button class="skipx" id="cguClose" type="button">Fermer</button></div>
+  <div class="cguhead"><h2 id="cguTitle">Conditions d'utilisation</h2><button class="themebtn langbtn" type="button" data-lang-toggle>EN</button><button class="skipx" id="cguClose" type="button">Fermer</button></div>
   <div class="cgubody" id="cguBody">
     <p class="meta">Version du 30 octobre 2026</p>
     <h3>1. Le service</h3>
@@ -485,7 +488,7 @@ h1 span{background:linear-gradient(120deg,var(--pitch),var(--apricot));-webkit-b
   </div>
 </div>
 <div class="intro" id="intro" hidden>
-  <button class="skipx" id="introSkip" type="button">Passer</button>
+  <div class="introtop"><button class="themebtn langbtn" type="button" data-lang-toggle>EN</button><button class="skipx" id="introSkip" type="button">Passer</button></div>
   <div class="slides" id="slides">
     <section class="slide" aria-label="1 sur 3">
       <svg viewBox="0 0 280 220" aria-hidden="true">
@@ -541,6 +544,7 @@ h1 span{background:linear-gradient(120deg,var(--pitch),var(--apricot));-webkit-b
     <div class="brand"><img src="icons/icon-192.png" alt=""><h1>Prono <span>Lab</span></h1></div>
     <div class="sportsw" role="group" aria-label="Sport"><button data-sport="foot" aria-pressed="true">⚽<span> Foot</span></button><button data-sport="hockey" aria-pressed="false">🏒<span> Hockey</span></button></div>
     <div class="acts">
+      <button class="themebtn langbtn" type="button" data-lang-toggle>EN</button>
       <button class="themebtn" id="themeBtn" type="button" aria-label="Activer le mode nuit">🌙</button>
       <button class="chip" id="installBtn" hidden>Installer</button>
       <button class="chip" id="accBtn" hidden></button>
@@ -645,6 +649,7 @@ h1 span{background:linear-gradient(120deg,var(--pitch),var(--apricot));-webkit-b
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="i18n.js"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>
