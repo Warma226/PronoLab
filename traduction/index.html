@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Glossaire administratif</title>
+<meta name="description" content="Glossaire administratif français-anglais pour la traduction de documents officiels.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@800&display=swap">
+<style>
+:root{
+  --bg:#f5f4f0; --surface:#fff; --soft:#efe9dc; --ink:#22211d; --muted:#6f6b60; --line:#e6e1d6;
+  --accent:#9c5a14; --accent-ink:#fff; --mark:#ffe7a3; --good:#1f9d6a; --shadow:0 6px 22px rgba(34,33,29,.07);
+  --display:"Nunito",system-ui,sans-serif; --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14130f; --surface:#1e1c17; --soft:#2c271d; --ink:#ece8de; --muted:#a39d8f; --line:#302c24;
+  --accent:#f0a650; --accent-ink:#1a1206; --mark:#5c4512; --good:#4cc792; --shadow:0 6px 22px rgba(0,0,0,.3)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--body);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + env(safe-area-inset-top,0px)) 16px 8px}
+.top-in{max-width:860px;margin:0 auto;display:grid;gap:10px}
+.title{display:flex;align-items:center;gap:10px}
+h1{font:800 1.3rem var(--display);margin:0;flex:1}
+h1 span{color:var(--accent)}
+.search{display:flex;gap:8px}
+.search input{flex:1;font-size:1.05rem}
+input,select,textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;min-height:44px}
+textarea{min-height:70px;resize:vertical}
+label{display:grid;gap:4px;font-size:.85rem;font-weight:600;color:var(--muted)}
+.dir{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:12px;padding:0 14px;font-weight:800;white-space:nowrap;min-height:44px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips button{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:999px;padding:7px 13px;font-size:.84rem;font-weight:600;white-space:nowrap}
+.chips button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+main{max-width:860px;margin:0 auto;padding:6px 16px 90px}
+.count{font-size:.82rem;color:var(--muted);margin:4px 2px 10px}
+.term{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:4px 10px}
+.src{font-weight:600}
+.tgt{font-weight:700;font-size:1.05rem;color:var(--accent)}
+.meta{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.note{grid-column:1/-1;font-size:.84rem;color:var(--muted);margin:0}
+.tag{font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--ink)}
+.tag.mine{background:var(--accent);color:var(--accent-ink)}
+.side{grid-row:1/3;grid-column:2;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.ic{border:0;background:var(--soft);border-radius:10px;min-width:38px;height:34px;padding:0 10px;font-size:.82rem;font-weight:700}
+.ic.on{background:var(--accent);color:var(--accent-ink)}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.link{border:0;background:none;color:var(--accent);font-weight:700;padding:0;font-size:.8rem}
+.empty{text-align:center;color:var(--muted);padding:36px 16px}
+.btn{border:0;border-radius:12px;padding:10px 16px;font-weight:700;background:var(--accent);color:var(--accent-ink);min-height:44px}
+.btn.alt{background:var(--soft);color:var(--ink)}
+.btn.danger{background:none;color:#c94a3a;border:1px solid var(--line)}
+.btn.sm{padding:6px 12px;min-height:34px;font-size:.85rem}
+.fab{position:fixed;right:max(16px,calc(50% - 414px));bottom:calc(18px + env(safe-area-inset-bottom,0px));border-radius:999px;padding:14px 20px;box-shadow:0 8px 24px rgba(156,90,20,.35)}
+dialog{border:0;border-radius:20px;padding:0;width:min(560px,calc(100% - 24px));background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(20,18,12,.45)}
+dialog form{display:grid;gap:12px;padding:18px}
+dialog h2{margin:0;font-size:1.15rem}
+.acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.hint{font-size:.82rem;color:var(--muted);margin:0}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:.85rem;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="title"><h1>Glossaire <span>administratif</span></h1><button class="btn alt sm" id="toolsBtn" type="button">Mes termes</button></div>
+    <div class="search">
+      <input type="search" id="q" placeholder="Chercher un terme (français ou anglais)…" autocomplete="off" aria-label="Chercher un terme">
+      <button class="dir" id="dir" type="button" title="Inverser le sens">FR → EN</button>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Domaine"></div>
+  </div>
+</header>
+<main><p class="count" id="count"></p><div id="list"></div></main>
+<button class="btn fab" id="fab" type="button">+ Terme</button>
+<div class="toast" id="toast" role="status"></div>
+<dialog id="dlg"><form method="dialog" id="dlgForm"></form></dialog>
+
+<script src="termes.js"></script>
+<script>
+/* Glossaire administratif FR ↔ EN : termes de base (termes.js) + vos propres termes, enregistrés sur cet appareil. */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[’']/g, "'");
+const KEY = "glossaire_v1";
+const ALL = "Tous", FAV = "★ Favoris", MINE = "Mes termes";
+
+let store = { mine: [], fav: [], hidden: [] };
+try { store = Object.assign(store, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { alert("Enregistrement impossible sur cet appareil."); } };
+let dir = "fr", dom = ALL, q = "";
+try { dir = localStorage.getItem("glossaire_dir") || "fr"; } catch (e) {}
+
+const base = () => (window.GLOSSAIRE || []).map((t, i) => ({ id: "b" + i, fr: t[0], en: t[1], dom: t[2], note: t[3] || "" }));
+const terms = () => store.mine.map(t => ({ ...t, mine: true })).concat(base().filter(t => !store.hidden.includes(t.id)));
+const domains = () => [...new Set(terms().map(t => t.dom).filter(Boolean))];
+
+function hl(text, words) {
+  let out = esc(text); if (!words.length) return out;
+  const n = norm(text), marks = new Array(text.length).fill(false);
+  words.filter(w => w.length > 2).forEach(w => { let i = n.indexOf(w); while (w && i >= 0) { for (let k = i; k < i + w.length; k++) marks[k] = true; i = n.indexOf(w, i + 1); } });
+  out = ""; for (let i = 0; i < text.length; i++) { const on = marks[i] && !marks[i - 1], off = marks[i] && !marks[i + 1]; out += (on ? "<mark>" : "") + esc(text[i]) + (off ? "</mark>" : ""); }
+  return out;
+}
+
+function render() {
+  const ds = [ALL, FAV, ...(store.mine.length ? [MINE] : []), ...domains()];
+  if (!ds.includes(dom)) dom = ALL;
+  $("chips").innerHTML = ds.map(d => `<button data-dom="${esc(d)}" aria-pressed="${d === dom}">${esc(d)}</button>`).join("");
+  $("dir").textContent = dir === "fr" ? "FR → EN" : "EN → FR";
+  $("q").placeholder = dir === "fr" ? "Chercher un terme (français ou anglais)…" : "Search a term (English or French)…";
+  const words = norm(q).split(/\s+/).filter(Boolean);
+  let list = terms().filter(t => dom === ALL || (dom === FAV ? store.fav.includes(t.id) : dom === MINE ? t.mine : t.dom === dom));
+  if (words.length) {
+    const src = t => norm(dir === "fr" ? t.fr : t.en), tgt = t => norm(dir === "fr" ? t.en : t.fr);
+    list = list.map(t => { const all = norm(t.fr + " " + t.en + " " + t.note);
+      if (!words.every(w => all.includes(w))) return null;
+      const s = src(t), full = norm(q).trim();
+      const score = (s === full ? 0 : s.startsWith(full) ? 1 : words.every(w => s.includes(w)) ? 2 : words.every(w => tgt(t).includes(w)) ? 3 : 4) + (t.mine ? -0.5 : 0);
+      return { t, score }; }).filter(Boolean).sort((a, b) => a.score - b.score || a.t.fr.localeCompare(b.t.fr, "fr")).map(x => x.t);
+  } else list.sort((a, b) => (dir === "fr" ? a.fr.localeCompare(b.fr, "fr") : a.en.localeCompare(b.en, "en")));
+  $("count").textContent = list.length + " terme" + (list.length > 1 ? "s" : "") + (dom !== ALL ? " · " + dom : "") + (words.length ? " · « " + q.trim() + " »" : "");
+  $("list").innerHTML = list.slice(0, 300).map(t => {
+    const s = dir === "fr" ? t.fr : t.en, g = dir === "fr" ? t.en : t.fr, fav = store.fav.includes(t.id);
+    return `<div class="term"><span class="src">${hl(s, words)}</span>
+      <div class="side"><button class="ic" data-copy="${esc(g)}" title="Copier la traduction">Copier</button><button class="ic ${fav ? "on" : ""}" data-fav="${t.id}" aria-pressed="${fav}" title="Favori">★</button></div>
+      <span class="tgt">${hl(g, words)}</span>
+      ${t.note ? `<p class="note">${hl(t.note, words)}</p>` : ""}
+      <div class="meta"><span class="tag ${t.mine ? "mine" : ""}">${t.mine ? "Mon terme" : esc(t.dom)}</span>${t.mine && t.dom ? `<span class="tag">${esc(t.dom)}</span>` : ""}
+        <button class="link" data-edit="${t.id}">${t.mine ? "Modifier" : "Personnaliser"}</button></div></div>`;
+  }).join("") || `<div class="empty">Aucun terme trouvé.<br><br><button class="btn" data-new>Ajouter « ${esc(q.trim() || "un terme")} » au glossaire</button></div>`;
+}
+
+/* ---------- Formulaires ---------- */
+function dialog(html, onSubmit) {
+  const f = $("dlgForm"); f.innerHTML = html; $("dlg").showModal();
+  f.onsubmit = e => { if (e.submitter && e.submitter.value === "cancel") return; e.preventDefault(); if (onSubmit(new FormData(f), e.submitter) !== false) { $("dlg").close(); save(); render(); } };
+}
+const cancel = '<button class="btn alt" value="cancel" formnovalidate>Annuler</button>';
+
+function editTerm(id) {
+  const t = id ? terms().find(x => x.id === id) : { fr: dir === "fr" ? q.trim() : "", en: dir === "en" ? q.trim() : "", dom: dom !== ALL && dom !== FAV && dom !== MINE ? dom : "", note: "" };
+  const custom = !id || t.mine;
+  dialog(`<h2>${!id ? "Nouveau terme" : custom ? "Modifier mon terme" : "Personnaliser ce terme"}</h2>
+    ${id && !custom ? '<p class="hint">Votre version remplacera celle du glossaire sur cet appareil.</p>' : ""}
+    <label>Français<input name="fr" required maxlength="200" value="${esc(t.fr)}"></label>
+    <label>Anglais<input name="en" required maxlength="200" value="${esc(t.en)}"></label>
+    <label>Domaine<input name="dom" list="doms" maxlength="40" value="${esc(t.dom)}" placeholder="ex. État civil"></label>
+    <datalist id="doms">${domains().map(d => `<option value="${esc(d)}">`).join("")}</datalist>
+    <label>Remarque (contexte, variante UK/US, source…)<textarea name="note" maxlength="500">${esc(t.note)}</textarea></label>
+    <div class="acts">${id && custom ? '<button class="btn danger" value="delete" formnovalidate>Supprimer</button>' : ""}${cancel}<button class="btn" value="save">Enregistrer</button></div>`, (fd, sub) => {
+    if (sub && sub.value === "delete") { if (!confirm("Supprimer ce terme ?")) return false; store.mine = store.mine.filter(x => x.id !== id); store.fav = store.fav.filter(x => x !== id); return; }
+    const v = { fr: fd.get("fr").trim(), en: fd.get("en").trim(), dom: fd.get("dom").trim(), note: fd.get("note").trim() };
+    if (id && custom) Object.assign(store.mine.find(x => x.id === id), v);
+    else {
+      const nid = "m" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+      store.mine.unshift({ id: nid, ...v });
+      if (id) { store.hidden.push(id); if (store.fav.includes(id)) store.fav = store.fav.map(x => x === id ? nid : x); }
+    }
+  });
+}
+
+/* ---------- Mes termes : export / import CSV ---------- */
+const csvCell = s => '"' + String(s || "").replace(/"/g, '""') + '"';
+function parseCsv(text) {
+  const rows = []; let row = [], cell = "", inQ = false;
+  const sep = (text.split("\n")[0].match(/;/g) || []).length > (text.split("\n")[0].match(/,/g) || []).length ? ";" : ",";
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) { if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; } else if (c === '"') inQ = false; else cell += c; }
+    else if (c === '"') inQ = true; else if (c === sep) { row.push(cell); cell = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(cell); rows.push(row); row = []; cell = ""; }
+    else cell += c;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim()));
+}
+function tools() {
+  dialog(`<h2>Mes termes</h2>
+    <p class="hint">Vous avez ${store.mine.length} terme${store.mine.length > 1 ? "s" : ""} personnel${store.mine.length > 1 ? "s" : ""}, enregistré${store.mine.length > 1 ? "s" : ""} sur cet appareil. Exportez-les régulièrement pour ne pas les perdre.</p>
+    <button class="btn" type="button" id="expMine">Exporter mes termes (CSV)</button>
+    <button class="btn alt" type="button" id="expAll">Exporter tout le glossaire (CSV)</button>
+    <label>Importer des termes (CSV : français ; anglais ; domaine ; remarque)<input type="file" id="imp" accept=".csv,text/csv,text/plain"></label>
+    <p class="hint">Le fichier CSV s'ouvre et se modifie dans Excel ou LibreOffice : pratique pour reprendre un glossaire existant.</p>
+    ${store.hidden.length ? `<button class="btn danger" type="button" id="restore">Rétablir les ${store.hidden.length} terme(s) d'origine personnalisé(s)</button>` : ""}
+    <div class="acts">${cancel}</div>`, () => {});
+  const exp = (list, name) => {
+    const csv = "﻿" + [["Français", "Anglais", "Domaine", "Remarque"], ...list.map(t => [t.fr, t.en, t.dom, t.note])].map(r => r.map(csvCell).join(";")).join("\r\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    a.download = name + "-" + new Date().toISOString().slice(0, 10) + ".csv"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  $("expMine").onclick = () => store.mine.length ? exp(store.mine, "mes-termes") : toast("Aucun terme personnel à exporter");
+  $("expAll").onclick = () => exp(terms(), "glossaire-administratif");
+  $("imp").onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    const rows = parseCsv((await f.text()).replace(/^﻿/, ""));
+    if (rows.length && /fran/i.test(rows[0][0] || "") && /angl|engl/i.test(rows[0][1] || "")) rows.shift();
+    const known = new Set(terms().map(t => norm(t.fr) + "|" + norm(t.en)));
+    let n = 0;
+    rows.forEach(r => { const [fr, en, d, note] = r.map(x => (x || "").trim()); if (!fr || !en || known.has(norm(fr) + "|" + norm(en))) return;
+      known.add(norm(fr) + "|" + norm(en)); store.mine.push({ id: "m" + Date.now().toString(36) + n, fr, en, dom: d || "", note: note || "" }); n++; });
+    save(); $("dlg").close(); render(); toast(n ? n + " terme" + (n > 1 ? "s" : "") + " importé" + (n > 1 ? "s" : "") : "Aucun nouveau terme dans ce fichier");
+  };
+  if ($("restore")) $("restore").onclick = () => { if (confirm("Rétablir les termes d'origine ? Vos versions personnalisées restent dans « Mes termes ».")) { store.hidden = []; save(); $("dlg").close(); render(); } };
+}
+
+let tt; function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 1800); }
+
+/* ---------- Événements ---------- */
+$("q").oninput = e => { q = e.target.value; render(); };
+$("dir").onclick = () => { dir = dir === "fr" ? "en" : "fr"; try { localStorage.setItem("glossaire_dir", dir); } catch (e) {} render(); };
+$("fab").onclick = () => editTerm();
+$("toolsBtn").onclick = tools;
+document.addEventListener("click", async e => {
+  const c = s => e.target.closest(s); let b;
+  if ((b = c("[data-dom]"))) { dom = b.dataset.dom; render(); window.scrollTo(0, 0); }
+  else if ((b = c("[data-copy]"))) { try { await navigator.clipboard.writeText(b.dataset.copy); toast("Copié : " + b.dataset.copy); } catch (err) { toast("Copie impossible"); } }
+  else if ((b = c("[data-fav]"))) { const id = b.dataset.fav; store.fav = store.fav.includes(id) ? store.fav.filter(x => x !== id) : [...store.fav, id]; save(); render(); }
+  else if ((b = c("[data-edit]"))) editTerm(b.dataset.edit);
+  else if (c("[data-new]")) editTerm();
+});
+document.addEventListener("keydown", e => { if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") { e.preventDefault(); $("q").focus(); } });
+render();
+</script>
+</body>
+</html>
