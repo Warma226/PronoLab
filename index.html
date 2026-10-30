@@ -259,7 +259,7 @@ form input:focus,form select:focus,#aPass:focus{border-color:var(--pitch);outlin
 .lghead.plain{border-bottom:1px solid var(--line)}
 .dteams{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:18px 12px 20px}
 .dteam{display:grid;justify-items:center;gap:6px;text-align:center;min-width:0}
-.dteam b{font-family:var(--display);font-weight:800;font-size:1.02rem;line-height:1.15;overflow-wrap:anywhere}
+.dteam b{font-family:var(--display);font-weight:800;font-size:1.02rem;line-height:1.15;overflow-wrap:break-word}
 .dteam small{font-size:.7rem;color:var(--muted)}
 .crest{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;font-family:var(--display);font-weight:800;color:#fff;background:var(--home)}
 .crest.away{background:var(--away)}
@@ -376,6 +376,12 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.76rem;color:var(--muted);align-items:center}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:1.5px solid var(--muted)}
 .dot.h{background:#fff}.dot.a{background:#1f2b27}
+.sportsw{display:flex;background:var(--chipbg);border-radius:12px;padding:3px;gap:3px;margin-left:auto}
+.sportsw button{border:0;background:transparent;border-radius:9px;padding:6px 10px;font-size:.84rem;font-weight:700;color:var(--muted)}
+.sportsw button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+@media (max-width:460px){.sportsw span{display:none}.sportsw button{font-size:1.05rem;padding:5px 10px}}
+h1{white-space:nowrap}
+.appbar-in .acts{margin-left:6px}
 /* Barre d onglets */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.06);display:grid;grid-template-columns:repeat(5,1fr);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 .tabbar button{position:relative;border:0;background:none;display:grid;justify-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:.7rem;font-weight:600;border-radius:14px}
@@ -441,6 +447,7 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
 <header class="appbar">
   <div class="appbar-in">
     <div class="brand"><img src="icons/icon-192.png" alt=""><h1>Prono <span>Lab</span></h1></div>
+    <div class="sportsw" role="group" aria-label="Sport"><button data-sport="foot" aria-pressed="true">⚽<span> Foot</span></button><button data-sport="hockey" aria-pressed="false">🏒<span> Hockey</span></button></div>
     <div class="acts">
       <button class="chip" id="installBtn" hidden>Installer</button>
       <button class="chip" id="accBtn" hidden></button>
@@ -453,7 +460,7 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
     <div class="days" id="days" role="tablist" aria-label="Jour"></div>
     <div class="bilan" id="bilan" hidden></div>
     <section class="top" id="topSec" hidden>
-      <div class="sechead"><h2>Les plus sûrs du week-end</h2></div>
+      <div class="sechead"><h2>Les plus sûrs</h2></div>
       <div class="picks" id="picks"></div>
     </section>
     <div class="bar">
