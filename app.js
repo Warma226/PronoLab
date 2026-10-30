@@ -170,57 +170,123 @@ function renderWelcome() {
     "Connecte-toi avec ton numéro de téléphone et ton mot de passe.";
   $("forgot").hidden = create;
 }
-function renderClub() { renderClubBody(); const c = $("club"); if (me && !asVisitor) c.insertAdjacentHTML("beforeend", `<div><button class="mini" id="logoutBtn">Se déconnecter</button></div>`); }
-function renderClubBody() {
-  const c = $("club"); c.hidden = false;
-  if (!fs) { c.className = "club"; c.innerHTML = `<h2>Espace membre</h2><p class="msg">Les comptes et abonnements arrivent très bientôt.</p>`; return; }
-  if (owner()) {
-    c.className = "club on";
-    c.innerHTML = `<h2>Espace membre <small>Tu es l'administrateur</small></h2><p class="msg">Tu vois tout le contenu débloqué. Les demandes d'abonnement s'affichent en bas de page, dans « Gestion des membres ».</p><div><button class="cta" id="visitBtn">Voir l'app comme un visiteur</button></div>`;
-    return;
-  }
-  const pv = asVisitor ? `<div class="preview"><span class="msg"><b>Aperçu visiteur</b> : c'est ce que voient tes clients. Rien n'est enregistré.</span><button class="mini" id="adminBtn">Revenir en mode administrateur</button></div>` : "";
-  const acc = asVisitor ? null : myAcc, mem = asVisitor ? null : myMember, req = asVisitor ? null : myReq;
-  if (isMember()) {
-    c.className = "club on";
-    c.innerHTML = `<h2>Membre actif${acc ? ` <small>${esc(acc.name)}</small>` : ""}</h2><p class="msg ok">Ton accès est valable jusqu'au ${esc(dFmt(mem.until))} inclus. Les coups sûrs et le détail de chaque match sont débloqués.</p>`;
-    return;
-  }
-  if (!acc && !asVisitor) {
-    c.className = "club";
-    c.innerHTML = `<div class="clubhead"><div><h2>Deviens membre</h2><p class="msg">Crée ton compte ou connecte-toi, puis choisis ta formule : ${cfa(PLANS.week.price)} la semaine ou ${cfa(PLANS.month.price)} le mois.</p></div><button class="cta" id="openAcc">${me ? "Terminer mon compte" : "Créer mon compte"}</button></div>`;
-    return;
-  }
+/* ---------- Programme de fidélité ---------- */
+const LOYAL = { week: 100, month: 450, referral: 200, reward: 500, rewardDays: 7 };
+const LEVELS = [["Bronze", 0, 1, "#c98a5a"], ["Argent", 1000, 1.1, "#8e9aa6"], ["Or", 3000, 1.25, "#d9a520"]];
+const levelOf = life => { let l = LEVELS[0]; LEVELS.forEach(x => { if ((life || 0) >= x[1]) l = x; }); return l; };
+const nextLevel = life => LEVELS.find(x => x[1] > (life || 0));
+
+function subscribeHtml(req, title, sub) {
   const nums = PAYS.filter(([k]) => payment[k]);
-  const pending = req && req.status === "pending";
-  const expired = mem && !isMember();
+  const pending = req && req.status === "pending" && req.type !== "redeem";
   const save = PLANS.week.price * 4 - PLANS.month.price;
-  c.className = "club";
-  c.innerHTML = pv + `<div class="clubhead">
-      <div><h2>${expired ? "Ton abonnement a expiré" : "Deviens membre"}</h2><p class="msg">Débloque les 5 coups sûrs du week-end et l'analyse complète de chaque match.</p></div>
+  return `<div class="clubhead"><div><h2>${title}</h2><p class="msg">${sub}</p></div>
       <div class="price">dès ${PLANS.week.price} <small>F CFA / semaine</small></div></div>
     ${pending ? `<p class="msg ok">Demande ${esc((PLANS[req.plan] || PLANS.week).label.toLowerCase())} envoyée le ${esc(dFmt(req.at))} (référence ${esc(req.ref)}). Ton accès sera activé dès que le paiement sera vérifié.</p>` : ""}
     ${req && req.status === "refused" ? `<p class="msg err">Ta dernière demande n'a pas pu être validée : le paiement n'a pas été retrouvé. Vérifie la référence et renvoie une demande.</p>` : ""}
     <div class="steps">
       <div class="step"><b>1 · Choisis ta formule</b>
         <div class="plans" role="radiogroup" aria-label="Formule">
-          <label class="plan" for="pWeek"><input type="radio" name="plan" id="pWeek" value="week" ${selPlan === "week" ? "checked" : ""}><span>${PLANS.week.label} · ${PLANS.week.days} jours</span><b>${cfa(PLANS.week.price)}</b></label>
-          <label class="plan" for="pMonth"><input type="radio" name="plan" id="pMonth" value="month" ${selPlan === "month" ? "checked" : ""}><span>${PLANS.month.label} · ${PLANS.month.days} jours</span><b>${cfa(PLANS.month.price)}</b>${save > 0 ? `<em>${save.toLocaleString("fr-FR")} F d'économie</em>` : ""}</label>
+          <label class="plan" for="pWeek"><input type="radio" name="plan" id="pWeek" value="week" ${selPlan === "week" ? "checked" : ""}><span>${PLANS.week.label} · ${PLANS.week.days} jours</span><b>${cfa(PLANS.week.price)}</b><em class="pts">+${LOYAL.week} pts</em></label>
+          <label class="plan" for="pMonth"><input type="radio" name="plan" id="pMonth" value="month" ${selPlan === "month" ? "checked" : ""}><span>${PLANS.month.label} · ${PLANS.month.days} jours</span><b>${cfa(PLANS.month.price)}</b>${save > 0 ? `<em>${save.toLocaleString("fr-FR")} F d'économie</em>` : ""}<em class="pts">+${LOYAL.month} pts</em></label>
         </div>
         <b>2 · Envoie le montant</b>
         ${nums.length ? nums.map(([k, l]) => `<div class="pay"><span>${l}</span><code>${esc(payment[k])}</code><button class="mini" data-copy="${esc(payment[k])}">Copier</button></div>`).join("") : `<p class="msg">Les numéros de paiement seront affichés ici très bientôt.</p>`}
       </div>
       <div class="step"><b>3 · Confirme ton paiement</b>
         <form id="joinForm">
-          <label for="jMethod">Moyen de paiement<select id="jMethod">${PAYS.map(([k, l]) => `<option value="${k}">${l}</option>`).join("")}</select></label>
-          <label for="jPhone">Numéro qui a payé<input id="jPhone" inputmode="tel" required placeholder="ex. 70 00 00 00"></label>
+          <label for="jMethod">Moyen de paiement<select id="jMethod">${PAYS.map(([k, l]) => `<option value="${k}" ${req && req.method === k ? "selected" : ""}>${l}</option>`).join("")}</select></label>
+          <label for="jPhone">Numéro qui a payé<input id="jPhone" inputmode="tel" required placeholder="ex. 70 00 00 00" value="${esc((req && req.phone) || (myAcc && myAcc.phone) || "")}"></label>
           <label for="jRef">Référence de la transaction<input id="jRef" required placeholder="reçue par SMS"></label>
           <button class="cta" type="submit">${pending ? "Renvoyer ma demande" : "Envoyer ma demande"}</button>
           <p class="msg" id="joinMsg"></p>
         </form></div>
     </div>`;
-  if (req && req.method) $("jMethod").value = req.method;
-  $("jPhone").value = (req && req.phone) || (acc && acc.phone) || "";
+}
+let showRenew = false, showSettings = false;
+function renderClub() {
+  const c = $("club"); c.hidden = false;
+  if (!fs) { c.className = "club"; c.innerHTML = `<h2>Espace membre</h2><p class="msg">Les comptes et abonnements arrivent très bientôt.</p>`; return; }
+  if (owner()) {
+    c.className = "acct";
+    c.innerHTML = `<div class="club on"><h2>Espace administrateur</h2><p class="msg">Tu vois tout le contenu débloqué. Les demandes d'abonnement et d'échange de points s'affichent plus bas, dans « Gestion des membres ».</p>
+      <div class="rowbtns"><button class="cta" id="visitBtn">Voir l'app comme un visiteur</button><button class="mini" id="logoutBtn">Se déconnecter</button></div></div>`;
+    return;
+  }
+  if (asVisitor) {
+    c.className = "club";
+    c.innerHTML = `<div class="preview"><span class="msg"><b>Aperçu visiteur</b> : c'est ce que voient tes clients. Rien n'est enregistré.</span><button class="mini" id="adminBtn">Revenir en mode administrateur</button></div>` +
+      subscribeHtml(null, "Deviens membre", "Débloque les coups sûrs, les coupons du jour et l'analyse complète de chaque match.");
+    return;
+  }
+  if (!me || !myAcc) {
+    c.className = "club";
+    c.innerHTML = `<div class="clubhead"><div><h2>Deviens membre</h2><p class="msg">Crée ton compte ou connecte-toi, puis choisis ta formule : ${cfa(PLANS.week.price)} la semaine ou ${cfa(PLANS.month.price)} le mois. Chaque abonnement te rapporte des points fidélité.</p></div><button class="cta" id="openAcc">${me ? "Terminer mon compte" : "Créer mon compte"}</button></div>`;
+    return;
+  }
+  const mem = myMember || {}, req = myReq, active = isMember();
+  const left = active ? Math.max(0, Math.ceil((new Date(mem.until) - Date.now()) / 864e5)) : 0;
+  const span = (PLANS[mem.plan] || PLANS.week).days;
+  const pts = mem.points || 0, life = mem.lifetime || 0, lv = levelOf(life), nx = nextLevel(life);
+  const initials = myAcc.name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  const redeemPending = req && req.status === "pending" && req.type === "redeem";
+  const hist = (mem.history || []).slice().reverse().slice(0, 8);
+  const refCode = digits(myAcc.phone).slice(-8);
+  const wa = "https://wa.me/?text=" + encodeURIComponent(`Je suis les pronos foot sur Prono Lab. Inscris-toi avec mon code parrain ${refCode} : ${location.origin + location.pathname}?ref=${refCode}`);
+  c.className = "acct";
+  c.innerHTML = `
+    <div class="profile">
+      <span class="avatar">${esc(initials)}</span>
+      <div class="pinfo"><b>${esc(myAcc.name)}</b><span>${esc(myAcc.phone)}${myAcc.city ? " · " + esc(myAcc.city) : ""}</span></div>
+      <span class="lvl" style="--lv:${lv[3]}">${lv[0]}</span>
+    </div>
+
+    <div class="club ${active ? "on" : ""}">
+      ${active ? `<div class="clubhead"><div><h2>Abonnement actif</h2><p class="msg">Formule ${esc((PLANS[mem.plan] || PLANS.week).label)} · jusqu'au ${esc(dFmt(mem.until))}</p></div>
+        <div class="price">${left}<small> jour${left > 1 ? "s" : ""}</small></div></div>
+        <div class="meter"><i style="width:${Math.min(100, 100 * left / span)}%"></i></div>
+        ${left <= 2 ? `<p class="msg err">Ton abonnement se termine bientôt : prolonge-le pour ne rater aucun coupon.</p>` : ""}
+        ${showRenew ? subscribeHtml(req, "Prolonger", "Les jours achetés s'ajoutent à ceux qui restent.") : `<button class="cta" id="renewBtn">Prolonger mon abonnement</button>`}`
+      : subscribeHtml(req, mem.until ? "Ton abonnement a expiré" : "Deviens membre", "Débloque les coups sûrs, les coupons du jour et l'analyse complète de chaque match.")}
+    </div>
+
+    <div class="loyal">
+      <div class="clubhead"><div><h2>Programme fidélité</h2><p class="msg">Niveau ${lv[0]}${lv[2] > 1 ? ` · points ×${String(lv[2]).replace(".", ",")}` : ""}${nx ? ` · encore ${(nx[1] - life).toLocaleString("fr-FR")} pts pour le niveau ${nx[0]}` : " · niveau maximum"}</p></div>
+        <div class="price">${pts.toLocaleString("fr-FR")}<small> pts</small></div></div>
+      <div class="meter gold"><i style="width:${Math.min(100, 100 * pts / LOYAL.reward)}%"></i></div>
+      <p class="msg">${pts >= LOYAL.reward ? "Tu peux échanger tes points contre une semaine offerte." : `Encore ${(LOYAL.reward - pts).toLocaleString("fr-FR")} pts pour une semaine offerte.`}</p>
+      <button class="cta" id="redeemBtn" ${pts < LOYAL.reward || redeemPending ? "disabled" : ""}>${redeemPending ? "Échange en cours de validation" : `Échanger ${LOYAL.reward} pts contre ${LOYAL.rewardDays} jours offerts`}</button>
+      <div class="earn">
+        <div><b>+${LOYAL.week}</b><span>abonnement Hebdo</span></div>
+        <div><b>+${LOYAL.month}</b><span>abonnement Mensuel</span></div>
+        <div><b>+${LOYAL.referral}</b><span>par ami parrainé</span></div>
+      </div>
+      <div class="ref">
+        <span class="lab">Ton code parrain</span>
+        <div class="pay"><code>${esc(refCode)}</code><button class="mini" data-copy="${esc(refCode)}">Copier</button></div>
+        <a class="cta wa" href="${wa}" target="_blank" rel="noopener">Inviter un ami sur WhatsApp</a>
+        <span class="msg">Ton ami saisit ce code à l'inscription. Dès son premier abonnement, tu gagnes ${LOYAL.referral} pts.${mem.referrals ? ` Déjà ${mem.referrals} ami${mem.referrals > 1 ? "s" : ""} parrainé${mem.referrals > 1 ? "s" : ""}.` : ""}</span>
+      </div>
+      <details class="lvls"><summary>Les niveaux</summary>
+        ${LEVELS.map(l => `<div class="kv"><span><span class="lvl" style="--lv:${l[3]}">${l[0]}</span></span><span>${l[1] ? "dès " + l[1].toLocaleString("fr-FR") + " pts cumulés" : "dès l'inscription"}${l[2] > 1 ? " · points ×" + String(l[2]).replace(".", ",") : ""}</span></div>`).join("")}
+      </details>
+    </div>
+
+    ${hist.length ? `<div class="club"><h2>Historique</h2>${hist.map(x => `<div class="kv"><span>${esc(new Date(x.at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }))} · ${esc(x.label)}</span><span>${x.pts ? (x.pts > 0 ? "+" : "") + x.pts + " pts" : ""}</span></div>`).join("")}</div>` : ""}
+
+    <div class="club">
+      <button class="settog" id="setBtn" aria-expanded="${showSettings}"><h2>Paramètres</h2><span>${showSettings ? "–" : "+"}</span></button>
+      ${showSettings ? `
+      <form id="profForm"><span class="lab">Mon profil</span>
+        <label for="pName">Prénom ou pseudo<input id="pName" maxlength="40" value="${esc(myAcc.name)}"></label>
+        <label for="pCity">Ville<input id="pCity" maxlength="40" value="${esc(myAcc.city || "")}"></label>
+        <button class="cta" type="submit">Enregistrer</button><p class="msg" id="profMsg"></p></form>
+      <form id="pwForm"><span class="lab">Changer de mot de passe</span>
+        <label for="pwOld">Mot de passe actuel<input id="pwOld" type="password" autocomplete="current-password"></label>
+        <label for="pwNew">Nouveau mot de passe (6 caractères minimum)<input id="pwNew" type="password" minlength="6" autocomplete="new-password"></label>
+        <button class="cta" type="submit">Changer le mot de passe</button><p class="msg" id="pwMsg"></p></form>
+      <button class="mini" id="logoutBtn">Se déconnecter</button>` : ""}
+    </div>`;
 }
 function renderAdmin() {
   if (!owner()) { $("admin").hidden = true; return; }
@@ -230,13 +296,19 @@ function renderAdmin() {
   const pend = reqs.filter(r => r.status === "pending").sort((a, b) => String(a.at).localeCompare(String(b.at)));
   $("reqs").innerHTML = pend.length ? pend.map(r => {
     const m = members[r.id], act = m && new Date(m.until) > new Date(), pl = PLANS[r.plan] || PLANS.week, acc = accounts[r.id];
+    if (r.type === "redeem") return `<div class="req"><div class="who"><b>${acc ? esc(acc.name) : "Client"} · échange de points</b>
+      <span>${(m && m.points) || 0} pts disponibles · demande ${LOYAL.rewardDays} jours offerts contre ${LOYAL.reward} pts</span>
+      <span>Envoyée le ${esc(new Date(r.at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }))}</span></div>
+      <div class="act"><button class="cta alt" data-ok="${esc(r.id)}">Offrir ${LOYAL.rewardDays} jours</button><button class="mini" data-no="${esc(r.id)}">Refuser</button></div></div>`;
+    const ref = acc && acc.referredBy ? Object.values(accounts).find(x => digits(x.phone).endsWith(acc.referredBy)) : null;
     return `<div class="req"><div class="who"><b>${acc ? esc(acc.name) : "Client"}</b>
       <span>${pl.label} · ${cfa(pl.price)} · ${esc((PAYS.find(p => p[0] === r.method) || [, r.method])[1])} · ${esc(r.phone)} · réf. ${esc(r.ref)}</span>
       ${acc ? `<span>Compte : ${esc(acc.phone)}${acc.city ? " · " + esc(acc.city) : ""}</span>` : ""}
+      ${ref && !(m && m.paid) ? `<span>Parrainé par ${esc(ref.name)} (+${LOYAL.referral} pts pour lui à la validation)</span>` : ""}
       <span>Envoyée le ${esc(new Date(r.at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }))}${act ? " · déjà membre jusqu'au " + esc(dFmt(m.until)) : ""}</span></div>
       <div class="act"><button class="cta alt" data-ok="${esc(r.id)}">Valider ${pl.days} jours</button><button class="mini" data-no="${esc(r.id)}">Refuser</button></div></div>`;
   }).join("") : '<p class="msg">Aucune demande pour le moment.</p>';
-  const act = Object.entries(members).filter(([, m]) => new Date(m.until) > new Date()).sort((a, b) => a[1].until.localeCompare(b[1].until));
+  const act = Object.entries(members).filter(([, m]) => m.until && new Date(m.until) > new Date()).sort((a, b) => a[1].until.localeCompare(b[1].until));
   $("mems").innerHTML = act.length ? act.map(([id, m]) => `<div class="kv"><span>${esc((accounts[id] && accounts[id].name) || "Client")} · ${esc((accounts[id] && accounts[id].phone) || "")}</span><span>jusqu'au ${esc(new Date(m.until).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }))}</span></div>`).join("") : '<p class="msg">Aucun membre actif.</p>';
 }
 function renderAll() { renderTop(); renderWelcome(); renderClub(); renderAdmin(); render(); renderCombos(); }
@@ -293,7 +365,12 @@ document.addEventListener("click", async e => {
   const dy = t.closest("[data-day]"); if (dy) { selDay = dy.dataset.day; render(); return; }
   const lvb = t.closest("[data-lv]"); if (lvb) { go("lv-" + lvb.dataset.lv); return; }
   const cc = t.closest("[data-ticket]"); if (cc) { const txt = ticketText(cc.dataset.ticket); try { await navigator.clipboard.writeText(txt); cc.textContent = "Ticket copié"; } catch (err) { cc.textContent = "Copie impossible"; } return; }
-  if (t.closest("#logoutBtn")) { await auth.signOut(); skipped = false; return; }
+  if (t.closest("#logoutBtn")) { await auth.signOut(); skipped = false; showSettings = false; showRenew = false; return; }
+  if (t.closest("#renewBtn")) { showRenew = true; renderClub(); return; }
+  if (t.closest("#setBtn")) { showSettings = !showSettings; renderClub(); return; }
+  if (t.closest("#redeemBtn")) { const b2 = t.closest("#redeemBtn"); b2.disabled = true;
+    try { await fs.collection("requests").doc(me.uid).set({ type: "redeem", plan: "reward", at: new Date().toISOString(), status: "pending" }); }
+    catch (err) { b2.disabled = false; b2.textContent = "Échec, réessaie"; } return; }
   if (t.closest("#tabCreate")) { authTab = "create"; renderWelcome(); return; }
   if (t.closest("#tabLogin")) { authTab = "login"; renderWelcome(); return; }
   if (t.closest("#accBtn")) { if (!me) { skipped = false; authTab = "login"; renderWelcome(); } go("compte"); return; }
@@ -316,6 +393,7 @@ document.addEventListener("submit", async e => {
   if (e.target.id === "accForm") {
     const msg = $("accMsg"), btn = $("accSubmit");
     const name = $("aName").value.trim(), phone = $("aPhone").value.trim(), city = $("aCity").value.trim(), pass = $("aPass").value;
+    const refBy = digits($("aRef").value).slice(-8);
     const needProfile = me && !asVisitor && !myAcc, create = authTab === "create" || needProfile;
     if (asVisitor) { msg.className = "msg"; msg.textContent = "Aperçu : rien n'est enregistré. Pour un vrai client, son compte est créé ici."; return; }
     if (create && !name) { msg.className = "msg err"; msg.textContent = "Indique ton prénom ou un pseudo."; return; }
@@ -326,7 +404,9 @@ document.addEventListener("submit", async e => {
       if (needProfile) await fs.collection("accounts").doc(me.uid).set({ name, phone: me.email.split("@")[0], city, createdAt: new Date().toISOString() });
       else if (create) {
         const cred = await auth.createUserWithEmailAndPassword(phoneEmail(phone), pass);
-        await fs.collection("accounts").doc(cred.user.uid).set({ name, phone: "+" + normPhone(phone), city, createdAt: new Date().toISOString() });
+        const acc = { name, phone: "+" + normPhone(phone), city, createdAt: new Date().toISOString() };
+        if (refBy.length === 8 && refBy !== digits(phone).slice(-8)) acc.referredBy = refBy;
+        await fs.collection("accounts").doc(cred.user.uid).set(acc);
       } else await auth.signInWithEmailAndPassword(phoneEmail(phone), pass);
       msg.textContent = ""; e.target.reset();
     } catch (err) { msg.className = "msg err"; msg.textContent = (AUTH_ERR[err.code] || "Ça n'a pas marché.") + " (code : " + (err.code || err.message || "inconnu") + ")"; console.error(err); }
@@ -345,6 +425,22 @@ document.addEventListener("submit", async e => {
     } catch (err) { btn.disabled = false; msg.className = "msg err"; msg.textContent = "La demande n'est pas partie. Vérifie ta connexion et réessaie."; }
     return;
   }
+  if (e.target.id === "profForm") {
+    const msg = $("profMsg"), name = $("pName").value.trim();
+    if (!name) { msg.className = "msg err"; msg.textContent = "Indique ton prénom ou un pseudo."; return; }
+    try { await fs.collection("accounts").doc(me.uid).update({ name, city: $("pCity").value.trim() }); msg.className = "msg ok"; msg.textContent = "Profil enregistré."; }
+    catch (err) { msg.className = "msg err"; msg.textContent = "Enregistrement impossible. Réessaie."; }
+    return;
+  }
+  if (e.target.id === "pwForm") {
+    const msg = $("pwMsg"), oldp = $("pwOld").value, newp = $("pwNew").value;
+    if (newp.length < 6) { msg.className = "msg err"; msg.textContent = "Le nouveau mot de passe doit contenir au moins 6 caractères."; return; }
+    try {
+      await me.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(me.email, oldp));
+      await me.updatePassword(newp); msg.className = "msg ok"; msg.textContent = "Mot de passe changé."; e.target.reset();
+    } catch (err) { msg.className = "msg err"; msg.textContent = /wrong-password|invalid-credential/.test(err.code || "") ? "Le mot de passe actuel est incorrect." : "Changement impossible. Réessaie."; }
+    return;
+  }
   if (e.target.id === "payForm") {
     const msg = $("payMsg");
     try { await fs.collection("meta").doc("payment").set({ orange: $("nOrange").value.trim(), moov: $("nMoov").value.trim(), wave: $("nWave").value.trim() }); msg.className = "msg ok"; msg.textContent = "Numéros enregistrés."; }
@@ -354,12 +450,30 @@ document.addEventListener("submit", async e => {
 async function validate(id, btn) {
   btn.disabled = true;
   try {
-    const cur = members[id], base = cur && new Date(cur.until) > new Date() ? new Date(cur.until) : new Date();
-    const r = reqs.find(x => x.id === id), days = (PLANS[r && r.plan] || PLANS.week).days;
-    const until = new Date(base.getTime() + days * 864e5); until.setHours(23, 59, 0, 0);
-    await fs.collection("members").doc(id).set({ until: until.toISOString(), since: (cur && cur.since) || new Date().toISOString(), plan: (r && r.plan) || "week" });
-    await fs.collection("requests").doc(id).update({ status: "validated", validatedAt: new Date().toISOString() });
-  } catch (err) { btn.disabled = false; btn.textContent = "Échec, réessayer"; }
+    const FV = firebase.firestore.FieldValue, now = new Date().toISOString();
+    const cur = members[id] || {}, r = reqs.find(x => x.id === id) || {};
+    const base = cur.until && new Date(cur.until) > new Date() ? new Date(cur.until) : new Date();
+    if (r.type === "redeem") {
+      if ((cur.points || 0) < LOYAL.reward) { btn.textContent = "Points insuffisants"; return; }
+      const until = new Date(base.getTime() + LOYAL.rewardDays * 864e5); until.setHours(23, 59, 0, 0);
+      await fs.collection("members").doc(id).set({ until: until.toISOString(), plan: "week", points: FV.increment(-LOYAL.reward),
+        history: FV.arrayUnion({ at: now, label: `${LOYAL.rewardDays} jours offerts`, pts: -LOYAL.reward }) }, { merge: true });
+    } else {
+      const plan = PLANS[r.plan] ? r.plan : "week", days = PLANS[plan].days;
+      const until = new Date(base.getTime() + days * 864e5); until.setHours(23, 59, 0, 0);
+      const pts = Math.round(LOYAL[plan] * levelOf(cur.lifetime)[2]);
+      await fs.collection("members").doc(id).set({ until: until.toISOString(), since: cur.since || now, plan, paid: true,
+        points: FV.increment(pts), lifetime: FV.increment(pts),
+        history: FV.arrayUnion({ at: now, label: `Abonnement ${PLANS[plan].label} · ${cfa(PLANS[plan].price)}`, pts }) }, { merge: true });
+      const acc = accounts[id];
+      if (!cur.paid && acc && acc.referredBy) {
+        const sp = Object.entries(accounts).find(([uid, x]) => uid !== id && digits(x.phone).endsWith(acc.referredBy));
+        if (sp) await fs.collection("members").doc(sp[0]).set({ points: FV.increment(LOYAL.referral), lifetime: FV.increment(LOYAL.referral), referrals: FV.increment(1),
+          history: FV.arrayUnion({ at: now, label: `Parrainage de ${acc.name}`, pts: LOYAL.referral }) }, { merge: true });
+      }
+    }
+    await fs.collection("requests").doc(id).update({ status: "validated", validatedAt: now });
+  } catch (err) { btn.disabled = false; btn.textContent = "Échec, réessayer"; console.error(err); }
 }
 $("sTime").onclick = () => { sort = "time"; $("sTime").setAttribute("aria-pressed", "true"); $("sConf").setAttribute("aria-pressed", "false"); render(); };
 $("sConf").onclick = () => { sort = "conf"; $("sConf").setAttribute("aria-pressed", "true"); $("sTime").setAttribute("aria-pressed", "false"); render(); };
@@ -558,6 +672,70 @@ function renderLive() {
   $("liveUpd").textContent = "Actualisé à " + new Date().toLocaleTimeString("fr-FR");
 }
 
+
+/* ---------- Aperçu 2D : compositions sur le terrain et événements ---------- */
+function posGroup(abbr) {
+  const a = String(abbr || "").toUpperCase();
+  if (/^G/.test(a)) return 0;
+  if (/(^|-)(D|CB|CD|LB|RB|SW|LWB|RWB)/.test(a) || a === "D") return 1;
+  if (/(^|-)(F|CF|ST|LF|RF|S)$/.test(a) || /^(F|CF|ST)/.test(a)) return 3;
+  return 2;
+}
+const sideOf = abbr => { const a = String(abbr || "").toUpperCase();
+  if (/^(LB|LWB|LW|LM|LF)$/.test(a)) return 0; if (/-L$/.test(a)) return 1; if (/^(RB|RWB|RW|RM|RF)$/.test(a)) return 4; if (/-R$/.test(a)) return 3; return 2; };
+function lineup(team) {
+  const st = (team.roster || []).filter(p => p.starter);
+  if (st.length < 11) return null;
+  let rows = String(team.formation || "").split("-").map(Number).filter(n => n > 0);
+  st.sort((x, y) => posGroup(x.position && x.position.abbreviation) - posGroup(y.position && y.position.abbreviation) || (+x.formationPlace || 0) - (+y.formationPlace || 0));
+  if (rows.reduce((s, n) => s + n, 0) !== 10) {
+    const c = [1, 2, 3].map(g => st.filter(p => posGroup(p.position && p.position.abbreviation) === g).length);
+    rows = c.filter(n => n > 0);
+  }
+  const out = [[st[0]]]; let i = 1;
+  rows.forEach(n => { out.push(st.slice(i, i + n).sort((x, y) => sideOf(x.position && x.position.abbreviation) - sideOf(y.position && y.position.abbreviation))); i += n; });
+  return out;
+}
+function pitch2D(j, h, a) {
+  const R = j.rosters || [];
+  const rh = R.find(x => x.homeAway === "home"), ra = R.find(x => x.homeAway === "away");
+  if (!rh || !ra) return "";
+  const lh = lineup(rh), la = lineup(ra);
+  if (!lh || !la) return "";
+  const evs = {};
+  (j.keyEvents || []).forEach(k => (k.participants || []).forEach((p, idx) => {
+    const n = p.athlete && p.athlete.displayName; if (!n) return;
+    const t = String((k.type && k.type.text) || "").toLowerCase();
+    const ic = k.scoringPlay || /goal/.test(t) ? (/own/.test(t) ? "⚽(csc)" : "⚽") : /red/.test(t) ? "🟥" : /yellow/.test(t) ? "🟨" : /sub/.test(t) ? (idx === 0 ? "🔼" : "🔽") : "";
+    if (ic) (evs[n] = evs[n] || []).push(ic);
+  }));
+  // Terrain vertical (lisible sur téléphone) : domicile en bas, extérieur en haut
+  const W = 360, H = 560, M = 30;
+  const dots = (rows, home) => rows.map((row, ri) => {
+    const t = ri / Math.max(rows.length - 1, 1);             // 0 = gardien, 1 = attaque
+    const y = home ? H - M - t * (H / 2 - M - 34) : M + t * (H / 2 - M - 34);
+    return row.map((p, k) => {
+      let x = W * (k + 1) / (row.length + 1); if (!home) x = W - x;
+      const name = (p.athlete && (p.athlete.lastName || p.athlete.shortName || p.athlete.displayName)) || "";
+      const e = (evs[p.athlete && p.athlete.displayName] || []).join("");
+      return `<g class="pl ${home ? "h" : "a"}${p.subbedOut ? " out" : ""}"><circle cx="${x}" cy="${y}" r="13"/><text x="${x}" y="${y + 4.5}" class="jn">${esc(p.jersey || "")}</text>
+        <text x="${x}" y="${y + 27}" class="nm">${esc(String(name).slice(0, 11))}</text>${e ? `<text x="${x + 14}" y="${y - 10}" class="ev">${e}</text>` : ""}</g>`;
+    }).join("");
+  }).join("");
+  return `<div class="dcard"><div class="sechead"><span class="lab">Aperçu 2D · compositions et événements</span></div>
+    <div class="pitchwrap"><svg viewBox="0 0 ${W} ${H}" class="pitch" role="img" aria-label="Compositions des deux équipes sur le terrain">
+      <rect x="0" y="0" width="${W}" height="${H}" rx="18" class="grass"/>
+      ${[0, 1, 2, 3, 4, 5, 6, 7].map(i => i % 2 ? `<rect x="0" y="${i * H / 8}" width="${W}" height="${H / 8}" class="stripe"/>` : "").join("")}
+      <g class="lines"><rect x="10" y="10" width="${W - 20}" height="${H - 20}" rx="6"/><line x1="10" y1="${H / 2}" x2="${W - 10}" y2="${H / 2}"/>
+      <circle cx="${W / 2}" cy="${H / 2}" r="44"/><rect x="${W / 2 - 80}" y="10" width="160" height="70"/><rect x="${W / 2 - 80}" y="${H - 80}" width="160" height="70"/>
+      <rect x="${W / 2 - 36}" y="10" width="72" height="26"/><rect x="${W / 2 - 36}" y="${H - 36}" width="72" height="26"/></g>
+      <text x="16" y="${H / 2 - 10}" class="tm">${esc(a.team.abbreviation || "")} ${esc(ra.formation || "")}</text>
+      <text x="16" y="${H / 2 + 22}" class="tm">${esc(h.team.abbreviation || "")} ${esc(rh.formation || "")}</text>
+      ${dots(lh, true)}${dots(la, false)}
+    </svg></div>
+    <div class="legend"><span><i class="dot h"></i>${esc(h.team.shortDisplayName || h.team.displayName)}</span><span><i class="dot a"></i>${esc(a.team.shortDisplayName || a.team.displayName)}</span><span>⚽ but · 🟨🟥 carton · 🔼🔽 changement</span></div></div>`;
+}
+
 /* ---------- Page d'un match en direct : chronologie et statistiques ---------- */
 let lvKey = null;
 async function loadLv() {
@@ -604,6 +782,7 @@ function renderLv() {
       </div>
     </div>
     ${ours ? `<button class="dcard ourp" data-open="${esc(ours.id)}"><span class="lab">Notre prono</span><b>${esc(ours.r.pickLabel)} · ${pc(ours.r.conf)} %</b><span class="msg">Voir l'analyse du match ›</span></button>` : ""}
+    ${pitch2D(j, h, a) || `<div class="dcard"><span class="lab">Aperçu 2D</span><p class="msg">Les compositions d'équipe ne sont pas encore disponibles pour ce match.</p></div>`}
     <div class="dcard"><span class="lab">Événements du match</span><div class="tlwrap">${timeline}</div></div>
     ${stats ? `<div class="dcard"><span class="lab">Statistiques</span>${stats}</div>` : ""}`;
 }
@@ -801,3 +980,4 @@ loadMatches();
 initFirebase();
 renderHelp();
 liveLoop(true);
+(() => { const r = new URLSearchParams(location.search).get("ref"); if (r) { $("aRef").value = digits(r).slice(-8); authTab = "create"; skipped = false; } })();

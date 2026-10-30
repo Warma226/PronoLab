@@ -327,6 +327,55 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
 .stb{display:flex;gap:3px;height:6px}
 .stb i{border-radius:999px;background:var(--home)}
 .stb i.aw{background:var(--away)}
+
+/* Compte */
+.acct{display:grid;gap:14px}
+.profile{background:var(--surface);border-radius:24px;box-shadow:var(--shadow);padding:16px;display:flex;align-items:center;gap:14px}
+.avatar{width:54px;height:54px;border-radius:18px;background:linear-gradient(140deg,var(--pitch),color-mix(in srgb,var(--pitch) 60%,#0b3b28));color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.2rem;flex:none}
+.pinfo{display:grid;min-width:0;flex:1}
+.pinfo b{font-family:var(--display);font-weight:800;font-size:1.15rem}
+.pinfo span{font-size:.82rem;color:var(--muted);overflow-wrap:anywhere}
+.lvl{display:inline-block;font-size:.72rem;font-weight:800;color:#fff;background:var(--lv);border-radius:999px;padding:3px 10px}
+.meter{height:10px;background:var(--chipbg);border-radius:999px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--pitch);border-radius:999px}
+.meter.gold i{background:linear-gradient(90deg,var(--apricot),#f39a4a)}
+.rowbtns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.loyal{background:var(--surface);border-radius:26px;padding:20px;display:grid;gap:12px;box-shadow:var(--shadow);border:2px solid var(--apricot-soft)}
+.loyal .price{color:#c26a12}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .loyal .price{color:var(--apricot)}}
+.earn{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.earn div{background:var(--apricot-soft);border-radius:14px;padding:10px 8px;display:grid;text-align:center}
+.earn b{font-family:var(--display);font-weight:800;font-size:1.1rem}
+.earn span{font-size:.7rem;color:var(--muted)}
+.ref{display:grid;gap:8px;background:var(--bg);border-radius:18px;padding:12px}
+.ref .pay{background:var(--surface)}
+.ref code{font-size:1.1rem;letter-spacing:.06em}
+.lvls summary{font-weight:600;cursor:pointer}
+.lvls .kv{margin-top:8px}
+.plan em.pts{background:var(--soft);color:var(--pitch)}
+.settog{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:none;padding:0;color:inherit}
+.settog span{font-size:1.3rem;color:var(--pitch);font-weight:800}
+.cta:disabled{cursor:default}
+/* Terrain 2D */
+.pitchwrap{border-radius:18px;overflow:hidden}
+.pitch{display:block;width:100%;height:auto}
+.pitch .grass{fill:#3f9a62}
+.pitch .stripe{fill:#45a46a}
+.pitch .lines rect,.pitch .lines circle,.pitch .lines line{fill:none;stroke:rgba(255,255,255,.7);stroke-width:2}
+.pl circle{stroke:#fff;stroke-width:2}
+.pl.h circle{fill:#ffffff}
+.pl.h .jn{fill:#1f2b27}
+.pl.a circle{fill:#1f2b27}
+.pl.a .jn{fill:#fff}
+.pl.out{opacity:.55}
+.jn{font:700 13px var(--body);text-anchor:middle}
+.nm{font:600 11px var(--body);text-anchor:middle;fill:#fff;paint-order:stroke;stroke:rgba(0,0,0,.35);stroke-width:3px}
+.ev{font-size:12px}
+.tm{font:700 12px var(--body);fill:rgba(255,255,255,.85)}
+.pitch{max-width:440px;margin:0 auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.76rem;color:var(--muted);align-items:center}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:1.5px solid var(--muted)}
+.dot.h{background:#fff}.dot.a{background:#1f2b27}
 /* Barre d onglets */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.06);display:grid;grid-template-columns:repeat(5,1fr);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 .tabbar button{position:relative;border:0;background:none;display:grid;justify-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:.7rem;font-weight:600;border-radius:14px}
@@ -457,6 +506,7 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
         <label for="aPass" id="aPassLab">Mot de passe (6 caractères minimum)</label>
         <input id="aPass" type="password" minlength="6" autocomplete="current-password">
         <label for="aCity" data-create>Ville (facultatif)<input id="aCity" maxlength="40" placeholder="ex. Ouagadougou"></label>
+        <label for="aRef" data-create>Code parrain (facultatif)<input id="aRef" inputmode="numeric" maxlength="12" placeholder="numéro de l'ami qui t'invite"></label>
         <button class="cta" type="submit" id="accSubmit">Créer mon compte</button>
         <button class="linkbtn" type="button" id="forgot" hidden>Mot de passe oublié ?</button>
         <p class="msg" id="accMsg"></p>
