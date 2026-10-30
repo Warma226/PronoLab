@@ -249,7 +249,14 @@ const AUTH_ERR = {
   "auth/user-not-found": "Aucun compte avec ce numéro. Touche « Créer un compte ».",
   "auth/weak-password": "Le mot de passe doit contenir au moins 6 caractères.",
   "auth/too-many-requests": "Trop d'essais. Patiente quelques minutes puis réessaie.",
-  "auth/network-request-failed": "Pas de connexion internet. Vérifie ton réseau et réessaie."
+  "auth/network-request-failed": "Pas de connexion internet. Vérifie ton réseau et réessaie.",
+  "auth/operation-not-allowed": "La connexion par mot de passe n'est pas activée dans Firebase (Authentication > E-mail/Mot de passe).",
+  "auth/configuration-not-found": "Authentication n'est pas encore activé dans Firebase.",
+  "auth/unauthorized-domain": "Ce site n'est pas dans les domaines autorisés de Firebase.",
+  "auth/invalid-email": "Ce numéro de téléphone n'est pas valide.",
+  "permission-denied": "Le compte est créé mais le profil est bloqué : les règles Firestore ne sont pas publiées.",
+  "not-found": "La base Firestore n'existe pas encore dans Firebase.",
+  "unavailable": "Firebase ne répond pas. Vérifie ta connexion et réessaie."
 };
 
 /* ---------- Événements ---------- */
@@ -296,7 +303,7 @@ document.addEventListener("submit", async e => {
         await fs.collection("accounts").doc(cred.user.uid).set({ name, phone: "+" + normPhone(phone), city, createdAt: new Date().toISOString() });
       } else await auth.signInWithEmailAndPassword(phoneEmail(phone), pass);
       msg.textContent = ""; e.target.reset();
-    } catch (err) { msg.className = "msg err"; msg.textContent = AUTH_ERR[err.code] || "Ça n'a pas marché. Vérifie ta connexion et réessaie."; }
+    } catch (err) { msg.className = "msg err"; msg.textContent = (AUTH_ERR[err.code] || "Ça n'a pas marché.") + " (code : " + (err.code || err.message || "inconnu") + ")"; console.error(err); }
     btn.disabled = false; return;
   }
   if (e.target.id === "joinForm") {
