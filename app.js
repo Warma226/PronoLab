@@ -76,15 +76,19 @@ const LOGO_SRC = { PL: "soccer/eng.1", LIGA: "soccer/esp.1", SA: "soccer/ita.1",
 let teamLists = {};
 try { const c = JSON.parse(localStorage.getItem("pl_logos") || "null"); if (c && Date.now() - c.at < 7 * 864e5) teamLists = c.lists; } catch (e) {}
 async function loadLogos() {
-  const need = Object.keys(LOGO_SRC).filter(k => !teamLists[k]);
+  const days = [...new Set(["foot", "hockey"].flatMap(sp => allData[sp].filter(m => dayDiff(m.date) >= -1 && dayDiff(m.date) <= 2 && (sp === "foot" || m.league === "NHL"))
+    .map(m => sp + "|" + ymdUTC(m.date))))];
+  Promise.all(days.map(k => { const [sp, d] = k.split("|"); return fetchDay(d, 600000, sp); })).then(() => { if (matches.length) render(); if (view === "match") renderDetail(); if (view === "combos") renderCombos(); });
+  const need = Object.keys(LOGO_SRC).filter(k => !teamLists[k] || !teamLists[k].length);
   if (!need.length) return;
   await Promise.all(need.map(async k => {
     try {
-      const r = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${LOGO_SRC[k]}/teams`); if (!r.ok) return;
+      const r = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${LOGO_SRC[k]}/teams?limit=100`, { cache: "no-store" }); if (!r.ok) return;
       const j = await r.json();
       const teams = (((j.sports || [])[0] || {}).leagues || [{}])[0].teams || [];
-      teamLists[k] = teams.map(t => t.team).filter(t => t && t.logos && t.logos[0]).map(t => ({
-        displayName: t.displayName, shortDisplayName: t.shortDisplayName, name: t.name, location: t.location, abbreviation: t.abbreviation, logo: t.logos[0].href }));
+      const list = teams.map(t => t.team || t).filter(t => t && (t.logo || (t.logos && t.logos[0]))).map(t => ({
+        displayName: t.displayName, shortDisplayName: t.shortDisplayName, name: t.name, location: t.location, abbreviation: t.abbreviation, logo: t.logo || t.logos[0].href }));
+      if (list.length) teamLists[k] = list;
     } catch (e) {}
   }));
   try { localStorage.setItem("pl_logos", JSON.stringify({ at: Date.now(), lists: teamLists })); } catch (e) {}
@@ -98,7 +102,13 @@ function logoOf(league, name) {
   for (const t of teamLists[league] || []) { const sc = sim(name, t); if (sc > bs) { bs = sc; best = t.logo; } }
   logoCache.set(key, best); return best;
 }
-const logoImg = (m, t, cls = "tlogo") => { const u = logoOf(m.league, t.name);
+function evLogo(m, t) {
+  try { const ev = findEvent(m); if (!ev) return null;
+    const c = ev.competitions[0].competitors.find(x => x.homeAway === (t === m.home ? "home" : "away"));
+    return (c && c.team && (c.team.logo || (c.team.logos && c.team.logos[0] && c.team.logos[0].href))) || null; } catch (e) { return null; }
+}
+const logoFor = (m, t) => evLogo(m, t) || logoOf(m.league, t.name);
+const logoImg = (m, t, cls = "tlogo") => { const u = logoFor(m, t);
   return u ? `<img class="${cls}" src="${esc(u)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : `<span class="${cls} ini">${esc(t.name.replace(/^(FC|AS|SC|RC|AC|1\.)\s+/i, "").slice(0, 1).toUpperCase())}</span>`; };
 
 function card(m) {
@@ -934,9 +944,9 @@ function renderDetail() {
     <div class="dhead">
       <div class="dlg">${lgHead(m.league).replace('class="lghead"', 'class="lghead plain"')}</div>
       <div class="dteams">
-        <div class="dteam">${logoOf(m.league, h.name) ? logoImg(m, h, "lvlogo") : `<span class="crest">${esc(h.name.slice(0, 2).toUpperCase())}</span>`}<b>${esc(h.name)}</b><small>Domicile</small></div>
+        <div class="dteam">${logoFor(m, h) ? logoImg(m, h, "lvlogo") : `<span class="crest">${esc(h.name.slice(0, 2).toUpperCase())}</span>`}<b>${esc(h.name)}</b><small>Domicile</small></div>
         <div class="dmid">${center}</div>
-        <div class="dteam">${logoOf(m.league, a.name) ? logoImg(m, a, "lvlogo") : `<span class="crest away">${esc(a.name.slice(0, 2).toUpperCase())}</span>`}<b>${esc(a.name)}</b><small>Extérieur</small></div>
+        <div class="dteam">${logoFor(m, a) ? logoImg(m, a, "lvlogo") : `<span class="crest away">${esc(a.name.slice(0, 2).toUpperCase())}</span>`}<b>${esc(a.name)}</b><small>Extérieur</small></div>
       </div>
       ${goals ? `<div class="goals">${goals}</div>` : ""}
     </div>
