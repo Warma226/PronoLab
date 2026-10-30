@@ -53,27 +53,25 @@ const CL = { fort: "Fort", moyen: "Moyen", risque: "Risqué" };
 const LOCKD = `<div class="lockdet"><span>Buts attendus, scores probables et marchés : réservé aux membres.</span><button class="cta" data-join>Devenir membre</button></div>`;
 
 function card(m) {
-  const r = m.r, h = m.home, a = m.away, o = open.has(m.id);
-  return `<div class="m"><button aria-expanded="${o}" data-id="${esc(m.id)}">
-    <span class="time">${hFmt.format(m.date)}<small>${LGS[m.league] || ""}</small></span>
+  const r = m.r, h = m.home, a = m.away, res = resultOf(m), st = res && res.state;
+  let right = `<span class="badge c-${r.cls}"><b>${r.pick}</b><small>${CL[r.cls]} ${pc(r.conf)} %</small></span>`;
+  let left = `${hFmt.format(m.date)}<small>${LGS[m.league] || ""}</small>`;
+  if (st === "in") {
+    right = `<span class="badge c-live"><b>${res.hs} – ${res.as}</b><small>Prono ${r.pick}</small></span>`;
+    left = `<span class="lmin on"><span class="pulse"></span>${esc(res.clock)}</span><small>En direct</small>`;
+  } else if (st === "post") {
+    const w = wins(r.pick, res.hs, res.as);
+    right = `<span class="badge ${w ? "c-won" : "c-lost"}"><b>${r.pick} ${w ? "✓" : "✗"}</b><small>${res.hs} – ${res.as}</small></span>`;
+    left = `Fin<small>${LGS[m.league] || ""}</small>`;
+  }
+  return `<div class="m"><button data-id="${esc(m.id)}">
+    <span class="time">${left}</span>
     <span class="vs"><span class="row ${r.p1 > r.p2 ? "fav" : ""}"><span class="tn">${esc(h.name)}</span>${formHtml(h.form)}</span>
       <span class="row ${r.p2 > r.p1 ? "fav" : ""}"><span class="tn">${esc(a.name)}</span>${formHtml(a.form)}</span></span>
     <span class="p3"><span class="b"><i style="flex:${r.p1};background:var(--home)"></i><i style="flex:${r.px};background:var(--draw)"></i><i style="flex:${r.p2};background:var(--away)"></i></span>
       <span class="n"><span>1 · ${pc(r.p1)}</span><span>N · ${pc(r.px)}</span><span>2 · ${pc(r.p2)}</span></span></span>
-    <span class="badge c-${r.cls}"><b>${r.pick}</b><small>${CL[r.cls]} ${pc(r.conf)} %</small></span>
-  </button>${o ? (isMember() ? `<div class="det">
-    <div class="k"><span class="lab">Notre prono</span>
-      <div class="kv"><span>${esc(r.pickLabel)}</span><span>${pc(r.conf)} %</span></div>
-      <div class="kv"><span>Buts attendus</span><span>${fmt(r.lh)} – ${fmt(r.la)}</span></div>
-      <div class="kv"><span>Plus de 2,5 buts</span><span>${pc(r.o25)} %</span></div>
-      <div class="kv"><span>Les deux marquent</span><span>${pc(r.btts)} %</span></div>
-      <div class="kv"><span>Cote juste 1 / N / 2</span><span>${fmt(1 / r.p1)} · ${fmt(1 / r.px)} · ${fmt(1 / r.p2)}</span></div></div>
-    <div class="k"><span class="lab">Scores les plus probables</span>
-      ${r.sc.map(([i, j, p]) => `<div class="sc"><b>${i}–${j}</b><span class="t"><i style="width:${p / r.sc[0][2] * 100}%"></i></span><span>${fmt(p * 100, 1)} %</span></div>`).join("")}</div>
-    <div class="k"><span class="lab">Saison en cours</span>
-      <div class="kv"><span>${esc(h.name)}</span><span>${h.gf} marqués · ${h.ga} encaissés · ${h.gp} m.</span></div>
-      <div class="kv"><span>${esc(a.name)}</span><span>${a.gf} marqués · ${a.ga} encaissés · ${a.gp} m.</span></div></div>
-  </div>` : LOCKD) : ""}</div>`;
+    ${right}
+  </button></div>`;
 }
 const LGMETA = { PL: ["ENG", "Angleterre", "#6a4fb3"], LIGA: ["ESP", "Espagne", "#e0873a"], SA: ["ITA", "Italie", "#3a7bd5"], BL: ["GER", "Allemagne", "#d9534f"], L1: ["FRA", "France", "#2c4a7a"] };
 const LGORDER = ["PL", "LIGA", "SA", "BL", "L1"];
@@ -113,6 +111,9 @@ function render() {
     <span class="teams">${esc(m.home.name)}<br>${esc(m.away.name)}</span>
     <span class="bet"><b>${esc(m.r.pickLabel)}</b><span>${pc(m.r.conf)}%</span></span></button>`).join("");
   renderDays();
+  let w = 0, l = 0; matches.forEach(m => { const x = resultOf(m); if (x && x.state === "post") (wins(m.r.pick, x.hs, x.as) ? w++ : l++); });
+  $("bilan").hidden = !(w + l);
+  $("bilan").innerHTML = `<span class="lab">Bilan du week-end</span><div class="bil"><span class="res won">✓ ${w} gagné${w > 1 ? "s" : ""}</span><span class="res lost">✗ ${l} perdu${l > 1 ? "s" : ""}</span><b>${w + l ? Math.round(100 * w / (w + l)) : 0} % de réussite</b></div>`;
   const list = matches.filter(m => (filter === "ALL" || m.league === filter) && (sort === "conf" || dayKey(m.date) === selDay));
   $("days").hidden = sort === "conf";
   if (!list.length) { $("list").innerHTML = '<div class="empty">Aucun match pour ce filtre.</div>'; return; }
@@ -137,7 +138,7 @@ async function loadMatches() {
     $("upd").textContent = "Week-end du " + (x.weekend || "") + " · mis à jour le " + new Date(x.updatedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
     $("src").textContent = x.sources ? "Sources : " + x.sources : "";
     if (!matches.length) { $("list").innerHTML = '<div class="empty">Les matchs du prochain week-end arrivent bientôt. La liste se met à jour toute seule chaque semaine.</div>'; return; }
-    chips(); render(); renderCombos();
+    chips(); render(); renderCombos(); resultsLoop(); if (view === "match") renderDetail();
   } catch (e) {
     $("list").innerHTML = '<div class="empty">Les matchs n\'ont pas pu être chargés. Vérifie ta connexion internet puis rouvre l\'app.</div>';
   }
@@ -303,11 +304,11 @@ document.addEventListener("click", async e => {
   const cp = t.closest("[data-copy]"); if (cp) { try { await navigator.clipboard.writeText(cp.dataset.copy); cp.textContent = "Copié"; } catch (err) {} return; }
   const ok = t.closest("[data-ok]"); if (ok) { validate(ok.dataset.ok, ok); return; }
   const no = t.closest("[data-no]"); if (no) { no.disabled = true; try { await fs.collection("requests").doc(no.dataset.no).update({ status: "refused" }); } catch (err) { no.disabled = false; } return; }
-  const p = t.closest(".pick"); if (p) {
-    open.add(p.dataset.id); filter = "ALL"; sort = "time"; $("sTime").setAttribute("aria-pressed", "true"); $("sConf").setAttribute("aria-pressed", "false"); chips(); render();
-    const el = document.querySelector('.m>button[data-id="' + CSS.escape(p.dataset.id) + '"]'); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); return;
-  }
-  const b = t.closest(".m>button"); if (b) { const id = b.dataset.id; open.has(id) ? open.delete(id) : open.add(id); render(); }
+  const op = t.closest("[data-open]"); if (op) { go("match-" + op.dataset.open); return; }
+  if (t.closest("[data-back]")) { if (history.length > 1 && location.hash.startsWith("#match-")) history.back(); else go(prevView); return; }
+  const cd = t.closest("[data-cday]"); if (cd) { comboDay = +cd.dataset.cday; renderCombos(); return; }
+  const p = t.closest(".pick"); if (p) { go("match-" + p.dataset.id); return; }
+  const b = t.closest(".m>button"); if (b) { go("match-" + b.dataset.id); }
 });
 document.addEventListener("change", e => { if (e.target.name === "plan") selPlan = e.target.value; });
 document.addEventListener("submit", async e => {
@@ -365,100 +366,228 @@ $("sConf").onclick = () => { sort = "conf"; $("sConf").setAttribute("aria-presse
 $("forgot").onclick = () => { $("accMsg").className = "msg"; $("accMsg").textContent = "Mot de passe oublié ? Écris à l'administrateur sur WhatsApp au +" + normPhone(CFG.adminPhone) + " pour le réinitialiser."; };
 
 /* ---------- Navigation par onglets ---------- */
-const VIEWS = ["matchs", "live", "combos", "compte"];
-let view = "matchs";
+const VIEWS = ["matchs", "live", "combos", "compte", "aide", "match"];
+let view = "matchs", detailId = null, prevView = "matchs";
 function go(v, push = true) {
-  if (!VIEWS.includes(v)) v = "matchs";
+  v = v || "matchs";
+  if (v.startsWith("match-")) { detailId = decodeURIComponent(v.slice(6)); if (view !== "match") prevView = view; v = "match"; }
+  if (!VIEWS.includes(v) || (v === "match" && !detailId)) v = "matchs";
   view = v;
   document.querySelectorAll("[data-view]").forEach(el => el.hidden = el.dataset.view !== v);
-  document.querySelectorAll(".tabbar [data-go]").forEach(b => { if (b.dataset.go === v) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
-  if (push && location.hash !== "#" + v) history.replaceState(null, "", "#" + v);
+  const tab = v === "match" ? prevView : v;
+  document.querySelectorAll(".tabbar [data-go]").forEach(b => { if (b.dataset.go === tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+  const h = v === "match" ? "#match-" + encodeURIComponent(detailId) : "#" + v;
+  if (push && location.hash !== h) history.pushState(null, "", h);
   window.scrollTo(0, 0);
   if (v === "live") loadLive(true);
+  if (v === "match") renderDetail();
+  if (v === "combos") renderCombos();
 }
-window.addEventListener("hashchange", () => go(location.hash.slice(1), false));
+window.addEventListener("popstate", () => go(location.hash.slice(1), false));
 
-/* ---------- Live (scores en direct) ---------- */
+/* ---------- Résultats et scores en direct (ESPN) ---------- */
 const ESPN = { PL: "eng.1", LIGA: "esp.1", SA: "ita.1", BL: "ger.1", L1: "fra.1" };
-let liveOff = 0, liveTimer = null, liveData = null;
 const ymd = d => d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
+const ymdUTC = d => d.toISOString().slice(0, 10).replace(/-/g, "");
+const espnDay = {}; // "20261031" -> { at, ok, data: { PL: [events] } }
+async function fetchDay(key, maxAge) {
+  const c = espnDay[key];
+  if (c && Date.now() - c.at < maxAge) return c;
+  const res = await Promise.all(LGORDER.map(k => fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${ESPN[k]}/scoreboard?dates=${key}`, { cache: "no-store" })
+    .then(r => r.ok ? r.json() : null).catch(() => null)));
+  const data = {}; LGORDER.forEach((k, i) => data[k] = (res[i] && res[i].events) || []);
+  const out = { at: Date.now(), ok: res.some(Boolean), data };
+  if (out.ok || !c) espnDay[key] = out;
+  return espnDay[key];
+}
+const deacc = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+const ALIAS = { "barcelone": "barcelona", "seville": "sevilla", "valence": "valencia", "la corogne": "deportivo", "naples": "napoli", "come": "como",
+  "venise": "venezia", "as rome": "roma", "milan ac": "ac milan", "inter": "internazionale inter", "bayern munich": "bayern", "mayence": "mainz",
+  "fribourg": "freiburg", "augsbourg": "augsburg", "werder breme": "bremen", "cologne": "koln cologne", "francfort": "frankfurt", "hambourg": "hamburg",
+  "atl madrid": "atletico", "bologne": "bologna", "parme": "parma", "man city": "manchester city", "man united": "manchester united",
+  "nottm forest": "nottingham", "paris sg": "paris saint germain psg", "celta vigo": "celta", "athletic bilbao": "athletic", "real sociedad": "sociedad",
+  "racing santander": "racing", "rayo vallecano": "rayo", "le havre": "havre", "schalke 04": "schalke", "union berlin": "union", "rb leipzig": "leipzig",
+  "hull city": "hull", "coventry": "coventry", "crystal palace": "palace", "aston villa": "villa", "atalanta": "atalanta", "juventus": "juventus",
+  "lazio": "lazio", "lyon": "lyon", "monaco": "monaco", "marseille": "marseille", "paris fc": "paris fc", "le mans": "mans", "betis": "betis" };
+function sim(fr, team) {
+  const a = deacc(fr), key = ALIAS[a] || a;
+  const t = deacc([team.displayName, team.shortDisplayName, team.name, team.location, team.abbreviation].join(" "));
+  if (t.includes(key)) return 3;
+  return key.split(" ").filter(w => w.length >= 3 && t.includes(w)).length;
+}
+function findEvent(m) {
+  const c = espnDay[ymdUTC(m.date)]; if (!c) return null;
+  let best = null, bs = 1;
+  for (const ev of c.data[m.league] || []) {
+    if (Math.abs(new Date(ev.date) - m.date) > 6 * 3600e3) continue;
+    const comp = ev.competitions && ev.competitions[0]; if (!comp) continue;
+    const h = comp.competitors.find(x => x.homeAway === "home"), a = comp.competitors.find(x => x.homeAway === "away");
+    if (!h || !a) continue;
+    const sc = sim(m.home.name, h.team) + sim(m.away.name, a.team);
+    if (sc > bs) { bs = sc; best = ev; }
+  }
+  return best;
+}
+function resultOf(m) { // { state: pre|in|post, hs, as, clock, ev }
+  const ev = findEvent(m); if (!ev) return null;
+  const comp = ev.competitions[0], st = (ev.status && ev.status.type) || {};
+  const h = comp.competitors.find(x => x.homeAway === "home"), a = comp.competitors.find(x => x.homeAway === "away");
+  return { state: st.state, hs: +h.score, as: +a.score, clock: ev.status.displayClock || st.shortDetail || "", ev };
+}
+function wins(code, hs, as) {
+  switch (code) {
+    case "1": return hs > as; case "2": return as > hs; case "N": return hs === as;
+    case "1N": return hs >= as; case "N2": return as >= hs;
+  }
+  if (/V1/.test(code)) return hs > as; if (/V2/.test(code)) return as > hs;
+  if (/1X/.test(code)) return hs >= as; if (/X2/.test(code)) return as >= hs;
+  if (/Plus de 2.5/.test(code)) return hs + as > 2; if (/Moins de 2.5/.test(code)) return hs + as < 3;
+  if (/marquent/.test(code)) return hs > 0 && as > 0;
+  return null;
+}
+async function refreshResults() {
+  const now = Date.now();
+  const days = [...new Set(matches.map(m => ymdUTC(m.date)))];
+  let anyLive = false;
+  await Promise.all(days.map(async k => {
+    const ms = matches.filter(m => ymdUTC(m.date) === k);
+    const active = ms.some(m => now > m.date - 15 * 60e3 && now < m.date.getTime() + 150 * 60e3);
+    const done = ms.every(m => now > m.date.getTime() + 150 * 60e3);
+    if (ms.every(m => now < m.date - 15 * 60e3)) return; // rien n'a commencé ce jour-là
+    await fetchDay(k, active ? 15000 : done ? 3600e3 : 120000);
+    if (active) anyLive = true;
+  }));
+  render(); if (view === "combos") renderCombos(); if (view === "match") renderDetail();
+  return anyLive;
+}
+let resTimer = null;
+async function resultsLoop() {
+  clearTimeout(resTimer);
+  let live = false; try { live = await refreshResults(); } catch (e) {}
+  $("liveDot").hidden = !live;
+  resTimer = setTimeout(resultsLoop, live ? 15000 : 120000);
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { resultsLoop(); if (view === "live") loadLive(false); } });
+
+/* ---------- Onglet Live ---------- */
+let liveOff = 0, liveTimer = null;
 async function loadLive(force) {
   clearTimeout(liveTimer);
   const d = new Date(); d.setDate(d.getDate() + liveOff);
   const labels = { "-1": "Hier", "0": "Aujourd'hui", "1": "Demain" };
   $("liveDays").innerHTML = [-1, 0, 1].map(o => { const x = new Date(); x.setDate(x.getDate() + o);
     return `<button role="tab" data-lday="${o}" aria-selected="${o === liveOff}"><small>${labels[o]}</small><b>${x.getDate()}</b></button>`; }).join("");
-  if (force && !liveData) $("live").innerHTML = '<div class="empty">Chargement des scores…</div>';
-  const res = await Promise.all(LGORDER.map(k => fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${ESPN[k]}/scoreboard?dates=${ymd(d)}`).then(r => r.ok ? r.json() : null).catch(() => null)));
-  if (res.every(x => !x)) { $("live").innerHTML = '<div class="empty">Les scores en direct ne sont pas disponibles pour le moment. Vérifie ta connexion et réessaie dans quelques minutes.</div>'; return; }
-  liveData = res; let anyLive = false;
-  const blocks = LGORDER.map((k, i) => {
-    const evs = (res[i] && res[i].events) || []; if (!evs.length) return "";
+  const key = ymd(d);
+  if (force && !espnDay[key]) $("live").innerHTML = '<div class="empty">Chargement des scores…</div>';
+  const c = await fetchDay(key, 10000);
+  if (!c.ok) { $("live").innerHTML = '<div class="empty">Les scores en direct ne sont pas disponibles pour le moment. Vérifie ta connexion, ils reviendront automatiquement.</div>'; liveTimer = setTimeout(() => loadLive(false), 30000); return; }
+  let anyLive = false;
+  const blocks = LGORDER.map(k => {
+    const evs = c.data[k]; if (!evs.length) return "";
     const rows = evs.map(ev => {
-      const c = ev.competitions && ev.competitions[0]; if (!c) return "";
-      const st = (ev.status && ev.status.type) || {}, state = st.state;
-      const on = state === "in"; if (on) anyLive = true;
-      const h = c.competitors.find(x => x.homeAway === "home") || c.competitors[0], a = c.competitors.find(x => x.homeAway === "away") || c.competitors[1];
+      const comp = ev.competitions && ev.competitions[0]; if (!comp) return "";
+      const st = (ev.status && ev.status.type) || {}, state = st.state, on = state === "in"; if (on) anyLive = true;
+      const h = comp.competitors.find(x => x.homeAway === "home") || comp.competitors[0], a = comp.competitors.find(x => x.homeAway === "away") || comp.competitors[1];
       const minute = on ? (ev.status.displayClock || st.shortDetail || "") : state === "post" ? "Terminé" : hFmt.format(new Date(ev.date));
       const sc = x => state === "pre" ? "" : esc(x.score);
-      const win = x => state === "post" && x.winner;
-      const team = x => `<div class="lteam ${win(x) ? "win" : ""}">${x.team.logo ? `<img src="${esc(x.team.logo)}" alt="" loading="lazy">` : ""}<span>${esc(x.team.shortDisplayName || x.team.displayName)}</span></div>`;
-      return `<div class="lrow"><span class="lmin ${on ? "on" : ""}">${on ? '<span class="pulse"></span>' : ""}${esc(minute)}</span>
+      const team = x => `<div class="lteam ${state === "post" && x.winner ? "win" : ""}">${x.team.logo ? `<img src="${esc(x.team.logo)}" alt="" loading="lazy">` : ""}<span>${esc(x.team.shortDisplayName || x.team.displayName)}</span></div>`;
+      const ours = matches.find(m => findEvent(m) === ev);
+      return `<${ours ? `button class="lrow" data-open="${esc(ours.id)}"` : 'div class="lrow"'}><span class="lmin ${on ? "on" : ""}">${on ? '<span class="pulse"></span>' : ""}${esc(minute)}</span>
         <div class="lteams">${team(h)}${team(a)}</div>
-        <div class="lscore ${on ? "on" : ""}"><span>${sc(h)}</span><span>${sc(a)}</span></div></div>`;
+        <div class="lscore ${on ? "on" : ""}"><span>${sc(h)}</span><span>${sc(a)}</span></div></${ours ? "button" : "div"}>`;
     }).join("");
     return `<div class="lgcard">${lgHead(k)}${rows}</div>`;
   }).join("");
   $("live").innerHTML = blocks ? `<div class="day">${blocks}</div>` : '<div class="empty">Aucun match des cinq grands championnats ce jour-là.</div>';
-  $("liveDot").hidden = !(anyLive && liveOff === 0);
-  $("liveUpd").textContent = "Actualisé à " + hFmt.format(new Date());
-  if (view === "live") liveTimer = setTimeout(() => loadLive(false), anyLive ? 30000 : 120000);
-}
-async function liveBadge() { // point rouge sur l'onglet Live quand un match est en cours
-  if (view === "live") return;
-  const d = new Date();
-  const res = await Promise.all(LGORDER.map(k => fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${ESPN[k]}/scoreboard?dates=${ymd(d)}`).then(r => r.ok ? r.json() : null).catch(() => null)));
-  $("liveDot").hidden = !res.some(x => x && (x.events || []).some(e => e.status && e.status.type && e.status.type.state === "in"));
+  $("liveUpd").textContent = (anyLive ? "En temps réel · " : "") + "actualisé à " + new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  if (view === "live") liveTimer = setTimeout(() => loadLive(false), anyLive ? 15000 : 60000);
 }
 
-/* ---------- Combinés ---------- */
-let combos = [];
+/* ---------- Page de détail d'un match ---------- */
+function renderDetail() {
+  const m = matches.find(x => x.id === detailId), box = $("detail");
+  if (!m) { box.innerHTML = '<div class="empty">Match introuvable. Il ne fait peut-être plus partie de la sélection de la semaine.</div>'; return; }
+  const r = m.r, h = m.home, a = m.away, res = resultOf(m), st = res && res.state;
+  const center = st === "in" ? `<div class="dscore on">${res.hs} – ${res.as}</div><div class="dstate on"><span class="pulse"></span>${esc(res.clock)}</div>`
+    : st === "post" ? `<div class="dscore">${res.hs} – ${res.as}</div><div class="dstate">Terminé</div>`
+    : `<div class="dscore time">${hFmt.format(m.date)}</div><div class="dstate">${esc(dayFmt.format(m.date))}</div>`;
+  const ok = st === "post" ? wins(r.pick, res.hs, res.as) : null;
+  const mark = ok === true ? '<span class="res won">✓ Gagné</span>' : ok === false ? '<span class="res lost">✗ Perdu</span>' : st === "in" ? '<span class="res live">En cours</span>' : "";
+  const goals = res && res.ev.competitions[0].details ? res.ev.competitions[0].details.filter(d => d.scoringPlay).map(d => {
+    const home = d.team && res.ev.competitions[0].competitors.find(x => x.homeAway === "home").team.id === d.team.id;
+    const who = (d.athletesInvolved && d.athletesInvolved[0] && d.athletesInvolved[0].displayName) || "But";
+    return `<div class="goal ${home ? "" : "away"}"><span>${esc((d.clock && d.clock.displayValue) || "")}</span><b>⚽ ${esc(who)}</b></div>`; }).join("") : "";
+  const formRow = t => `<div class="fchips">${[...String(t.form || "")].map(v => `<i class="fc f${v}">${v}</i>`).join("")}</div>`;
+  const per = (n, g) => fmt(n / Math.max(g, 1), 1);
+  const premium = isMember() ? `
+    <div class="dcard"><span class="lab">Analyse détaillée</span>
+      <div class="kv"><span>Buts attendus</span><span>${fmt(r.lh)} – ${fmt(r.la)}</span></div>
+      <div class="kv"><span>Plus de 2,5 buts</span><span>${pc(r.o25)} %</span></div>
+      <div class="kv"><span>Moins de 2,5 buts</span><span>${pc(1 - r.o25)} %</span></div>
+      <div class="kv"><span>Les deux équipes marquent</span><span>${pc(r.btts)} %</span></div>
+      <div class="kv"><span>Double chance 1X / X2</span><span>${pc(r.p1 + r.px)} % · ${pc(r.p2 + r.px)} %</span></div>
+      <div class="kv"><span>Cote juste 1 / N / 2</span><span>${fmt(1 / r.p1)} · ${fmt(1 / r.px)} · ${fmt(1 / r.p2)}</span></div></div>
+    <div class="dcard"><span class="lab">Scores les plus probables</span>
+      ${r.sc.map(([i, j, p]) => `<div class="sc"><b>${i}–${j}</b><span class="t"><i style="width:${p / r.sc[0][2] * 100}%"></i></span><span>${fmt(p * 100, 1)} %</span></div>`).join("")}</div>`
+    : `<div class="dcard lockcard"><b>Analyse détaillée réservée aux membres</b><span class="msg">Buts attendus, plus/moins de 2,5 buts, les deux équipes marquent, scores les plus probables et cotes justes.</span><button class="cta" data-join>Devenir membre</button></div>`;
+  box.innerHTML = `
+    <button class="back" data-back>‹ Retour</button>
+    <div class="dhead">
+      <div class="dlg">${lgHead(m.league).replace('class="lghead"', 'class="lghead plain"')}</div>
+      <div class="dteams">
+        <div class="dteam"><span class="crest">${esc(h.name.slice(0, 2).toUpperCase())}</span><b>${esc(h.name)}</b><small>Domicile</small></div>
+        <div class="dmid">${center}</div>
+        <div class="dteam"><span class="crest away">${esc(a.name.slice(0, 2).toUpperCase())}</span><b>${esc(a.name)}</b><small>Extérieur</small></div>
+      </div>
+      ${goals ? `<div class="goals">${goals}</div>` : ""}
+    </div>
+    <div class="dcard"><div class="pickrow"><div><span class="lab">Notre prono</span><b class="bigpick">${esc(r.pickLabel)}</b></div>
+      <div class="pickright"><span class="badge c-${r.cls}"><b>${r.pick}</b><small>${CL[r.cls]} ${pc(r.conf)} %</small></span>${mark}</div></div>
+      <div class="p3 big"><span class="b"><i style="flex:${r.p1};background:var(--home)"></i><i style="flex:${r.px};background:var(--draw)"></i><i style="flex:${r.p2};background:var(--away)"></i></span>
+      <span class="n"><span>1 · ${pc(r.p1)} %</span><span>N · ${pc(r.px)} %</span><span>2 · ${pc(r.p2)} %</span></span></div></div>
+    ${premium}
+    <div class="dcard"><span class="lab">Forme (5 derniers matchs)</span>
+      <div class="kv"><span>${esc(h.name)}</span>${formRow(h)}</div>
+      <div class="kv"><span>${esc(a.name)}</span>${formRow(a)}</div></div>
+    <div class="dcard"><span class="lab">Saison en cours</span>
+      <div class="stat3"><span></span><b>${esc(h.name)}</b><b>${esc(a.name)}</b></div>
+      <div class="stat3"><span>Matchs joués</span><b>${h.gp}</b><b>${a.gp}</b></div>
+      <div class="stat3"><span>Buts marqués</span><b>${h.gf} <small>(${per(h.gf, h.gp)}/m)</small></b><b>${a.gf} <small>(${per(a.gf, a.gp)}/m)</small></b></div>
+      <div class="stat3"><span>Buts encaissés</span><b>${h.ga} <small>(${per(h.ga, h.gp)}/m)</small></b><b>${a.ga} <small>(${per(a.ga, a.gp)}/m)</small></b></div></div>`;
+}
+
+/* ---------- Coupons du jour (changent à 00h GMT) ---------- */
+let combos = [], comboDay = 0;
 function options(m) {
   const r = m.r, H = m.home.name, A = m.away.name;
   return [
-    [r.p1, "1X2 : V1", "Victoire " + H],
-    [r.p2, "1X2 : V2", "Victoire " + A],
-    [r.p1 + r.px, "Double chance : 1X", H + " ou nul"],
-    [r.p2 + r.px, "Double chance : X2", A + " ou nul"],
-    [r.o25, "Total : Plus de 2.5", "Plus de 2,5 buts"],
-    [1 - r.o25, "Total : Moins de 2.5", "Moins de 2,5 buts"],
+    [r.p1, "1X2 : V1", "Victoire " + H], [r.p2, "1X2 : V2", "Victoire " + A],
+    [r.p1 + r.px, "Double chance : 1X", H + " ou nul"], [r.p2 + r.px, "Double chance : X2", A + " ou nul"],
+    [r.o25, "Total : Plus de 2.5", "Plus de 2,5 buts"], [1 - r.o25, "Total : Moins de 2.5", "Moins de 2,5 buts"],
     [r.btts, "Les deux équipes marquent : Oui", "Les deux équipes marquent"]
   ].filter(o => o[0] >= 0.5 && o[0] <= 0.92);
 }
-// Compose un combiné proche de la cote visée : n sélections dont la probabilité
-// est la plus proche possible de la cible par sélection (cote visée ^ (1/n)).
-function build(target, sizes) {
-  const now = Date.now() + 10 * 60e3, up = matches.filter(m => m.date.getTime() > now);
+// Compose un combiné proche de la cote visée à partir des matchs d'une journée.
+function build(pool0, target, sizes) {
   let best = null;
   for (const n of sizes) {
     const pStar = Math.pow(1 / target, 1 / n);
-    const pool = up.map(m => {
+    const pool = pool0.map(m => {
       const o = options(m).filter(x => x[0] >= pStar - 0.04).sort((x, y) => Math.abs(x[0] - pStar) - Math.abs(y[0] - pStar))[0];
       return o ? { m, p: o[0], bk: o[1], label: o[2] } : null;
     }).filter(Boolean).sort((x, y) => (y.p - pStar >= 0 ? 0 : 1) - (x.p - pStar >= 0 ? 0 : 1) || Math.abs(x.p - pStar) - Math.abs(y.p - pStar));
     const legs = [];
-    for (const c of pool) { if (legs.length >= n) break; if (legs.filter(l => l.m.league === c.m.league).length >= 2) continue; legs.push(c); }
+    for (const c of pool) { if (legs.length >= n) break; if (legs.filter(l => l.m.league === c.m.league).length >= 3) continue; legs.push(c); }
     if (legs.length < n) continue;
     let odds = legs.reduce((s, l) => s / l.p, 1);
-    // si la cote est un peu courte, on remplace la sélection la plus sûre par une plus audacieuse
     if (odds < target * 0.95) {
       const used = new Set(legs.map(l => l.m.id));
-      const extra = up.filter(m => !used.has(m.id)).flatMap(m => options(m).map(o => ({ m, p: o[0], bk: o[1], label: o[2] })))
+      const extra = pool0.filter(m => !used.has(m.id)).flatMap(m => options(m).map(o => ({ m, p: o[0], bk: o[1], label: o[2] })))
         .filter(c => c.p < pStar).sort((x, y) => y.p - x.p);
       legs.sort((x, y) => y.p - x.p);
       for (const c of extra) { const o2 = odds * legs[0].p / c.p; if (o2 >= target * 0.95) { legs[0] = c; odds = o2; break; } }
     }
-    if (odds < target * 0.95 || odds > target * 1.6) continue;
+    if (odds < target * 0.95 || odds > target * 1.7) continue;
     const cand = { legs: legs.sort((x, y) => x.m.date - y.m.date), odds, prob: legs.reduce((s, l) => s * l.p, 1) };
     if (!best || Math.abs(Math.log(cand.odds / target)) < Math.abs(Math.log(best.odds / target))) best = cand;
   }
@@ -466,32 +595,82 @@ function build(target, sizes) {
 }
 function ticketText(id) {
   const c = combos.find(x => x.id === id); if (!c) return "";
-  return `Prono Lab · ${c.title} (cote estimée ${fmt(c.odds)})\n` + c.legs.map((l, i) =>
-    `${i + 1}. ${l.m.home.name} - ${l.m.away.name} (${dayFmt.format(l.m.date).split(" ")[0]} ${hFmt.format(l.m.date)})\n   ${l.bk}`).join("\n");
+  return `Prono Lab · ${c.title} du ${c.dayLabel} (cote estimée ${fmt(c.odds)})\n` + c.legs.map((l, i) =>
+    `${i + 1}. ${l.m.home.name} - ${l.m.away.name} (${hFmt.format(l.m.date)})\n   ${l.bk}`).join("\n");
+}
+function legState(l) {
+  const res = resultOf(l.m); if (!res || res.state === "pre") return { cls: "", txt: "" };
+  if (res.state === "in") return { cls: "live", txt: `${res.hs}–${res.as} · ${res.clock}` };
+  const w = wins(l.bk, res.hs, res.as);
+  return { cls: w ? "won" : "lost", txt: (w ? "✓ " : "✗ ") + res.hs + "–" + res.as };
 }
 function renderCombos() {
   const box = $("combos"); if (!box || !matches.length) return;
+  const base = new Date(); base.setUTCDate(base.getUTCDate() + comboDay);
+  const key = ymdUTC(base);
+  const dayLabel = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(base);
+  $("comboDays").innerHTML = [[-1, "Hier"], [0, "Aujourd'hui"]].map(([o, l]) => { const x = new Date(); x.setUTCDate(x.getUTCDate() + o);
+    return `<button role="tab" data-cday="${o}" aria-selected="${o === comboDay}"><small>${l}</small><b>${x.getUTCDate()}</b></button>`; }).join("");
+  const dayMatches = matches.filter(m => ymdUTC(m.date) === key);
   combos = [];
-  const safe = build(2, [3, 2, 4]), five = build(5, [4, 3, 5]);
-  if (safe) combos.push({ id: "safe", title: "Combiné sûr", sub: "Les sélections les plus fiables", cls: "", ...safe });
-  if (five) combos.push({ id: "five", title: "Combiné cote 5", sub: "Le coup à gros gain du week-end", cls: "big", ...five });
-  if (!isMember()) {
-    box.innerHTML = `<div class="combolock"><div class="blurred"><div></div><div></div><div></div></div>
-      <h2>${combos.length} combinés prêts pour ce week-end</h2>
-      <p class="msg">Un combiné sûr et un combiné cote 5, avec les libellés 1xBet et Melbet et la copie du ticket en un geste. Réservé aux membres.</p>
+  const safe = build(dayMatches, 2, [3, 2, 4]), five = build(dayMatches, 5, [4, 3, 5]);
+  if (safe) combos.push({ id: "safe", title: "Coupon sûr", sub: "Les sélections les plus fiables du jour", cls: "", dayLabel, ...safe });
+  if (five) combos.push({ id: "five", title: "Coupon cote 5", sub: "Le coup à gros gain du jour", cls: "big", dayLabel, ...five });
+  const next = new Date(); next.setUTCHours(24, 0, 0, 0);
+  const left = next - Date.now(), hh = Math.floor(left / 3600e3), mm = Math.floor(left % 3600e3 / 60e3);
+  const nextDay = matches.filter(m => ymdUTC(m.date) > ymdUTC(new Date())).sort((x, y) => x.date - y.date)[0];
+  const info = `<p class="meta">Coupons du ${esc(dayLabel)}${comboDay === 0 ? ` · prochains coupons dans ${hh} h ${String(mm).padStart(2, "0")} (00h GMT)` : ""}</p>`;
+  if (!combos.length) {
+    box.innerHTML = info + `<div class="empty">${dayMatches.length ? "Pas assez de matchs ce jour-là pour composer un coupon fiable." : "Aucun match des cinq grands championnats ce jour-là."}${comboDay === 0 && nextDay ? ` Prochains coupons le ${esc(dayFmt.format(nextDay.date))}.` : ""}</div>`;
+    return;
+  }
+  if (!isMember() && comboDay === 0) {
+    box.innerHTML = info + `<div class="combolock"><div class="blurred"><div></div><div></div><div></div></div>
+      <h2>${combos.length} coupon${combos.length > 1 ? "s" : ""} prêt${combos.length > 1 ? "s" : ""} pour aujourd'hui</h2>
+      <p class="msg">Un coupon sûr et un coupon cote 5, avec les libellés 1xBet et Melbet et la copie du ticket en un geste. Réservé aux membres.</p>
       <button class="cta" data-join>Devenir membre</button></div>`;
     return;
   }
-  if (!combos.length) { box.innerHTML = '<div class="empty">Plus assez de matchs à venir ce week-end pour composer un combiné. Les prochains arrivent jeudi.</div>'; return; }
-  box.innerHTML = combos.map(c => `<div class="combo">
-    <div class="combohead ${c.cls}"><div><h3>${c.title}</h3><p>${c.sub} · ${c.legs.length} sélections</p></div>
+  box.innerHTML = info + combos.map(c => {
+    const states = c.legs.map(legState), lost = states.some(s => s.cls === "lost"), won = states.every(s => s.cls === "won");
+    const verdict = won ? '<span class="res won">✓ Coupon gagné</span>' : lost ? '<span class="res lost">✗ Coupon perdu</span>' : "";
+    return `<div class="combo">
+    <div class="combohead ${c.cls}"><div><h3>${c.title}</h3><p>${c.sub} · ${c.legs.length} sélections</p>${verdict}</div>
       <div class="odds"><b>${fmt(c.odds)}</b><span>${pc(c.prob)} % de chances</span></div></div>
-    ${c.legs.map(l => `<div class="leg"><span class="mt">${esc(l.m.home.name)} – ${esc(l.m.away.name)}</span>
-      <span class="o">${fmt(1 / l.p)}<small>${pc(l.p)} %</small></span>
-      <span class="mk">${esc(l.bk)} · ${LGS[l.m.league]} · ${dayFmt.format(l.m.date).split(" ")[0]} ${hFmt.format(l.m.date)}</span></div>`).join("")}
+    ${c.legs.map((l, i) => `<button class="leg" data-open="${esc(l.m.id)}"><span class="mt">${esc(l.m.home.name)} – ${esc(l.m.away.name)}</span>
+      <span class="o">${states[i].txt ? `<em class="res ${states[i].cls}">${esc(states[i].txt)}</em>` : fmt(1 / l.p)}<small>${pc(l.p)} %</small></span>
+      <span class="mk">${esc(l.bk)} · ${LGS[l.m.league]} · ${hFmt.format(l.m.date)}</span></button>`).join("")}
     <div class="combofoot"><span class="msg">Cote estimée par le modèle : chez 1xBet ou Melbet, elle sera un peu plus basse.</span>
-      <button class="cta" data-ticket="${c.id}">Copier le ticket</button></div></div>`).join("")
-    + `<p class="note">Un combiné ne passe que si toutes les sélections passent : un combiné cote 5 a environ 1 chance sur 5 de gagner. Mise uniquement ce que tu peux te permettre de perdre.</p>`;
+      <button class="cta" data-ticket="${c.id}">Copier le ticket</button></div></div>`; }).join("")
+    + `<p class="note">Un coupon ne passe que si toutes les sélections passent : un coupon cote 5 a environ 1 chance sur 5 de gagner. Mise uniquement ce que tu peux te permettre de perdre.</p>`;
+}
+setInterval(() => { if (view === "combos") renderCombos(); }, 60000);
+
+/* ---------- Aide : FAQ et assistance ---------- */
+const FAQ = [
+  ["Comment sont calculés les pronos ?", "Pour chaque équipe, l'app compare ses buts marqués et encaissés par match à la moyenne de son championnat, ajoute l'avantage du terrain et la forme des 5 derniers matchs, puis calcule les probabilités avec un modèle statistique (loi de Poisson)."],
+  ["Que veulent dire Fort, Moyen et Risqué ?", "C'est la probabilité estimée du prono : Fort à partir de 60 %, Moyen de 45 à 60 %, Risqué en dessous. Même un prono Fort peut perdre : aucun pronostic n'est garanti."],
+  ["Que signifient ✓ et ✗ ?", "Après le coup de sifflet final, chaque prono affiche ✓ en vert s'il est gagné et ✗ en rouge s'il est perdu, avec le score. Le bilan du week-end est en haut de l'onglet Matchs."],
+  ["Quand les matchs sont-ils mis à jour ?", "Chaque jeudi matin, l'app récupère automatiquement les affiches et les statistiques des matchs à venir des cinq grands championnats."],
+  ["Quand changent les coupons ?", "Chaque jour à 00h GMT, de nouveaux coupons sont composés à partir des matchs du jour. Les coupons de la veille restent visibles avec leur résultat."],
+  ["Pourquoi la cote est-elle différente chez 1xBet ou Melbet ?", "Nos cotes sont des cotes justes calculées par le modèle. Les bookmakers gardent une marge : leurs cotes sont en général un peu plus basses."],
+  ["Comment devenir membre ?", "Dans l'onglet Compte : crée ton compte, choisis Hebdo (1000 F CFA, 7 jours) ou Mensuel (3000 F CFA, 30 jours), paie par Orange Money, Moov Money ou Wave, puis envoie la référence de la transaction."],
+  ["En combien de temps mon abonnement est-il activé ?", "Dès que l'administrateur a vérifié ton paiement, en général dans la journée. Si c'est long, écris-nous sur WhatsApp avec ta référence."],
+  ["J'ai oublié mon mot de passe.", "Écris à l'assistance sur WhatsApp avec ton numéro de compte : nous réinitialisons ton accès."],
+  ["Comment installer l'app ?", "Sur Android, touche « Installer » en haut de l'écran ou ouvre le menu ⋮ de Chrome puis « Installer l'application ». Sur iPhone, touche Partager puis « Sur l'écran d'accueil »."],
+  ["Jouer comporte des risques", "Les pronostics sont des estimations, jamais des certitudes. Ne mise que ce que tu peux te permettre de perdre, et fais une pause si le jeu n'est plus un plaisir."]
+];
+function renderHelp() {
+  const n = normPhone(CFG.adminPhone), pretty = "+" + n.slice(0, 3) + " " + n.slice(3).replace(/(\d{2})(?=\d)/g, "$1 ");
+  const wa = "https://wa.me/" + n + "?text=" + encodeURIComponent("Bonjour, j'ai une question sur Prono Lab : ");
+  $("help").innerHTML = `
+    <div class="assist">
+      <div><h2>Assistance</h2><p class="msg">Une question sur un paiement, ton compte ou un prono ? Notre équipe te répond sur WhatsApp.</p></div>
+      <a class="cta wa" href="${wa}" target="_blank" rel="noopener">Écrire sur WhatsApp</a>
+      <div class="pay"><span>Numéro</span><code>${esc(pretty)}</code><button class="mini" data-copy="${esc(pretty)}">Copier</button></div>
+    </div>
+    <div class="faq"><h2>Questions fréquentes</h2>
+      ${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div>`;
 }
 
 /* ---------- Installation ---------- */
@@ -521,4 +700,4 @@ if ("serviceWorker" in navigator) window.addEventListener("load", () => navigato
 go(location.hash.slice(1) || "matchs", false);
 loadMatches();
 initFirebase();
-liveBadge(); setInterval(liveBadge, 120000);
+renderHelp();

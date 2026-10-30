@@ -238,8 +238,72 @@ form input:focus,form select:focus,#aPass:focus{border-color:var(--pitch);outlin
 .combolock .blurred{filter:blur(6px);user-select:none;pointer-events:none;width:100%;display:grid;gap:8px}
 .combolock .blurred div{height:44px;border-radius:12px;background:var(--chipbg)}
 #combos{display:grid;gap:16px}
+
+/* Résultats ✓ / ✗ */
+.res{display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:.78rem;border-radius:999px;padding:3px 9px;font-style:normal}
+.res.won{background:var(--soft);color:var(--good)}
+.res.lost{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.res.live{background:color-mix(in srgb,var(--bad) 10%,transparent);color:var(--bad)}
+.c-won{background:var(--soft);color:var(--good)}
+.c-lost{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.c-live{background:color-mix(in srgb,var(--bad) 10%,transparent);color:var(--bad)}
+.time .lmin{text-align:left;font-size:.86rem}
+.bilan{background:var(--surface);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;display:grid;gap:8px}
+.bil{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bil b{margin-left:auto;font-family:var(--display);font-weight:800}
+.lrow{width:100%;background:none;border:0;border-bottom:1px solid var(--line);text-align:left;color:inherit;font:inherit}
+/* Page de détail */
+.back{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:999px;padding:8px 14px;font-weight:600;justify-self:start}
+#detail{display:grid;gap:14px}
+.dhead{background:var(--surface);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+.lghead.plain{border-bottom:1px solid var(--line)}
+.dteams{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:18px 12px 20px}
+.dteam{display:grid;justify-items:center;gap:6px;text-align:center;min-width:0}
+.dteam b{font-family:var(--display);font-weight:800;font-size:1.02rem;line-height:1.15;overflow-wrap:anywhere}
+.dteam small{font-size:.7rem;color:var(--muted)}
+.crest{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;font-family:var(--display);font-weight:800;color:#fff;background:var(--home)}
+.crest.away{background:var(--away)}
+.dmid{display:grid;justify-items:center;gap:4px;min-width:92px}
+.dscore{font-family:var(--display);font-weight:800;font-size:2rem;line-height:1;font-variant-numeric:tabular-nums}
+.dscore.time{font-size:1.6rem}
+.dscore.on,.dstate.on{color:var(--bad)}
+.dstate{font-size:.74rem;color:var(--muted);font-weight:600;text-align:center;text-transform:capitalize}
+.goals{border-top:1px solid var(--line);padding:10px 16px;display:grid;gap:6px}
+.goal{display:flex;gap:8px;font-size:.86rem}
+.goal span{color:var(--muted);min-width:34px}
+.goal.away{flex-direction:row-reverse;text-align:right}
+.dcard{background:var(--surface);border-radius:22px;box-shadow:var(--shadow);padding:16px;display:grid;gap:10px}
+.lockcard{text-align:center;justify-items:center}
+.pickrow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.bigpick{display:block;font-family:var(--display);font-weight:800;font-size:1.2rem;margin-top:2px}
+.pickright{display:grid;justify-items:end;gap:6px}
+.dcard .p3{grid-area:auto}
+.p3.big .b{height:12px}
+.fchips{display:flex;gap:4px}
+.fc{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:.7rem;font-weight:800;color:#fff;font-style:normal}
+.stat3{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;font-size:.88rem;padding-bottom:6px;border-bottom:1px solid var(--line);align-items:baseline}
+.stat3 b{text-align:right;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat3 small{font-weight:500;color:var(--muted)}
+.stat3:last-child{border-bottom:0}
+/* Coupons : sélections cliquables */
+button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--line);text-align:left;color:inherit;font:inherit}
+.leg .o .res{font-size:.74rem}
+.combohead .res{margin-top:6px}
+/* Aide */
+#help{display:grid;gap:16px}
+.assist{background:var(--soft);border-radius:24px;padding:20px;display:grid;gap:12px}
+.cta.wa{text-decoration:none;text-align:center;background:#25a865;color:#fff}
+.faq{background:var(--surface);border-radius:24px;box-shadow:var(--shadow);padding:18px;display:grid;gap:4px}
+.faq h2{margin-bottom:6px}
+.faq details{border-bottom:1px solid var(--line);padding:12px 0}
+.faq details:last-child{border-bottom:0}
+.faq summary{font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--pitch);font-weight:800;font-size:1.2rem;line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin:8px 0 0;color:var(--muted);font-size:.92rem}
 /* Barre d onglets */
-.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.06);display:grid;grid-template-columns:repeat(4,1fr);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.06);display:grid;grid-template-columns:repeat(5,1fr);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 .tabbar button{position:relative;border:0;background:none;display:grid;justify-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:.7rem;font-weight:600;border-radius:14px}
 .tabbar svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tabbar button[aria-current="page"]{color:var(--pitch)}
@@ -313,6 +377,7 @@ form input:focus,form select:focus,#aPass:focus{border-color:var(--pitch);outlin
 <main class="wrap">
   <section class="view" data-view="matchs">
     <div class="days" id="days" role="tablist" aria-label="Jour"></div>
+    <div class="bilan" id="bilan" hidden></div>
     <section class="top" id="topSec" hidden>
       <div class="sechead"><h2>Les plus sûrs du week-end</h2></div>
       <div class="picks" id="picks"></div>
@@ -337,8 +402,17 @@ form input:focus,form select:focus,#aPass:focus{border-color:var(--pitch);outlin
   </section>
 
   <section class="view" data-view="combos" hidden>
-    <div class="sechead"><h2>Combinés du week-end</h2></div>
+    <div class="sechead"><h2>Coupons du jour</h2></div>
+    <div class="days" id="comboDays" role="tablist" aria-label="Jour"></div>
     <div id="combos"></div>
+  </section>
+
+  <section class="view" data-view="match" hidden>
+    <div id="detail"></div>
+  </section>
+
+  <section class="view" data-view="aide" hidden>
+    <div id="help"></div>
   </section>
 
   <section class="view" data-view="compte" hidden>
@@ -384,7 +458,8 @@ form input:focus,form select:focus,#aPass:focus{border-color:var(--pitch);outlin
 <nav class="tabbar" aria-label="Navigation">
   <button data-go="matchs" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/></svg><span>Matchs</span></button>
   <button data-go="live"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4"/></svg><span>Live</span><i class="livedot" id="liveDot" hidden></i></button>
-  <button data-go="combos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 9h6M9 13h6"/></svg><span>Combinés</span></button>
+  <button data-go="combos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 9h6M9 13h6"/></svg><span>Coupons</span></button>
+  <button data-go="aide"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/><circle cx="12" cy="17" r=".6"/></svg><span>Aide</span></button>
   <button data-go="compte"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Compte</span></button>
 </nav>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
