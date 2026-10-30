@@ -1,0 +1,1015 @@
+{
+"weekend": "30 oct. – 2 nov. 2026",
+"updatedAt": "2026-10-30T09:30:00Z",
+"sources": "Classements : Sports Mole (PL), Vavel (Liga, Serie A, Bundesliga), résultats Maxifoot (Ligue 1). Calendriers : Legz, Maxifoot, anstosszeiten.de.",
+"matches": [
+{
+"id": "pl-chelsea-man-united",
+"league": "PL",
+"leagueName": "Premier League",
+"kickoff": "2026-10-31T12:30:00Z",
+"leagueAvg": 1.387,
+"home": {
+"name": "Chelsea",
+"gp": 8,
+"gf": 17,
+"ga": 15,
+"form": "NDVVD"
+},
+"away": {
+"name": "Man United",
+"gp": 8,
+"gf": 10,
+"ga": 13,
+"form": "DNNND"
+}
+},
+{
+"id": "pl-hull-city-ipswich",
+"league": "PL",
+"leagueName": "Premier League",
+"kickoff": "2026-10-31T15:00:00Z",
+"leagueAvg": 1.387,
+"home": {
+"name": "Hull City",
+"gp": 8,
+"gf": 9,
+"ga": 8,
+"form": "NDNDN"
+},
+"away": {
+"name": "Ipswich",
+"gp": 8,
+"gf": 12,
+"ga": 16,
+"form": "VDVDN"
+}
+},
+{
+"id": "pl-man-city-brighton",
+"league": "PL",
+"leagueName": "Premier League",
+"kickoff": "2026-10-31T15:00:00Z",
+"leagueAvg": 1.387,
+"home": {
+"name": "Man City",
+"gp": 8,
+"gf": 20,
+"ga": 9,
+"form": "VVVVD"
+},
+"away": {
+"name": "Brighton",
+"gp": 8,
+"gf": 23,
+"ga": 7,
+"form": "VVVVD"
+}
+},
+{
+"id": "pl-bournemouth-leeds",
+"league": "PL",
+"leagueName": "Premier League",
+"kickoff": "2026-10-31T15:00:00Z",
+"leagueAvg": 1.387,
+"home": {
+"name": "Bournemouth",
+"gp": 8,
+"gf": 12,
+"ga": 13,
+"form": "NDDVV"
+},
+"away": {
+"name": "Leeds",
+"gp": 8,
+"gf": 9,
+"ga": 6,
+"form": "VNDNN"
+}
+},
+{
+"id": "pl-brentford-nottm-forest",
+"league": "PL",
+"leagueName": "Premier League",
+"kickoff": "2026-10-31T15:00:00Z",
+"leagueAvg": 1.387,
+"home": {
+"name": "Brentford",
+"gp": 8,
+"gf": 14,
+"ga": 9,
+"form": "NVNDN"
+},
+"away": {
+"name": "Nottm Forest",
+"gp": 8,
+"gf": 6,
+"ga": 10,
+"form": "VDDDN"
+}
+},
+{
+"id": "pl-coventry-sunderland",
+"league": "PL",
+"leagueName": "Premier League",
+"kickoff": "2026-10-31T15:00:00Z",
+"leagueAvg": 1.387,
+"home": {
+"name": "Coventry",
+"gp": 8,
+"gf": 6,
+"ga": 15,
+"form": "DVVDD"
+},
+"away": {
+"name": "Sunderland",
+"gp": 8,
+"gf": 6,
+"ga": 14,
+"form": "DDDDN"
+}
+},
+{
+"id": "pl-tottenham-crystal-palace",
+"league": "PL",
+"leagueName": "Premier League",
+"kickoff": "2026-10-31T17:30:00Z",
+"leagueAvg": 1.387,
+"home": {
+"name": "Tottenham",
+"gp": 8,
+"gf": 8,
+"ga": 10,
+"form": "NDNVV"
+},
+"away": {
+"name": "Crystal Palace",
+"gp": 8,
+"gf": 9,
+"ga": 19,
+"form": "DNVDD"
+}
+},
+{
+"id": "pl-aston-villa-fulham",
+"league": "PL",
+"leagueName": "Premier League",
+"kickoff": "2026-10-31T20:00:00Z",
+"leagueAvg": 1.387,
+"home": {
+"name": "Aston Villa",
+"gp": 8,
+"gf": 9,
+"ga": 12,
+"form": "DVNVV"
+},
+"away": {
+"name": "Fulham",
+"gp": 8,
+"gf": 8,
+"ga": 10,
+"form": "NNDVV"
+}
+},
+{
+"id": "pl-liverpool-arsenal",
+"league": "PL",
+"leagueName": "Premier League",
+"kickoff": "2026-11-01T16:30:00Z",
+"leagueAvg": 1.387,
+"home": {
+"name": "Liverpool",
+"gp": 8,
+"gf": 11,
+"ga": 8,
+"form": "NVDVV"
+},
+"away": {
+"name": "Arsenal",
+"gp": 8,
+"gf": 13,
+"ga": 5,
+"form": "VDVVV"
+}
+},
+{
+"id": "pl-newcastle-everton",
+"league": "PL",
+"leagueName": "Premier League",
+"kickoff": "2026-11-02T20:00:00Z",
+"leagueAvg": 1.387,
+"home": {
+"name": "Newcastle",
+"gp": 8,
+"gf": 12,
+"ga": 14,
+"form": "DVDDV"
+},
+"away": {
+"name": "Everton",
+"gp": 8,
+"gf": 8,
+"ga": 9,
+"form": "NVNDD"
+}
+},
+{
+"id": "liga-villarreal-espanyol",
+"league": "LIGA",
+"leagueName": "Liga",
+"kickoff": "2026-10-30T20:00:00Z",
+"leagueAvg": 1.505,
+"home": {
+"name": "Villarreal",
+"gp": 10,
+"gf": 15,
+"ga": 14,
+"form": "VVDNV"
+},
+"away": {
+"name": "Espanyol",
+"gp": 10,
+"gf": 12,
+"ga": 14,
+"form": "DDNDD"
+}
+},
+{
+"id": "liga-levante-atl-madrid",
+"league": "LIGA",
+"leagueName": "Liga",
+"kickoff": "2026-10-31T13:00:00Z",
+"leagueAvg": 1.505,
+"home": {
+"name": "Levante",
+"gp": 10,
+"gf": 16,
+"ga": 19,
+"form": "DNNVD"
+},
+"away": {
+"name": "Atl. Madrid",
+"gp": 10,
+"gf": 20,
+"ga": 8,
+"form": "VVVVV"
+}
+},
+{
+"id": "liga-rayo-vallecano-celta-vigo",
+"league": "LIGA",
+"leagueName": "Liga",
+"kickoff": "2026-10-31T15:15:00Z",
+"leagueAvg": 1.505,
+"home": {
+"name": "Rayo Vallecano",
+"gp": 9,
+"gf": 12,
+"ga": 20,
+"form": "DVNND"
+},
+"away": {
+"name": "Celta Vigo",
+"gp": 10,
+"gf": 10,
+"ga": 7,
+"form": "NVNVN"
+}
+},
+{
+"id": "liga-betis-malaga",
+"league": "LIGA",
+"leagueName": "Liga",
+"kickoff": "2026-10-31T17:30:00Z",
+"leagueAvg": 1.505,
+"home": {
+"name": "Betis",
+"gp": 10,
+"gf": 16,
+"ga": 14,
+"form": "VNVDN"
+},
+"away": {
+"name": "Malaga",
+"gp": 10,
+"gf": 7,
+"ga": 19,
+"form": "DDNDN"
+}
+},
+{
+"id": "liga-barcelone-alavs",
+"league": "LIGA",
+"leagueName": "Liga",
+"kickoff": "2026-10-31T20:00:00Z",
+"leagueAvg": 1.505,
+"home": {
+"name": "Barcelone",
+"gp": 10,
+"gf": 40,
+"ga": 11,
+"form": "VVVVD"
+},
+"away": {
+"name": "Alavés",
+"gp": 10,
+"gf": 14,
+"ga": 11,
+"form": "DNDDN"
+}
+},
+{
+"id": "liga-getafe-sville",
+"league": "LIGA",
+"leagueName": "Liga",
+"kickoff": "2026-11-01T13:00:00Z",
+"leagueAvg": 1.505,
+"home": {
+"name": "Getafe",
+"gp": 10,
+"gf": 5,
+"ga": 15,
+"form": "DVDND"
+},
+"away": {
+"name": "Séville",
+"gp": 10,
+"gf": 16,
+"ga": 16,
+"form": "VDNDV"
+}
+},
+{
+"id": "liga-racing-santander-real-madrid",
+"league": "LIGA",
+"leagueName": "Liga",
+"kickoff": "2026-11-01T15:15:00Z",
+"leagueAvg": 1.505,
+"home": {
+"name": "Racing Santander",
+"gp": 10,
+"gf": 15,
+"ga": 26,
+"form": "DDNDV"
+},
+"away": {
+"name": "Real Madrid",
+"gp": 10,
+"gf": 25,
+"ga": 10,
+"form": "VDVVV"
+}
+},
+{
+"id": "liga-elche-valence",
+"league": "LIGA",
+"leagueName": "Liga",
+"kickoff": "2026-11-01T17:30:00Z",
+"leagueAvg": 1.505,
+"home": {
+"name": "Elche",
+"gp": 10,
+"gf": 14,
+"ga": 17,
+"form": "DVNNV"
+},
+"away": {
+"name": "Valence",
+"gp": 10,
+"gf": 7,
+"ga": 17,
+"form": "VDNND"
+}
+},
+{
+"id": "liga-athletic-bilbao-real-sociedad",
+"league": "LIGA",
+"leagueName": "Liga",
+"kickoff": "2026-11-01T20:00:00Z",
+"leagueAvg": 1.505,
+"home": {
+"name": "Athletic Bilbao",
+"gp": 9,
+"gf": 12,
+"ga": 9,
+"form": "NNNDV"
+},
+"away": {
+"name": "Real Sociedad",
+"gp": 10,
+"gf": 19,
+"ga": 18,
+"form": "DVVVV"
+}
+},
+{
+"id": "liga-la-corogne-osasuna",
+"league": "LIGA",
+"leagueName": "Liga",
+"kickoff": "2026-11-02T20:00:00Z",
+"leagueAvg": 1.505,
+"home": {
+"name": "La Corogne",
+"gp": 10,
+"gf": 13,
+"ga": 13,
+"form": "DNDND"
+},
+"away": {
+"name": "Osasuna",
+"gp": 10,
+"gf": 10,
+"ga": 20,
+"form": "DNDVD"
+}
+},
+{
+"id": "sa-bologne-monza",
+"league": "SA",
+"leagueName": "Serie A",
+"kickoff": "2026-10-31T14:00:00Z",
+"leagueAvg": 1.578,
+"home": {
+"name": "Bologne",
+"gp": 9,
+"gf": 12,
+"ga": 12,
+"form": "NVDVV"
+},
+"away": {
+"name": "Monza",
+"gp": 9,
+"gf": 16,
+"ga": 22,
+"form": "VDVDD"
+}
+},
+{
+"id": "sa-udinese-as-rome",
+"league": "SA",
+"leagueName": "Serie A",
+"kickoff": "2026-10-31T17:00:00Z",
+"leagueAvg": 1.578,
+"home": {
+"name": "Udinese",
+"gp": 9,
+"gf": 9,
+"ga": 18,
+"form": "DDDDN"
+},
+"away": {
+"name": "AS Rome",
+"gp": 9,
+"gf": 23,
+"ga": 8,
+"form": "NNVNV"
+}
+},
+{
+"id": "sa-milan-ac-inter",
+"league": "SA",
+"leagueName": "Serie A",
+"kickoff": "2026-10-31T19:45:00Z",
+"leagueAvg": 1.578,
+"home": {
+"name": "Milan AC",
+"gp": 9,
+"gf": 18,
+"ga": 11,
+"form": "VNVVD"
+},
+"away": {
+"name": "Inter",
+"gp": 9,
+"gf": 25,
+"ga": 10,
+"form": "NVVVV"
+}
+},
+{
+"id": "sa-cme-venise",
+"league": "SA",
+"leagueName": "Serie A",
+"kickoff": "2026-11-01T11:30:00Z",
+"leagueAvg": 1.578,
+"home": {
+"name": "Côme",
+"gp": 9,
+"gf": 17,
+"ga": 8,
+"form": "DNVVV"
+},
+"away": {
+"name": "Venise",
+"gp": 9,
+"gf": 6,
+"ga": 19,
+"form": "DDVDD"
+}
+},
+{
+"id": "sa-lazio-cagliari",
+"league": "SA",
+"leagueName": "Serie A",
+"kickoff": "2026-11-01T14:00:00Z",
+"leagueAvg": 1.578,
+"home": {
+"name": "Lazio",
+"gp": 9,
+"gf": 22,
+"ga": 7,
+"form": "VVVVV"
+},
+"away": {
+"name": "Cagliari",
+"gp": 9,
+"gf": 8,
+"ga": 13,
+"form": "VNDDD"
+}
+},
+{
+"id": "sa-frosinone-torino",
+"league": "SA",
+"leagueName": "Serie A",
+"kickoff": "2026-11-01T14:00:00Z",
+"leagueAvg": 1.578,
+"home": {
+"name": "Frosinone",
+"gp": 9,
+"gf": 22,
+"ga": 14,
+"form": "VDVNV"
+},
+"away": {
+"name": "Torino",
+"gp": 9,
+"gf": 14,
+"ga": 14,
+"form": "NVVVD"
+}
+},
+{
+"id": "sa-lecce-genoa",
+"league": "SA",
+"leagueName": "Serie A",
+"kickoff": "2026-11-01T17:00:00Z",
+"leagueAvg": 1.578,
+"home": {
+"name": "Lecce",
+"gp": 9,
+"gf": 10,
+"ga": 19,
+"form": "DDVDD"
+},
+"away": {
+"name": "Genoa",
+"gp": 9,
+"gf": 8,
+"ga": 13,
+"form": "DVDVV"
+}
+},
+{
+"id": "sa-juventus-naples",
+"league": "SA",
+"leagueName": "Serie A",
+"kickoff": "2026-11-01T19:45:00Z",
+"leagueAvg": 1.578,
+"home": {
+"name": "Juventus",
+"gp": 9,
+"gf": 11,
+"ga": 10,
+"form": "VNDVD"
+},
+"away": {
+"name": "Naples",
+"gp": 9,
+"gf": 17,
+"ga": 11,
+"form": "NVDNV"
+}
+},
+{
+"id": "sa-sassuolo-fiorentina",
+"league": "SA",
+"leagueName": "Serie A",
+"kickoff": "2026-11-02T17:30:00Z",
+"leagueAvg": 1.578,
+"home": {
+"name": "Sassuolo",
+"gp": 9,
+"gf": 14,
+"ga": 22,
+"form": "DNDDD"
+},
+"away": {
+"name": "Fiorentina",
+"gp": 9,
+"gf": 11,
+"ga": 21,
+"form": "NDDDN"
+}
+},
+{
+"id": "sa-atalanta-parme",
+"league": "SA",
+"leagueName": "Serie A",
+"kickoff": "2026-11-02T19:45:00Z",
+"leagueAvg": 1.578,
+"home": {
+"name": "Atalanta",
+"gp": 9,
+"gf": 16,
+"ga": 17,
+"form": "DVDNN"
+},
+"away": {
+"name": "Parme",
+"gp": 9,
+"gf": 5,
+"ga": 15,
+"form": "VDDDN"
+}
+},
+{
+"id": "bl-elversberg-mayence",
+"league": "BL",
+"leagueName": "Bundesliga",
+"kickoff": "2026-10-30T19:30:00Z",
+"leagueAvg": 1.778,
+"home": {
+"name": "Elversberg",
+"gp": 7,
+"gf": 12,
+"ga": 15,
+"form": "DNDVD"
+},
+"away": {
+"name": "Mayence",
+"gp": 7,
+"gf": 16,
+"ga": 13,
+"form": "DVDVD"
+}
+},
+{
+"id": "bl-leverkusen-stuttgart",
+"league": "BL",
+"leagueName": "Bundesliga",
+"kickoff": "2026-10-31T14:30:00Z",
+"leagueAvg": 1.778,
+"home": {
+"name": "Leverkusen",
+"gp": 7,
+"gf": 16,
+"ga": 12,
+"form": "NVVVD"
+},
+"away": {
+"name": "Stuttgart",
+"gp": 7,
+"gf": 10,
+"ga": 13,
+"form": "DDVDD"
+}
+},
+{
+"id": "bl-augsbourg-fribourg",
+"league": "BL",
+"leagueName": "Bundesliga",
+"kickoff": "2026-10-31T14:30:00Z",
+"leagueAvg": 1.778,
+"home": {
+"name": "Augsbourg",
+"gp": 7,
+"gf": 17,
+"ga": 13,
+"form": "NDNDN"
+},
+"away": {
+"name": "Fribourg",
+"gp": 7,
+"gf": 16,
+"ga": 9,
+"form": "VNVDD"
+}
+},
+{
+"id": "bl-gladbach-paderborn",
+"league": "BL",
+"leagueName": "Bundesliga",
+"kickoff": "2026-10-31T14:30:00Z",
+"leagueAvg": 1.778,
+"home": {
+"name": "Gladbach",
+"gp": 7,
+"gf": 11,
+"ga": 22,
+"form": "DDDDV"
+},
+"away": {
+"name": "Paderborn",
+"gp": 7,
+"gf": 6,
+"ga": 9,
+"form": "DVDNV"
+}
+},
+{
+"id": "bl-werder-brme-hoffenheim",
+"league": "BL",
+"leagueName": "Bundesliga",
+"kickoff": "2026-10-31T14:30:00Z",
+"leagueAvg": 1.778,
+"home": {
+"name": "Werder Brême",
+"gp": 7,
+"gf": 15,
+"ga": 14,
+"form": "NVNNV"
+},
+"away": {
+"name": "Hoffenheim",
+"gp": 7,
+"gf": 14,
+"ga": 14,
+"form": "VDDVV"
+}
+},
+{
+"id": "bl-schalke-04-rb-leipzig",
+"league": "BL",
+"leagueName": "Bundesliga",
+"kickoff": "2026-10-31T14:30:00Z",
+"leagueAvg": 1.778,
+"home": {
+"name": "Schalke 04",
+"gp": 7,
+"gf": 4,
+"ga": 7,
+"form": "VNDDN"
+},
+"away": {
+"name": "RB Leipzig",
+"gp": 7,
+"gf": 20,
+"ga": 11,
+"form": "VDVDV"
+}
+},
+{
+"id": "bl-bayern-munich-dortmund",
+"league": "BL",
+"leagueName": "Bundesliga",
+"kickoff": "2026-10-31T17:30:00Z",
+"leagueAvg": 1.778,
+"home": {
+"name": "Bayern Munich",
+"gp": 7,
+"gf": 25,
+"ga": 6,
+"form": "VVNVV"
+},
+"away": {
+"name": "Dortmund",
+"gp": 7,
+"gf": 12,
+"ga": 4,
+"form": "VVNNV"
+}
+},
+{
+"id": "bl-union-berlin-cologne",
+"league": "BL",
+"leagueName": "Bundesliga",
+"kickoff": "2026-11-01T14:30:00Z",
+"leagueAvg": 1.778,
+"home": {
+"name": "Union Berlin",
+"gp": 7,
+"gf": 6,
+"ga": 18,
+"form": "DDVNN"
+},
+"away": {
+"name": "Cologne",
+"gp": 7,
+"gf": 8,
+"ga": 11,
+"form": "NDVDN"
+}
+},
+{
+"id": "bl-francfort-hambourg",
+"league": "BL",
+"leagueName": "Bundesliga",
+"kickoff": "2026-11-01T16:30:00Z",
+"leagueAvg": 1.778,
+"home": {
+"name": "Francfort",
+"gp": 7,
+"gf": 10,
+"ga": 17,
+"form": "VNDVD"
+},
+"away": {
+"name": "Hambourg",
+"gp": 7,
+"gf": 6,
+"ga": 16,
+"form": "DVVVD"
+}
+},
+{
+"id": "l1-nice-rennes",
+"league": "L1",
+"leagueName": "Ligue 1",
+"kickoff": "2026-10-30T18:00:00Z",
+"leagueAvg": 1.486,
+"home": {
+"name": "Nice",
+"gp": 8,
+"gf": 8,
+"ga": 10,
+"form": "DVVDV"
+},
+"away": {
+"name": "Rennes",
+"gp": 8,
+"gf": 18,
+"ga": 14,
+"form": "VDVDV"
+}
+},
+{
+"id": "l1-le-havre-paris-sg",
+"league": "L1",
+"leagueName": "Ligue 1",
+"kickoff": "2026-10-30T18:00:00Z",
+"leagueAvg": 1.486,
+"home": {
+"name": "Le Havre",
+"gp": 8,
+"gf": 8,
+"ga": 15,
+"form": "NDDDD"
+},
+"away": {
+"name": "Paris SG",
+"gp": 8,
+"gf": 16,
+"ga": 9,
+"form": "VVVVV"
+}
+},
+{
+"id": "l1-lille-lens",
+"league": "L1",
+"leagueName": "Ligue 1",
+"kickoff": "2026-10-30T20:05:00Z",
+"leagueAvg": 1.486,
+"home": {
+"name": "Lille",
+"gp": 8,
+"gf": 11,
+"ga": 6,
+"form": "VDVNN"
+},
+"away": {
+"name": "Lens",
+"gp": 8,
+"gf": 16,
+"ga": 12,
+"form": "NDVVV"
+}
+},
+{
+"id": "l1-troyes-le-mans",
+"league": "L1",
+"leagueName": "Ligue 1",
+"kickoff": "2026-10-31T19:45:00Z",
+"leagueAvg": 1.486,
+"home": {
+"name": "Troyes",
+"gp": 8,
+"gf": 5,
+"ga": 16,
+"form": "DDDDN"
+},
+"away": {
+"name": "Le Mans",
+"gp": 8,
+"gf": 11,
+"ga": 16,
+"form": "NVDDN"
+}
+},
+{
+"id": "l1-strasbourg-auxerre",
+"league": "L1",
+"leagueName": "Ligue 1",
+"kickoff": "2026-11-01T14:00:00Z",
+"leagueAvg": 1.486,
+"home": {
+"name": "Strasbourg",
+"gp": 8,
+"gf": 12,
+"ga": 18,
+"form": "NDDDD"
+},
+"away": {
+"name": "Auxerre",
+"gp": 8,
+"gf": 12,
+"ga": 18,
+"form": "VVDVN"
+}
+},
+{
+"id": "l1-lyon-angers",
+"league": "L1",
+"leagueName": "Ligue 1",
+"kickoff": "2026-11-01T16:15:00Z",
+"leagueAvg": 1.486,
+"home": {
+"name": "Lyon",
+"gp": 8,
+"gf": 13,
+"ga": 7,
+"form": "NVDVD"
+},
+"away": {
+"name": "Angers",
+"gp": 8,
+"gf": 9,
+"ga": 15,
+"form": "NVDDN"
+}
+},
+{
+"id": "l1-paris-fc-monaco",
+"league": "L1",
+"leagueName": "Ligue 1",
+"kickoff": "2026-11-01T16:15:00Z",
+"leagueAvg": 1.486,
+"home": {
+"name": "Paris FC",
+"gp": 8,
+"gf": 13,
+"ga": 9,
+"form": "NVDVD"
+},
+"away": {
+"name": "Monaco",
+"gp": 8,
+"gf": 11,
+"ga": 7,
+"form": "NVNDN"
+}
+},
+{
+"id": "l1-marseille-toulouse",
+"league": "L1",
+"leagueName": "Ligue 1",
+"kickoff": "2026-11-01T19:45:00Z",
+"leagueAvg": 1.486,
+"home": {
+"name": "Marseille",
+"gp": 8,
+"gf": 18,
+"ga": 13,
+"form": "DDVVV"
+},
+"away": {
+"name": "Toulouse",
+"gp": 8,
+"gf": 12,
+"ga": 11,
+"form": "NVNVN"
+}
+},
+{
+"id": "l1-lorient-brest",
+"league": "L1",
+"leagueName": "Ligue 1",
+"kickoff": "2026-11-02T19:45:00Z",
+"leagueAvg": 1.486,
+"home": {
+"name": "Lorient",
+"gp": 8,
+"gf": 7,
+"ga": 6,
+"form": "NDVVN"
+},
+"away": {
+"name": "Brest",
+"gp": 8,
+"gf": 14,
+"ga": 12,
+"form": "DDVND"
+}
+}
+]
+}

@@ -1,0 +1,30 @@
+rules_version = '2';
+// Règles de sécurité Prono Lab : à coller dans Firebase > Firestore Database > Règles.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && request.auth.token.email == '22656286557@pronolab.app'; }
+    function isMe(uid) { return signedIn() && request.auth.uid == uid; }
+
+    // Profil de chaque client : lui seul et l'administrateur le voient
+    match /accounts/{uid} {
+      allow read: if isMe(uid) || isAdmin();
+      allow create, update: if isMe(uid);
+    }
+    // Demandes d'abonnement : le client crée la sienne, l'administrateur la valide
+    match /requests/{uid} {
+      allow read: if isMe(uid) || isAdmin();
+      allow create, update: if (isMe(uid) && request.resource.data.status == 'pending') || isAdmin();
+    }
+    // Abonnements actifs : seul l'administrateur les accorde
+    match /members/{uid} {
+      allow read: if isMe(uid) || isAdmin();
+      allow write: if isAdmin();
+    }
+    // Numéros de paiement : visibles par tous, modifiables par l'administrateur
+    match /meta/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

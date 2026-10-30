@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Prono Lab</title>
+<meta name="description" content="Les pronostics foot du week-end des cinq grands championnats européens.">
+<meta name="theme-color" content="#1d5c3a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: tableau d'affichage de stade — bandeau des coups sûrs, puis le programme du week-end jour par jour */
+:root{
+  --bg:#eef1ec; --surface:#ffffff; --ink:#14201a; --muted:#5b6b61; --line:#d6ddd7;
+  --pitch:#1d5c3a; --flood:#e3b31b; --home:#1d5c3a; --away:#b24a2c; --draw:#8a968e;
+  --good:#1f7a45; --bad:#a93a2a; --chipbg:#e2e8e3;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d1511; --surface:#15211b; --ink:#e7eee9; --muted:#93a59a; --line:#26352d;
+  --pitch:#5fbf88; --flood:#f0c43a; --home:#4fae79; --away:#d9744f; --draw:#6f7c74;
+  --good:#5fbf88; --bad:#e6805f; --chipbg:#1f2d26; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1511; --surface:#15211b; --ink:#e7eee9; --muted:#93a59a; --line:#26352d;
+  --pitch:#5fbf88; --flood:#f0c43a; --home:#4fae79; --away:#d9744f; --draw:#6f7c74;
+  --good:#5fbf88; --bad:#e6805f; --chipbg:#1f2d26; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+.wrap{max-width:1000px;margin:0 auto;padding-block:calc(16px + env(safe-area-inset-top,0px)) calc(48px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:26px}
+header{display:grid;gap:6px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,8vw,3.8rem);line-height:.88;margin:0;text-transform:uppercase;letter-spacing:.01em}
+h1 span{color:var(--pitch)}
+.sub{color:var(--muted);margin:0;max-width:62ch}
+.meta{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+h2{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:1.45rem;margin:0}
+.lab{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--flood);outline-offset:2px}
+
+.top{display:grid;gap:12px}
+.picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:10px}
+.pick{background:var(--pitch);color:#fff;border-radius:10px;padding:14px;display:grid;gap:6px;border:0;text-align:left;min-width:0}
+.pick .lg{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;opacity:.8;font-weight:600}
+.pick .teams{font-family:var(--display);font-weight:700;font-size:1.15rem;line-height:1.1;text-transform:uppercase}
+.pick .bet{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:1px solid rgba(255,255,255,.25);padding-top:8px}
+.pick .bet b{font-family:var(--display);font-size:1.05rem;font-weight:700}
+.pick .bet span{font-family:var(--display);font-weight:800;font-size:1.6rem;color:var(--flood);font-variant-numeric:tabular-nums}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pick{background:#1d3a2b}}
+:root[data-theme="dark"] .pick{background:#1d3a2b}
+
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.82rem;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.day{display:grid;gap:8px}
+.day>h3{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:1.05rem;letter-spacing:.06em;color:var(--muted);margin:6px 0 0}
+.m{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.m>button{display:grid;grid-template-columns:54px minmax(0,1fr) 150px 92px;gap:14px;align-items:center;width:100%;padding:12px 14px;background:none;border:0;text-align:left}
+.time{font-family:var(--mono);font-size:.85rem;display:grid;gap:2px}
+.time small{font-family:var(--body);font-size:.62rem;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.vs{display:grid;gap:3px;min-width:0}
+.row{display:flex;align-items:center;gap:8px;min-width:0}
+.tn{font-family:var(--display);font-weight:600;font-size:1.15rem;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fav .tn{font-weight:800}
+.form{display:flex;gap:2px;flex:none}
+.form i{width:7px;height:7px;border-radius:2px;display:block}
+.fV{background:var(--good)} .fN{background:var(--draw)} .fD{background:var(--bad)}
+.p3{display:grid;gap:4px}
+.p3 .b{display:flex;height:10px;border-radius:3px;overflow:hidden}
+.p3 .n{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.badge{justify-self:end;text-align:center;border-radius:8px;padding:6px 8px;min-width:84px;display:grid;gap:1px}
+.badge b{font-family:var(--display);font-weight:800;font-size:1.25rem;line-height:1}
+.badge small{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.c-fort{background:var(--good);color:#fff}
+.c-moyen{background:var(--flood);color:#14201a}
+.c-risque{background:var(--chipbg);color:var(--ink)}
+.det{border-top:1px solid var(--line);padding:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.det .k{display:grid;gap:8px}
+.kv{display:flex;justify-content:space-between;gap:10px;font-variant-numeric:tabular-nums;border-bottom:1px dashed var(--line);padding-bottom:4px}
+.kv span:last-child{font-family:var(--mono);font-size:.85rem}
+.sc{display:grid;grid-template-columns:44px 1fr 46px;gap:8px;align-items:center}
+.sc b{font-family:var(--display);font-size:1.1rem}
+.sc .t{height:7px;background:var(--line);border-radius:4px;overflow:hidden}
+.sc .t i{display:block;height:100%;background:var(--flood)}
+.sc span{font-family:var(--mono);font-size:.78rem;text-align:right}
+.club{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:14px;border-left:6px solid var(--flood)}
+.club.on{border-left-color:var(--good)}
+.club h2 small{font-family:var(--body);font-size:.8rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);margin-left:8px}
+.price{font-family:var(--display);font-weight:800;font-size:2.2rem;line-height:1;font-variant-numeric:tabular-nums}
+.price small{font-size:1rem;color:var(--muted);font-weight:600}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.step{display:grid;gap:8px;align-content:start}
+.step>b{font-family:var(--display);font-size:1.05rem;text-transform:uppercase;letter-spacing:.04em}
+.pay{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.pay span:first-child{font-weight:600}
+.pay code{font-family:var(--mono);font-size:.9rem;user-select:all}
+.mini{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:3px 8px;font-size:.75rem;font-weight:600}
+form{display:grid;gap:8px}
+form label{display:grid;gap:3px;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+form input,form select{font:inherit;font-size:.95rem;text-transform:none;letter-spacing:0;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
+.cta{background:var(--ink);color:var(--bg);border:0;border-radius:8px;padding:10px 14px;font-weight:600}
+.cta.alt{background:var(--good);color:#fff}
+.msg{font-size:.85rem;margin:0}
+.msg.ok{color:var(--good)} .msg.err{color:var(--bad)}
+.locked{position:relative}
+.locked .picks{filter:blur(7px);pointer-events:none;user-select:none}
+.lockover{position:absolute;inset:40px 0 0;display:grid;place-items:center}
+.lockover div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 18px;text-align:center;display:grid;gap:8px;max-width:320px}
+.lockdet{border-top:1px solid var(--line);padding:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;color:var(--muted)}
+.admin{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:18px;display:grid;gap:14px}
+.req{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:10px}
+.req .who{display:grid;gap:2px;min-width:0}
+.req .who span{font-size:.82rem;color:var(--muted);overflow-wrap:anywhere}
+.req .act{display:flex;gap:6px;flex-wrap:wrap}
+.welcome{background:var(--pitch);color:#fff;border-radius:14px;padding:24px;display:grid;gap:16px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .welcome{background:#1d3a2b}}
+:root[data-theme="dark"] .welcome{background:#1d3a2b}
+.welcome h2{font-size:clamp(1.6rem,5vw,2.2rem);line-height:1}
+.welcome p{margin:0;max-width:56ch;opacity:.9}
+.welcome form{max-width:520px}
+.welcome form label{color:rgba(255,255,255,.8)}
+.welcome form input,#aPass{background:#fff;color:#14201a;border-color:transparent}
+.welcome .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.welcome .cta{background:var(--flood);color:#14201a}
+.skip{background:none;border:0;color:#fff;text-decoration:underline;opacity:.85;padding:4px 0;justify-self:start}
+.welcome .msg.err{color:#ffd2c4}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.plan{position:relative;border:2px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:2px;cursor:pointer;text-transform:none;letter-spacing:0;color:var(--ink)}
+.plan input{position:absolute;opacity:0;pointer-events:none}
+.plan:has(input:checked){border-color:var(--pitch);background:color-mix(in srgb,var(--pitch) 8%,transparent)}
+.plan:has(input:focus-visible){outline:2px solid var(--flood);outline-offset:2px}
+.plan b{font-family:var(--display);font-size:1.5rem;font-weight:800;line-height:1}
+.plan span{font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.plan em{font-style:normal;font-size:.72rem;font-weight:700;color:var(--good)}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:28px;text-align:center;color:var(--muted)}
+.note{font-size:.8rem;color:var(--muted);max-width:78ch;margin:0}
+@media (max-width:680px){
+  .m>button{grid-template-columns:46px minmax(0,1fr) 78px;grid-template-areas:"t v g" "p p p";row-gap:10px}
+  .time{grid-area:t}.vs{grid-area:v}.p3{grid-area:p}.badge{grid-area:g;min-width:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+[hidden]{display:none!important}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.topbar .acts{display:flex;gap:6px;flex-wrap:wrap}
+.tabs{display:flex;gap:6px}
+.tabs button{flex:1;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:8px;padding:8px;font-weight:600}
+.tabs button[aria-selected="true"]{background:#fff;color:#14201a}
+.welcome a,.linkbtn{background:none;border:0;color:#fff;text-decoration:underline;padding:0;font-size:.85rem;justify-self:start}
+.preview{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;background:var(--chipbg);border-radius:8px;padding:8px 10px}
+.clubhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:10px}
+.locked .picks{max-height:300px;overflow:hidden}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="topbar">
+      <h1>Prono <span>Lab</span></h1>
+      <div class="acts">
+        <button class="chip" id="installBtn" hidden>Installer l'app</button>
+        <button class="chip" id="accBtn" hidden></button>
+      </div>
+    </div>
+    <p class="sub" id="sub">Les matchs du week-end des cinq grands championnats européens, analysés automatiquement.</p>
+    <span class="meta" id="upd"></span>
+  </header>
+
+  <section class="welcome" id="welcome" hidden>
+    <div class="tabs" id="tabs" role="tablist">
+      <button type="button" id="tabCreate" role="tab" aria-selected="true">Créer un compte</button>
+      <button type="button" id="tabLogin" role="tab" aria-selected="false">Se connecter</button>
+    </div>
+    <h2 id="welcomeTitle">Bienvenue sur Prono Lab</h2>
+    <p id="welcomeText"></p>
+    <form id="accForm" autocomplete="on">
+      <label for="aName" data-create>Prénom ou pseudo<input id="aName" maxlength="40" autocomplete="nickname"></label>
+      <label for="aPhone">Numéro de téléphone<input id="aPhone" inputmode="tel" maxlength="20" placeholder="ex. 70 00 00 00" autocomplete="tel"></label>
+      <label for="aPass" id="aPassLab">Mot de passe (6 caractères minimum)</label>
+      <input id="aPass" type="password" minlength="6" autocomplete="current-password">
+      <label for="aCity" data-create>Ville (facultatif)<input id="aCity" maxlength="40" placeholder="ex. Ouagadougou"></label>
+      <button class="cta" type="submit" id="accSubmit">Créer mon compte</button>
+      <button class="linkbtn" type="button" id="forgot" hidden>Mot de passe oublié ?</button>
+      <p class="msg" id="accMsg"></p>
+    </form>
+    <button class="skip" id="skipBtn" type="button">Continuer sans compte</button>
+  </section>
+
+  <section class="club" id="club" hidden></section>
+
+  <section class="top" id="topSec" hidden>
+    <h2>Les plus sûrs du week-end</h2>
+    <div class="picks" id="picks"></div>
+  </section>
+
+  <section style="display:grid;gap:14px">
+    <div class="bar">
+      <div class="chips" id="lgChips" role="group" aria-label="Championnat"></div>
+      <div class="chips" role="group" aria-label="Tri">
+        <button class="chip" id="sTime" aria-pressed="true">Par horaire</button>
+        <button class="chip" id="sConf" aria-pressed="false">Par confiance</button>
+      </div>
+    </div>
+    <div id="list"><div class="empty">Chargement des matchs du week-end…</div></div>
+  </section>
+
+  <p class="note">Comment c'est calculé : pour chaque équipe, l'app compare ses buts marqués et encaissés par match à la moyenne de son championnat, ajoute l'avantage du terrain (+10 % / −10 %) et la forme des 5 derniers matchs (±10 %), puis applique un modèle de Poisson. Confiance : <b>Fort</b> à partir de 60 %, <b>Moyen</b> de 45 à 60 %, <b>Risqué</b> en dessous. Ce sont des estimations statistiques : blessures, rotations et enjeux ne sont pas pris en compte. Si tu paries, fixe-toi une limite.</p>
+  <p class="note" id="src"></p>
+
+  <section class="admin" id="admin" hidden>
+    <h2>Gestion des membres <small class="meta" id="accCount"></small></h2>
+    <form id="payForm">
+      <span class="lab">Tes numéros de paiement (affichés aux visiteurs)</span>
+      <div class="steps">
+        <label for="nOrange">Orange Money<input id="nOrange" inputmode="tel"></label>
+        <label for="nMoov">Moov Money<input id="nMoov" inputmode="tel"></label>
+        <label for="nWave">Wave<input id="nWave" inputmode="tel"></label>
+      </div>
+      <div><button class="cta" type="submit">Enregistrer les numéros</button> <span class="msg" id="payMsg"></span></div>
+    </form>
+    <div style="display:grid;gap:10px"><span class="lab">Demandes en attente</span><div id="reqs"></div></div>
+    <div style="display:grid;gap:8px"><span class="lab">Membres actifs</span><div id="mems"></div></div>
+  </section>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
