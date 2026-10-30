@@ -302,6 +302,31 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
 .faq summary::after{content:"+";color:var(--pitch);font-weight:800;font-size:1.2rem;line-height:1}
 .faq details[open] summary::after{content:"–"}
 .faq p{margin:8px 0 0;color:var(--muted);font-size:.92rem}
+
+/* Live : chrono, événements, chronologie, statistiques */
+.flag.live{background:var(--bad);font-size:.55rem;width:auto;padding:0 6px}
+.lrow{grid-template-columns:62px minmax(0,1fr) 28px}
+.lrow .evs{grid-column:2 / -1;display:flex;flex-wrap:wrap;gap:4px}
+.evc{font-size:.72rem;background:var(--bg);border-radius:999px;padding:2px 8px;color:var(--muted);white-space:nowrap}
+.lmin span[data-clock]{font-variant-numeric:tabular-nums}
+#lvDetail{display:grid;gap:14px}
+.lvlogo{width:52px;height:52px;object-fit:contain}
+.ourp{border:0;text-align:left;color:inherit;font:inherit}
+.tlwrap{display:grid;gap:2px}
+.tl{display:grid;grid-template-columns:44px 24px 1fr;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.tl:last-child{border-bottom:0}
+.tl.aw{grid-template-columns:1fr 24px 44px;text-align:right}
+.tl.aw .tlmin{order:3}.tl.aw .tlic{order:2}.tl.aw div{order:1}
+.tlmin{font-weight:700;font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.tlic{font-size:1rem;text-align:center}
+.tl b{display:block;font-size:.9rem;font-weight:600}
+.tl small{font-size:.74rem;color:var(--muted)}
+.st{display:grid;gap:5px}
+.stn{display:grid;grid-template-columns:auto 1fr auto;gap:8px;font-size:.86rem;align-items:baseline}
+.stn span{text-align:center;color:var(--muted)}
+.stb{display:flex;gap:3px;height:6px}
+.stb i{border-radius:999px;background:var(--home)}
+.stb i.aw{background:var(--away)}
 /* Barre d onglets */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.06);display:grid;grid-template-columns:repeat(5,1fr);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 .tabbar button{position:relative;border:0;background:none;display:grid;justify-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:.7rem;font-weight:600;border-radius:14px}
@@ -396,8 +421,7 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
   </section>
 
   <section class="view" data-view="live" hidden>
-    <div class="sechead"><h2>En direct</h2><span class="meta" id="liveUpd"></span></div>
-    <div class="days" id="liveDays" role="tablist" aria-label="Jour"></div>
+    <div class="sechead"><h2><span class="pulse"></span>Matchs en cours</h2><span class="meta" id="liveUpd"></span></div>
     <div id="live"><div class="empty">Chargement des scores…</div></div>
   </section>
 
@@ -409,6 +433,10 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
 
   <section class="view" data-view="match" hidden>
     <div id="detail"></div>
+  </section>
+
+  <section class="view" data-view="lv" hidden>
+    <div id="lvDetail"></div>
   </section>
 
   <section class="view" data-view="aide" hidden>

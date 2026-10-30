@@ -291,7 +291,7 @@ document.addEventListener("click", async e => {
   const gb = t.closest("[data-go]"); if (gb) { go(gb.dataset.go); return; }
   if (t.closest("[data-join]")) { go("compte"); setTimeout(() => $("club").scrollIntoView({ behavior: "smooth", block: "start" }), 50); return; }
   const dy = t.closest("[data-day]"); if (dy) { selDay = dy.dataset.day; render(); return; }
-  const ld = t.closest("[data-lday]"); if (ld) { liveOff = +ld.dataset.lday; loadLive(true); return; }
+  const lvb = t.closest("[data-lv]"); if (lvb) { go("lv-" + lvb.dataset.lv); return; }
   const cc = t.closest("[data-ticket]"); if (cc) { const txt = ticketText(cc.dataset.ticket); try { await navigator.clipboard.writeText(txt); cc.textContent = "Ticket copié"; } catch (err) { cc.textContent = "Copie impossible"; } return; }
   if (t.closest("#logoutBtn")) { await auth.signOut(); skipped = false; return; }
   if (t.closest("#tabCreate")) { authTab = "create"; renderWelcome(); return; }
@@ -305,7 +305,7 @@ document.addEventListener("click", async e => {
   const ok = t.closest("[data-ok]"); if (ok) { validate(ok.dataset.ok, ok); return; }
   const no = t.closest("[data-no]"); if (no) { no.disabled = true; try { await fs.collection("requests").doc(no.dataset.no).update({ status: "refused" }); } catch (err) { no.disabled = false; } return; }
   const op = t.closest("[data-open]"); if (op) { go("match-" + op.dataset.open); return; }
-  if (t.closest("[data-back]")) { if (history.length > 1 && location.hash.startsWith("#match-")) history.back(); else go(prevView); return; }
+  if (t.closest("[data-back]")) { if (history.length > 1 && (location.hash.startsWith("#match-") || location.hash.startsWith("#lv-"))) history.back(); else go(prevView); return; }
   const cd = t.closest("[data-cday]"); if (cd) { comboDay = +cd.dataset.cday; renderCombos(); return; }
   const p = t.closest(".pick"); if (p) { go("match-" + p.dataset.id); return; }
   const b = t.closest(".m>button"); if (b) { go("match-" + b.dataset.id); }
@@ -366,20 +366,22 @@ $("sConf").onclick = () => { sort = "conf"; $("sConf").setAttribute("aria-presse
 $("forgot").onclick = () => { $("accMsg").className = "msg"; $("accMsg").textContent = "Mot de passe oublié ? Écris à l'administrateur sur WhatsApp au +" + normPhone(CFG.adminPhone) + " pour le réinitialiser."; };
 
 /* ---------- Navigation par onglets ---------- */
-const VIEWS = ["matchs", "live", "combos", "compte", "aide", "match"];
+const VIEWS = ["matchs", "live", "combos", "compte", "aide", "match", "lv"];
 let view = "matchs", detailId = null, prevView = "matchs";
 function go(v, push = true) {
   v = v || "matchs";
-  if (v.startsWith("match-")) { detailId = decodeURIComponent(v.slice(6)); if (view !== "match") prevView = view; v = "match"; }
-  if (!VIEWS.includes(v) || (v === "match" && !detailId)) v = "matchs";
+  if (v.startsWith("match-")) { detailId = decodeURIComponent(v.slice(6)); if (view !== "match" && view !== "lv") prevView = view; v = "match"; }
+  if (v.startsWith("lv-")) { lvKey = decodeURIComponent(v.slice(3)); if (view !== "match" && view !== "lv") prevView = view; v = "lv"; }
+  if (!VIEWS.includes(v) || (v === "match" && !detailId) || (v === "lv" && !lvKey)) v = "matchs";
   view = v;
   document.querySelectorAll("[data-view]").forEach(el => el.hidden = el.dataset.view !== v);
-  const tab = v === "match" ? prevView : v;
+  const tab = v === "match" || v === "lv" ? prevView : v;
   document.querySelectorAll(".tabbar [data-go]").forEach(b => { if (b.dataset.go === tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
-  const h = v === "match" ? "#match-" + encodeURIComponent(detailId) : "#" + v;
+  const h = v === "match" ? "#match-" + encodeURIComponent(detailId) : v === "lv" ? "#lv-" + encodeURIComponent(lvKey) : "#" + v;
   if (push && location.hash !== h) history.pushState(null, "", h);
   window.scrollTo(0, 0);
   if (v === "live") loadLive(true);
+  if (v === "lv") { lvDetail = null; $("lvDetail").innerHTML = '<button class="back" data-back>‹ Retour</button><div class="empty">Chargement du match…</div>'; loadLv(); }
   if (v === "match") renderDetail();
   if (v === "combos") renderCombos();
 }
@@ -464,43 +466,146 @@ let resTimer = null;
 async function resultsLoop() {
   clearTimeout(resTimer);
   let live = false; try { live = await refreshResults(); } catch (e) {}
-  $("liveDot").hidden = !live;
   resTimer = setTimeout(resultsLoop, live ? 5000 : 120000);
 }
-document.addEventListener("visibilitychange", () => { if (!document.hidden) { resultsLoop(); if (view === "live") loadLive(false); } });
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { resultsLoop(); liveLoop(false); if (view === "lv") loadLv(); } });
 
-/* ---------- Onglet Live ---------- */
-let liveOff = 0, liveTimer = null;
-async function loadLive(force) {
+/* ---------- Onglet Live : tous les matchs en cours ---------- */
+// Toutes les compétitions suivies pour le direct (les codes inconnus sont ignorés)
+const LIVE_LEAGUES = ["uefa.champions", "uefa.europa", "uefa.europa.conf", "eng.1", "esp.1", "ita.1", "ger.1", "fra.1",
+  "eng.2", "eng.3", "esp.2", "ita.2", "ger.2", "fra.2", "por.1", "ned.1", "bel.1", "tur.1", "sco.1", "gre.1", "aut.1", "sui.1", "den.1",
+  "ksa.1", "usa.1", "mex.1", "bra.1", "arg.1", "caf.champions", "caf.confed", "caf.nations", "fifa.worldq.caf", "uefa.nations",
+  "eng.fa", "eng.league_cup", "esp.copa_del_rey", "ita.coppa_italia", "ger.dfb_pokal", "fra.coupe_de_france", "fifa.world", "fifa.friendly"];
+const liveBoards = {};      // code -> { at, events, name }
+let liveCodes = [], liveScanAt = 0, liveTimer = null, lvDetail = null, lvTimer = null;
+const sb = code => `https://site.api.espn.com/apis/site/v2/sports/soccer/${code}/scoreboard`;
+async function getBoard(code) {
+  try {
+    const r = await fetch(sb(code), { cache: "no-store" }); if (!r.ok) return null;
+    const j = await r.json();
+    liveBoards[code] = { at: Date.now(), events: j.events || [], name: (j.leagues && j.leagues[0] && (j.leagues[0].abbreviation || j.leagues[0].name)) || code };
+    return liveBoards[code];
+  } catch (e) { return null; }
+}
+const isIn = ev => ev.status && ev.status.type && ev.status.type.state === "in";
+const soon = ev => ev.status && ev.status.type && ev.status.type.state === "pre" && new Date(ev.date) - Date.now() < 10 * 60e3;
+// Toutes les 60 s : repère les compétitions qui ont un match en cours. Toutes les 5 s : actualise seulement celles-là.
+async function scanLive() {
+  await Promise.all(LIVE_LEAGUES.map(getBoard));
+  liveScanAt = Date.now();
+  liveCodes = LIVE_LEAGUES.filter(c => liveBoards[c] && liveBoards[c].events.some(e => isIn(e) || soon(e)));
+}
+async function liveLoop(first) {
   clearTimeout(liveTimer);
-  const d = new Date(); d.setDate(d.getDate() + liveOff);
-  const labels = { "-1": "Hier", "0": "Aujourd'hui", "1": "Demain" };
-  $("liveDays").innerHTML = [-1, 0, 1].map(o => { const x = new Date(); x.setDate(x.getDate() + o);
-    return `<button role="tab" data-lday="${o}" aria-selected="${o === liveOff}"><small>${labels[o]}</small><b>${x.getDate()}</b></button>`; }).join("");
-  const key = ymd(d);
-  if (force && !espnDay[key]) $("live").innerHTML = '<div class="empty">Chargement des scores…</div>';
-  const c = await fetchDay(key, 4000);
-  if (!c.ok) { $("live").innerHTML = '<div class="empty">Les scores en direct ne sont pas disponibles pour le moment. Vérifie ta connexion, ils reviendront automatiquement.</div>'; liveTimer = setTimeout(() => loadLive(false), 30000); return; }
-  let anyLive = false;
-  const blocks = LGORDER.map(k => {
-    const evs = c.data[k]; if (!evs.length) return "";
-    const rows = evs.map(ev => {
-      const comp = ev.competitions && ev.competitions[0]; if (!comp) return "";
-      const st = (ev.status && ev.status.type) || {}, state = st.state, on = state === "in"; if (on) anyLive = true;
-      const h = comp.competitors.find(x => x.homeAway === "home") || comp.competitors[0], a = comp.competitors.find(x => x.homeAway === "away") || comp.competitors[1];
-      const minute = on ? (ev.status.displayClock || st.shortDetail || "") : state === "post" ? "Terminé" : hFmt.format(new Date(ev.date));
-      const sc = x => state === "pre" ? "" : esc(x.score);
-      const team = x => `<div class="lteam ${state === "post" && x.winner ? "win" : ""}">${x.team.logo ? `<img src="${esc(x.team.logo)}" alt="" loading="lazy">` : ""}<span>${esc(x.team.shortDisplayName || x.team.displayName)}</span></div>`;
-      const ours = matches.find(m => findEvent(m) === ev);
-      return `<${ours ? `button class="lrow" data-open="${esc(ours.id)}"` : 'div class="lrow"'}><span class="lmin ${on ? "on" : ""}">${on ? '<span class="pulse"></span>' : ""}${esc(minute)}</span>
-        <div class="lteams">${team(h)}${team(a)}</div>
-        <div class="lscore ${on ? "on" : ""}"><span>${sc(h)}</span><span>${sc(a)}</span></div></${ours ? "button" : "div"}>`;
-    }).join("");
-    return `<div class="lgcard">${lgHead(k)}${rows}</div>`;
+  if (first || Date.now() - liveScanAt > 60000) await scanLive();
+  else await Promise.all(liveCodes.map(getBoard));
+  const n = liveCodes.reduce((s, c) => s + liveBoards[c].events.filter(isIn).length, 0);
+  $("liveDot").hidden = !n;
+  if (view === "live") renderLive();
+  liveTimer = setTimeout(() => liveLoop(false), view === "live" || view === "lv" ? (n ? 5000 : 30000) : 60000);
+}
+function loadLive(force) { if (force) { renderLive(); liveLoop(!liveScanAt); } }
+// Chrono : avance à la seconde entre deux actualisations
+function clockText(ev, at) {
+  const st = ev.status || {}, t = st.type || {};
+  if (t.name === "STATUS_HALFTIME") return "Mi-temps";
+  if (t.state !== "in") return t.state === "post" ? "Terminé" : hFmt.format(new Date(ev.date));
+  const disp = st.displayClock || "";
+  if (/\+/.test(disp) || typeof st.clock !== "number" || !st.clock) return disp;
+  const s = Math.floor(st.clock + (Date.now() - at) / 1000), mm = Math.floor(s / 60), ss = s % 60;
+  const cap = (st.period || 1) === 1 ? 45 : 90;
+  if (mm >= cap) return disp || cap + "'";
+  return mm + ":" + String(ss).padStart(2, "0");
+}
+setInterval(() => document.querySelectorAll("[data-clock]").forEach(el => {
+  const [code, id] = el.dataset.clock.split("|"), b = code === "_lv" ? null : liveBoards[code];
+  const ev = b ? b.events.find(e => e.id === id) : (lvDetail && lvDetail.ev);
+  if (ev) el.textContent = clockText(ev, b ? b.at : lvDetail.at);
+}), 1000);
+const ICON = { goal: "⚽", "own goal": "⚽", penalty: "⚽", "yellow card": "🟨", "red card": "🟥", substitution: "🔁" };
+function evIcon(txt, scoring) { const k = String(txt || "").toLowerCase(); if (scoring || /goal|penalty - scored/.test(k)) return "⚽"; if (/red/.test(k)) return "🟥"; if (/yellow/.test(k)) return "🟨"; if (/sub/.test(k)) return "🔁"; return "•"; }
+function rowEvents(ev) {
+  const c = ev.competitions[0], home = (c.competitors.find(x => x.homeAway === "home") || {}).team || {};
+  return (c.details || []).slice(-4).map(d => {
+    const who = d.athletesInvolved && d.athletesInvolved[0] ? d.athletesInvolved[0].shortName || d.athletesInvolved[0].displayName : "";
+    return `<span class="evc ${d.team && d.team.id === home.id ? "" : "aw"}">${evIcon(d.type && d.type.text, d.scoringPlay)} ${esc((d.clock && d.clock.displayValue) || "")} ${esc(who)}</span>`;
   }).join("");
-  $("live").innerHTML = blocks ? `<div class="day">${blocks}</div>` : '<div class="empty">Aucun match des cinq grands championnats ce jour-là.</div>';
-  $("liveUpd").textContent = (anyLive ? "En temps réel · " : "") + "actualisé à " + new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-  if (view === "live") liveTimer = setTimeout(() => loadLive(false), anyLive ? 5000 : 60000);
+}
+function renderLive() {
+  const box = $("live");
+  const groups = LIVE_LEAGUES.filter(c => liveBoards[c] && liveBoards[c].events.some(isIn));
+  if (!liveScanAt) { box.innerHTML = '<div class="empty">Recherche des matchs en cours…</div>'; return; }
+  if (!groups.length) {
+    const next = LIVE_LEAGUES.flatMap(c => (liveBoards[c] ? liveBoards[c].events : []).filter(e => e.status.type.state === "pre").map(e => ({ e, c })))
+      .sort((x, y) => new Date(x.e.date) - new Date(y.e.date))[0];
+    box.innerHTML = `<div class="empty"><b>Aucun match en cours pour le moment.</b><br>${next ? `Prochain coup d'envoi à ${hFmt.format(new Date(next.e.date))} : ${esc(next.e.name || "")}.` : "Les matchs apparaîtront ici dès le coup d'envoi."}</div>`;
+    $("liveUpd").textContent = "";
+    return;
+  }
+  box.innerHTML = '<div class="day">' + groups.map(code => {
+    const b = liveBoards[code];
+    const rows = b.events.filter(isIn).map(ev => {
+      const c = ev.competitions[0], h = c.competitors.find(x => x.homeAway === "home"), a = c.competitors.find(x => x.homeAway === "away");
+      const team = x => `<div class="lteam">${x.team.logo ? `<img src="${esc(x.team.logo)}" alt="" loading="lazy">` : ""}<span>${esc(x.team.shortDisplayName || x.team.displayName)}</span></div>`;
+      const evs = rowEvents(ev);
+      return `<button class="lrow" data-lv="${code}|${esc(ev.id)}"><span class="lmin on"><span class="pulse"></span><span data-clock="${code}|${esc(ev.id)}">${esc(clockText(ev, b.at))}</span></span>
+        <div class="lteams">${team(h)}${team(a)}</div>
+        <div class="lscore on"><span>${esc(h.score)}</span><span>${esc(a.score)}</span></div>
+        ${evs ? `<div class="evs">${evs}</div>` : ""}</button>`;
+    }).join("");
+    return `<div class="lgcard"><div class="lghead"><span class="flag live">LIVE</span><div><b>${esc(b.name)}</b></div></div>${rows}</div>`;
+  }).join("") + "</div>";
+  $("liveUpd").textContent = "Actualisé à " + new Date().toLocaleTimeString("fr-FR");
+}
+
+/* ---------- Page d'un match en direct : chronologie et statistiques ---------- */
+let lvKey = null;
+async function loadLv() {
+  clearTimeout(lvTimer);
+  if (!lvKey) return;
+  const [code, id] = lvKey.split("|");
+  try {
+    const r = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${code}/summary?event=${encodeURIComponent(id)}`, { cache: "no-store" });
+    const j = await r.json();
+    const comp = j.header && j.header.competitions && j.header.competitions[0];
+    lvDetail = { at: Date.now(), j, ev: comp ? { status: comp.status, date: comp.date } : null, code };
+  } catch (e) { if (!lvDetail) $("lvDetail").innerHTML = '<button class="back" data-back>‹ Retour</button><div class="empty">Ce match n\'a pas pu être chargé. Vérifie ta connexion.</div>'; }
+  if (view === "lv") renderLv();
+  const on = lvDetail && lvDetail.ev && lvDetail.ev.status && lvDetail.ev.status.type && lvDetail.ev.status.type.state === "in";
+  if (view === "lv") lvTimer = setTimeout(loadLv, on ? 5000 : 30000);
+}
+function renderLv() {
+  if (!lvDetail || !lvDetail.j.header) return;
+  const j = lvDetail.j, comp = j.header.competitions[0], st = comp.status.type;
+  const h = comp.competitors.find(x => x.homeAway === "home"), a = comp.competitors.find(x => x.homeAway === "away");
+  const on = st.state === "in";
+  const crest = x => x.team.logos && x.team.logos[0] ? `<img class="lvlogo" src="${esc(x.team.logos[0].href)}" alt="">` : x.team.logo ? `<img class="lvlogo" src="${esc(x.team.logo)}" alt="">` : `<span class="crest">${esc((x.team.abbreviation || "").slice(0, 3))}</span>`;
+  const keys = (j.keyEvents || []).filter(k => k.type && !/kickoff|start|end|halftime/i.test(k.type.text || "") || (k.scoringPlay));
+  const timeline = keys.length ? keys.slice().reverse().map(k => {
+    const isHome = k.team && h.team && k.team.id === h.team.id;
+    const who = (k.participants || []).map(p => p.athlete && p.athlete.displayName).filter(Boolean).join(" ↔ ");
+    return `<div class="tl ${isHome ? "" : "aw"}"><span class="tlmin">${esc((k.clock && k.clock.displayValue) || "")}</span><span class="tlic">${evIcon(k.type && k.type.text, k.scoringPlay)}</span><div><b>${esc(who || (k.type && k.type.text) || "")}</b><small>${esc(k.team ? k.team.displayName : "")}</small></div></div>`;
+  }).join("") : '<p class="msg">Aucun événement pour le moment.</p>';
+  const STAT = [["possessionPct", "Possession", "%"], ["totalShots", "Tirs", ""], ["shotsOnTarget", "Tirs cadrés", ""], ["wonCorners", "Corners", ""], ["foulsCommitted", "Fautes", ""], ["yellowCards", "Cartons jaunes", ""], ["redCards", "Cartons rouges", ""], ["offsides", "Hors-jeu", ""], ["saves", "Arrêts", ""]];
+  const bt = (j.boxscore && j.boxscore.teams) || [];
+  const tv = (team, name) => { const t = bt.find(x => x.team && x.team.id === team.team.id); const s = t && (t.statistics || []).find(x => x.name === name); return s ? parseFloat(s.displayValue) : null; };
+  const stats = STAT.map(([k, l, u]) => { const x = tv(h, k), y = tv(a, k); if (x === null || y === null || isNaN(x) || isNaN(y)) return "";
+    const tot = x + y || 1; return `<div class="st"><div class="stn"><b>${x}${u}</b><span>${l}</span><b>${y}${u}</b></div><div class="stb"><i style="flex:${x / tot}"></i><i class="aw" style="flex:${y / tot}"></i></div></div>`; }).join("");
+  const ours = matches.find(m => { const ev = findEvent(m); return ev && ev.id === comp.id; });
+  $("lvDetail").innerHTML = `
+    <button class="back" data-back>‹ Retour</button>
+    <div class="dhead">
+      <div class="lghead plain"><span class="flag live">${on ? "LIVE" : "FOOT"}</span><div><b>${esc((j.header.league && j.header.league.name) || "")}</b></div></div>
+      <div class="dteams">
+        <div class="dteam">${crest(h)}<b>${esc(h.team.displayName)}</b></div>
+        <div class="dmid"><div class="dscore ${on ? "on" : ""}">${esc(h.score || "0")} – ${esc(a.score || "0")}</div>
+          <div class="dstate ${on ? "on" : ""}">${on ? '<span class="pulse"></span>' : ""}<span data-clock="_lv|x">${esc(clockText(lvDetail.ev, lvDetail.at))}</span></div></div>
+        <div class="dteam">${crest(a)}<b>${esc(a.team.displayName)}</b></div>
+      </div>
+    </div>
+    ${ours ? `<button class="dcard ourp" data-open="${esc(ours.id)}"><span class="lab">Notre prono</span><b>${esc(ours.r.pickLabel)} · ${pc(ours.r.conf)} %</b><span class="msg">Voir l'analyse du match ›</span></button>` : ""}
+    <div class="dcard"><span class="lab">Événements du match</span><div class="tlwrap">${timeline}</div></div>
+    ${stats ? `<div class="dcard"><span class="lab">Statistiques</span>${stats}</div>` : ""}`;
 }
 
 /* ---------- Page de détail d'un match ---------- */
@@ -648,17 +753,11 @@ setInterval(() => { if (view === "combos") renderCombos(); }, 60000);
 
 /* ---------- Aide : FAQ et assistance ---------- */
 const FAQ = [
-  ["Comment sont calculés les pronos ?", "Pour chaque équipe, l'app compare ses buts marqués et encaissés par match à la moyenne de son championnat, ajoute l'avantage du terrain et la forme des 5 derniers matchs, puis calcule les probabilités avec un modèle statistique (loi de Poisson)."],
-  ["Que veulent dire Fort, Moyen et Risqué ?", "C'est la probabilité estimée du prono : Fort à partir de 60 %, Moyen de 45 à 60 %, Risqué en dessous. Même un prono Fort peut perdre : aucun pronostic n'est garanti."],
-  ["Que signifient ✓ et ✗ ?", "Après le coup de sifflet final, chaque prono affiche ✓ en vert s'il est gagné et ✗ en rouge s'il est perdu, avec le score. Le bilan du week-end est en haut de l'onglet Matchs."],
-  ["Quand les matchs sont-ils mis à jour ?", "Chaque jeudi matin, l'app récupère automatiquement les affiches et les statistiques des matchs à venir des cinq grands championnats."],
-  ["Quand changent les coupons ?", "Chaque jour à 00h GMT, de nouveaux coupons sont composés à partir des matchs du jour. Les coupons de la veille restent visibles avec leur résultat."],
-  ["Pourquoi la cote est-elle différente chez 1xBet ou Melbet ?", "Nos cotes sont des cotes justes calculées par le modèle. Les bookmakers gardent une marge : leurs cotes sont en général un peu plus basses."],
-  ["Comment devenir membre ?", "Dans l'onglet Compte : crée ton compte, choisis Hebdo (1000 F CFA, 7 jours) ou Mensuel (3000 F CFA, 30 jours), paie par Orange Money, Moov Money ou Wave, puis envoie la référence de la transaction."],
-  ["En combien de temps mon abonnement est-il activé ?", "Dès que l'administrateur a vérifié ton paiement, en général dans la journée. Si c'est long, écris-nous sur WhatsApp avec ta référence."],
-  ["J'ai oublié mon mot de passe.", "Écris à l'assistance sur WhatsApp avec ton numéro de compte : nous réinitialisons ton accès."],
-  ["Comment installer l'app ?", "Sur Android, touche « Installer » en haut de l'écran ou ouvre le menu ⋮ de Chrome puis « Installer l'application ». Sur iPhone, touche Partager puis « Sur l'écran d'accueil »."],
-  ["Jouer comporte des risques", "Les pronostics sont des estimations, jamais des certitudes. Ne mise que ce que tu peux te permettre de perdre, et fais une pause si le jeu n'est plus un plaisir."]
+  ["Comment sont calculés les pronos ?", "L'app compare les buts marqués et encaissés de chaque équipe à la moyenne de son championnat, ajoute l'avantage du terrain et la forme récente, puis calcule les probabilités avec un modèle statistique. Fort = 60 % et plus, Moyen = 45 à 60 %, Risqué = moins de 45 %."],
+  ["Comment devenir membre ?", "Onglet Compte : crée ton compte, choisis Hebdo (1000 F CFA) ou Mensuel (3000 F CFA), paie par Orange Money, Moov Money ou Wave, puis envoie la référence de la transaction."],
+  ["Quand mon abonnement est-il activé ?", "Dès que le paiement est vérifié, en général dans la journée. Si c'est long, écris-nous sur WhatsApp avec ta référence."],
+  ["Quand changent les coupons ?", "Chaque jour à 00h GMT, à partir des matchs du jour. Après les matchs, chaque sélection affiche ✓ (gagnée) ou ✗ (perdue)."],
+  ["Les pronos sont-ils garantis ?", "Non : ce sont des estimations, jamais des certitudes. Ne mise que ce que tu peux te permettre de perdre."]
 ];
 function renderHelp() {
   const n = normPhone(CFG.adminPhone), pretty = "+" + n.slice(0, 3) + " " + n.slice(3).replace(/(\d{2})(?=\d)/g, "$1 ");
@@ -701,3 +800,4 @@ go(location.hash.slice(1) || "matchs", false);
 loadMatches();
 initFirebase();
 renderHelp();
+liveLoop(true);
