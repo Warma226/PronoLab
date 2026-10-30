@@ -382,6 +382,28 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
 @media (max-width:460px){.sportsw span{display:none}.sportsw button{font-size:1.05rem;padding:5px 10px}}
 h1{white-space:nowrap}
 .appbar-in .acts{margin-left:6px}
+
+/* Accès par jour, Telegram, conditions d'utilisation */
+.days button{position:relative}
+.days button.lockd{opacity:.75}
+.days .lk{position:absolute;top:-4px;right:-4px;font-style:normal;font-size:.7rem;background:var(--surface);border-radius:999px;padding:1px 3px;box-shadow:var(--shadow)}
+.perks{margin:0;padding:0;list-style:none;display:grid;gap:4px}
+.perks li{font-size:.86rem;padding-left:22px;position:relative}
+.perks li::before{content:"✓";position:absolute;left:0;color:var(--pitch);font-weight:800}
+.cta.tg{text-decoration:none;text-align:center;background:#2aa3df;color:#fff;display:block}
+.linkrow{display:flex;justify-content:space-between;align-items:center;border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:20px;padding:16px 18px;font-weight:600;width:100%;text-align:left}
+.linkrow span{color:var(--pitch);font-size:1.3rem}
+.cgu{z-index:60;gap:10px}
+.cguhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cgu:not(.ro) #cguClose{display:none}
+.cgu.ro .cgufoot{display:none}
+.cgubody{flex:1;overflow-y:auto;background:var(--surface);border-radius:20px;padding:16px 18px;box-shadow:var(--shadow);-webkit-overflow-scrolling:touch}
+.cgubody h3{font-family:var(--display);font-weight:800;font-size:1rem;margin:16px 0 4px}
+.cgubody p{margin:0;color:var(--muted);font-size:.9rem}
+.cgufoot{display:grid;gap:10px;max-width:520px;width:100%;margin:0 auto}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;font-weight:500;color:var(--ink)}
+.chk input{width:20px;height:20px;accent-color:var(--pitch);flex:none;margin-top:1px}
+#cguRefuse{justify-self:center}
 /* Barre d onglets */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.06);display:grid;grid-template-columns:repeat(5,1fr);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 .tabbar button{position:relative;border:0;background:none;display:grid;justify-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:.7rem;font-weight:600;border-radius:14px}
@@ -392,6 +414,41 @@ h1{white-space:nowrap}
 </style>
 </head>
 <body>
+<div class="intro cgu" id="cgu" hidden role="dialog" aria-modal="true" aria-labelledby="cguTitle">
+  <div class="cguhead"><h2 id="cguTitle">Conditions d'utilisation</h2><button class="skipx" id="cguClose" type="button">Fermer</button></div>
+  <div class="cgubody" id="cguBody">
+    <p class="meta">Version du 30 octobre 2026</p>
+    <h3>1. Le service</h3>
+    <p>Prono Lab propose des pronostics sportifs (football et hockey sur glace) calculés par un modèle statistique, à titre d'information. Prono Lab n'est pas un site de paris : aucun pari n'est pris ni encaissé dans l'application.</p>
+    <h3>2. Âge minimum</h3>
+    <p>L'application est réservée aux personnes de 18 ans ou plus.</p>
+    <h3>3. Aucune garantie de gain</h3>
+    <p>Les pronostics, coupons et probabilités sont des estimations. Aucun résultat n'est garanti. Prono Lab ne peut être tenu responsable des sommes misées ou perdues auprès des bookmakers. Les cotes affichées sont indicatives et peuvent différer de celles des bookmakers.</p>
+    <h3>4. Compte</h3>
+    <p>Ton compte est personnel et ne doit pas être partagé. Tu es responsable de la confidentialité de ton mot de passe et de l'exactitude des informations fournies.</p>
+    <h3>5. Abonnements</h3>
+    <p>Hebdo : 1 000 F CFA pour 7 jours. Mensuel : 3 000 F CFA pour 30 jours. Paiement par Orange Money, Moov Money ou Wave ; l'accès est activé après vérification du paiement. L'abonnement donne accès aux pronostics jusqu'à 3 jours à l'avance, aux coups sûrs, aux coupons du jour, aux analyses détaillées et au canal Telegram des membres. Il n'est pas renouvelé automatiquement. Un abonnement activé n'est pas remboursable, sauf erreur de notre part.</p>
+    <h3>6. Canal Telegram</h3>
+    <p>L'accès au canal Telegram est lié à un abonnement actif. À l'expiration de l'abonnement, le membre peut en être retiré.</p>
+    <h3>7. Programme de fidélité</h3>
+    <p>Les points de fidélité n'ont aucune valeur monétaire et ne peuvent pas être échangés contre de l'argent. Les règles du programme peuvent évoluer.</p>
+    <h3>8. Utilisation du contenu</h3>
+    <p>Les pronostics et coupons sont réservés à un usage personnel. Leur revente ou leur diffusion publique est interdite et peut entraîner la suspension du compte, sans remboursement.</p>
+    <h3>9. Données personnelles</h3>
+    <p>Nous conservons ton prénom, ton numéro de téléphone, ta ville et l'historique de tes abonnements, uniquement pour faire fonctionner le service. Ces données sont hébergées par Google Firebase. Tu peux demander leur suppression à l'assistance WhatsApp.</p>
+    <h3>10. Jeu responsable</h3>
+    <p>Ne mise que ce que tu peux te permettre de perdre. Fais une pause si le jeu n'est plus un plaisir, et parles-en à un proche si tu sens que tu perds le contrôle.</p>
+    <h3>11. Modifications et contact</h3>
+    <p>Ces conditions peuvent être mises à jour ; tu seras alors invité à les accepter de nouveau. Pour toute question : l'assistance WhatsApp, dans l'onglet Aide.</p>
+  </div>
+  <div class="cgufoot">
+    <label class="chk"><input type="checkbox" id="cguAge"> Je confirme avoir 18 ans ou plus</label>
+    <label class="chk"><input type="checkbox" id="cguOk"> J'ai lu et j'accepte les conditions d'utilisation</label>
+    <button class="cta" id="cguBtn" type="button" disabled>Accepter et continuer</button>
+    <button class="linkbtn" id="cguRefuse" type="button">Je refuse</button>
+    <p class="msg err" id="cguMsg"></p>
+  </div>
+</div>
 <div class="intro" id="intro" hidden>
   <button class="skipx" id="introSkip" type="button">Passer</button>
   <div class="slides" id="slides">
@@ -532,10 +589,12 @@ h1{white-space:nowrap}
           <label for="nMoov">Moov Money<input id="nMoov" inputmode="tel"></label>
           <label for="nWave">Wave<input id="nWave" inputmode="tel"></label>
         </div>
+        <label for="nTelegram">Lien du canal Telegram des membres<input id="nTelegram" inputmode="url" placeholder="https://t.me/+..."></label>
         <div><button class="cta" type="submit">Enregistrer les numéros</button> <span class="msg" id="payMsg"></span></div>
       </form>
       <div style="display:grid;gap:10px"><span class="lab">Demandes en attente</span><div id="reqs"></div></div>
       <div style="display:grid;gap:8px"><span class="lab">Membres actifs</span><div id="mems"></div></div>
+      <div style="display:grid;gap:8px"><span class="lab">Abonnements expirés (à retirer du canal Telegram)</span><div id="expd"></div></div>
     </section>
   </section>
 </main>

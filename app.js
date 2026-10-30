@@ -103,21 +103,29 @@ function lgHead(k, extra = "") {
   const m = LGMETA[k] || ["", "", "#888"];
   return `<div class="lghead"><span class="flag" style="background:${m[2]}">${m[0]}</span><div><b>${LG[k] || k}</b><br><span>${m[1]}${extra}</span></div></div>`;
 }
+// Accès au programme : sans abonnement, le jour même ; avec abonnement, jusqu'à 3 jours. Les jours passés restent visibles (résultats).
+const dayStart = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+const dayDiff = d => Math.round((dayStart(d) - dayStart(new Date())) / 864e5);
+const maxDays = () => isMember() ? 3 : 1;
+const canSee = m => dayDiff(m.date) < maxDays();
+const inWindow = m => dayDiff(m.date) < 3;
 function renderDays() {
-  const keys = [...new Set(matches.map(m => dayKey(m.date)))].sort((a, b) => new Date(a.replace(/-/g, "/")) - new Date(b.replace(/-/g, "/")));
+  const vis = matches.filter(inWindow);
+  const keys = [...new Set(vis.map(m => dayKey(m.date)))].sort((a, b) => new Date(a.replace(/-/g, "/")) - new Date(b.replace(/-/g, "/")));
   if (!selDay || !keys.includes(selDay)) {
-    const now = Date.now() - 2 * 3600e3;
-    const nextM = matches.filter(m => m.date.getTime() > now).sort((x, y) => x.date - y.date)[0];
-    selDay = nextM ? dayKey(nextM.date) : keys[0];
+    const today = dayKey(new Date());
+    const nextOk = vis.filter(m => canSee(m) && dayDiff(m.date) >= 0).sort((x, y) => x.date - y.date)[0];
+    selDay = keys.includes(today) ? today : nextOk ? dayKey(nextOk.date) : (keys.find(k => dayDiff(vis.find(m => dayKey(m.date) === k).date) >= 0) || keys[keys.length - 1]);
   }
   const wd = new Intl.DateTimeFormat("fr-FR", { weekday: "short" });
-  $("days").innerHTML = (sort === "conf" ? "" : "") + keys.map(k => { const d = matches.find(m => dayKey(m.date) === k).date;
-    return `<button role="tab" data-day="${k}" aria-selected="${k === selDay}"><small>${wd.format(d).replace(".", "")}</small><b>${d.getDate()}</b></button>`; }).join("");
+  $("days").innerHTML = keys.map(k => { const d = vis.find(m => dayKey(m.date) === k).date, dd = dayDiff(d), locked = dd >= maxDays();
+    const lab = dd === 0 ? "Auj." : dd === 1 ? "Dem." : wd.format(d).replace(".", "");
+    return `<button role="tab" data-day="${k}" aria-selected="${k === selDay}" class="${locked ? "lockd" : ""}"><small>${lab}</small><b>${d.getDate()}</b>${locked ? '<i class="lk">🔒</i>' : ""}</button>`; }).join("");
 }
 function render() {
   if (!matches.length) return;
   const now = Date.now() - 2 * 3600e3;
-  const up = matches.filter(m => m.date.getTime() > now);
+  const up = matches.filter(m => m.date.getTime() > now && canSee(m));
   const pool = up.length ? up : matches;
   const top = [...pool].filter(m => m.r.pick.length === 1 && m.r.pick !== "N").sort((x, y) => y.r.conf - x.r.conf).slice(0, 5);
   $("topSec").hidden = !top.length;
@@ -136,8 +144,16 @@ function render() {
   let w = 0, l = 0; matches.forEach(m => { const x = resultOf(m); if (x && x.state === "post") (wins(m.r.pick, x.hs, x.as, x.ot) ? w++ : l++); });
   $("bilan").hidden = !(w + l);
   $("bilan").innerHTML = `<span class="lab">Bilan de la période</span><div class="bil"><span class="res won">✓ ${w} gagné${w > 1 ? "s" : ""}</span><span class="res lost">✗ ${l} perdu${l > 1 ? "s" : ""}</span><b>${w + l ? Math.round(100 * w / (w + l)) : 0} % de réussite</b></div>`;
-  const list = matches.filter(m => (filter === "ALL" || m.league === filter) && (sort === "conf" || dayKey(m.date) === selDay));
+  const list = matches.filter(m => (filter === "ALL" || m.league === filter) && (sort === "conf" ? canSee(m) && dayDiff(m.date) >= 0 : dayKey(m.date) === selDay));
   $("days").hidden = sort === "conf";
+  if (sort !== "conf" && list.length && !canSee(list[0])) {
+    const d = list[0].date;
+    $("list").innerHTML = `<div class="combolock"><div class="blurred"><div></div><div></div><div></div></div>
+      <h2>${list.length} match${list.length > 1 ? "s" : ""} au programme ${dayDiff(d) === 1 ? "demain" : "le " + esc(dayFmt.format(d))}</h2>
+      <p class="msg">Sans abonnement, tu vois le programme du jour. Les membres ont les pronos jusqu'à 3 jours à l'avance, les coupons du jour et l'accès au canal Telegram privé.</p>
+      <button class="cta" data-join>Devenir membre</button></div>`;
+    return;
+  }
   if (!list.length) { $("list").innerHTML = '<div class="empty">Aucun match pour ce filtre.</div>'; return; }
   if (sort === "conf") {
     list.sort((x, y) => y.r.conf - x.r.conf);
@@ -217,6 +233,7 @@ function subscribeHtml(req, title, sub) {
   const save = PLANS.week.price * 4 - PLANS.month.price;
   return `<div class="clubhead"><div><h2>${title}</h2><p class="msg">${sub}</p></div>
       <div class="price">dès ${PLANS.week.price} <small>F CFA / semaine</small></div></div>
+    <ul class="perks"><li>Pronos jusqu'à 3 jours à l'avance</li><li>Coups sûrs et coupons du jour</li><li>Analyse complète de chaque match</li><li>Canal Telegram privé des membres</li></ul>
     ${pending ? `<p class="msg ok">Demande ${esc((PLANS[req.plan] || PLANS.week).label.toLowerCase())} envoyée le ${esc(dFmt(req.at))} (référence ${esc(req.ref)}). Ton accès sera activé dès que le paiement sera vérifié.</p>` : ""}
     ${req && req.status === "refused" ? `<p class="msg err">Ta dernière demande n'a pas pu être validée : le paiement n'a pas été retrouvé. Vérifie la référence et renvoie une demande.</p>` : ""}
     <div class="steps">
@@ -251,7 +268,7 @@ function renderClub() {
   if (asVisitor) {
     c.className = "club";
     c.innerHTML = `<div class="preview"><span class="msg"><b>Aperçu visiteur</b> : c'est ce que voient tes clients. Rien n'est enregistré.</span><button class="mini" id="adminBtn">Revenir en mode administrateur</button></div>` +
-      subscribeHtml(null, "Deviens membre", "Débloque les coups sûrs, les coupons du jour et l'analyse complète de chaque match.");
+      subscribeHtml(null, "Deviens membre", "Débloque les pronos sur 3 jours, les coups sûrs, les coupons du jour, l'analyse complète de chaque match et le canal Telegram privé.");
     return;
   }
   if (!me || !myAcc) {
@@ -281,8 +298,9 @@ function renderClub() {
         <div class="price">${left}<small> jour${left > 1 ? "s" : ""}</small></div></div>
         <div class="meter"><i style="width:${Math.min(100, 100 * left / span)}%"></i></div>
         ${left <= 2 ? `<p class="msg err">Ton abonnement se termine bientôt : prolonge-le pour ne rater aucun coupon.</p>` : ""}
+        ${payment.telegram ? `<a class="cta tg" href="${esc(payment.telegram)}" target="_blank" rel="noopener">Rejoindre le canal Telegram des membres</a>` : `<p class="msg">Le lien du canal Telegram des membres arrive très bientôt ici.</p>`}
         ${showRenew ? subscribeHtml(req, "Prolonger", "Les jours achetés s'ajoutent à ceux qui restent.") : `<button class="cta" id="renewBtn">Prolonger mon abonnement</button>`}`
-      : subscribeHtml(req, mem.until ? "Ton abonnement a expiré" : "Deviens membre", "Débloque les coups sûrs, les coupons du jour et l'analyse complète de chaque match.")}
+      : subscribeHtml(req, mem.until ? "Ton abonnement a expiré" : "Deviens membre", "Débloque les pronos sur 3 jours, les coups sûrs, les coupons du jour, l'analyse complète de chaque match et le canal Telegram privé.")}
     </div>
 
     <div class="loyal">
@@ -344,6 +362,8 @@ function renderAdmin() {
       <div class="act"><button class="cta alt" data-ok="${esc(r.id)}">Valider ${pl.days} jours</button><button class="mini" data-no="${esc(r.id)}">Refuser</button></div></div>`;
   }).join("") : '<p class="msg">Aucune demande pour le moment.</p>';
   const act = Object.entries(members).filter(([, m]) => m.until && new Date(m.until) > new Date()).sort((a, b) => a[1].until.localeCompare(b[1].until));
+  const exp = Object.entries(members).filter(([, m]) => m.until && new Date(m.until) <= new Date() && Date.now() - new Date(m.until) < 30 * 864e5);
+  $("expd").innerHTML = exp.length ? exp.map(([id, m]) => `<div class="kv"><span>${esc((accounts[id] && accounts[id].name) || "Client")} · ${esc((accounts[id] && accounts[id].phone) || "")}</span><span>fini le ${esc(new Date(m.until).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }))}</span></div>`).join("") : '<p class="msg">Aucun abonnement expiré ces 30 derniers jours.</p>';
   $("mems").innerHTML = act.length ? act.map(([id, m]) => `<div class="kv"><span>${esc((accounts[id] && accounts[id].name) || "Client")} · ${esc((accounts[id] && accounts[id].phone) || "")}</span><span>jusqu'au ${esc(new Date(m.until).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }))}</span></div>`).join("") : '<p class="msg">Aucun membre actif.</p>';
 }
 function renderAll() { renderTop(); renderWelcome(); renderClub(); renderAdmin(); render(); renderCombos(); }
@@ -354,7 +374,7 @@ function initFirebase() {
   if (!CFG.firebase || !window.firebase) { renderAll(); return; }
   fb = firebase.initializeApp(CFG.firebase); auth = firebase.auth(); fs = firebase.firestore();
   fs.collection("meta").doc("payment").onSnapshot(d => { payment = d.exists ? d.data() : {};
-    if (isOwner) { $("nOrange").value = payment.orange || ""; $("nMoov").value = payment.moov || ""; $("nWave").value = payment.wave || ""; }
+    if (isOwner) { $("nOrange").value = payment.orange || ""; $("nMoov").value = payment.moov || ""; $("nWave").value = payment.wave || ""; $("nTelegram").value = payment.telegram || ""; }
     renderClub(); }, () => {});
   auth.onAuthStateChanged(u => {
     stopListeners(unsubs); stopListeners(adminUnsubs);
@@ -368,7 +388,7 @@ function initFirebase() {
         adminUnsubs.push(fs.collection("requests").onSnapshot(s => { reqs = s.docs.map(d => ({ id: d.id, ...d.data() })); renderAdmin(); }, () => {}));
         adminUnsubs.push(fs.collection("accounts").onSnapshot(s => { accounts = {}; s.docs.forEach(d => accounts[d.id] = d.data()); renderAdmin(); }, () => {}));
         adminUnsubs.push(fs.collection("members").onSnapshot(s => { members = {}; s.docs.forEach(d => members[d.id] = d.data()); renderAdmin(); }, () => {}));
-        $("nOrange").value = payment.orange || ""; $("nMoov").value = payment.moov || ""; $("nWave").value = payment.wave || "";
+        $("nOrange").value = payment.orange || ""; $("nMoov").value = payment.moov || ""; $("nWave").value = payment.wave || ""; $("nTelegram").value = payment.telegram || "";
       }
     }
     renderAll();
@@ -417,6 +437,7 @@ document.addEventListener("click", async e => {
   const cp = t.closest("[data-copy]"); if (cp) { try { await navigator.clipboard.writeText(cp.dataset.copy); cp.textContent = "Copié"; } catch (err) {} return; }
   const ok = t.closest("[data-ok]"); if (ok) { validate(ok.dataset.ok, ok); return; }
   const no = t.closest("[data-no]"); if (no) { no.disabled = true; try { await fs.collection("requests").doc(no.dataset.no).update({ status: "refused" }); } catch (err) { no.disabled = false; } return; }
+  if (t.closest("[data-cgu]")) { showCgu(true); return; }
   const op = t.closest("[data-open]"); if (op) { go("match-" + op.dataset.open); return; }
   if (t.closest("[data-back]")) { if (history.length > 1 && (location.hash.startsWith("#match-") || location.hash.startsWith("#lv-"))) history.back(); else go(prevView); return; }
   const cd = t.closest("[data-cday]"); if (cd) { comboDay = +cd.dataset.cday; renderCombos(); return; }
@@ -440,7 +461,7 @@ document.addEventListener("submit", async e => {
       if (needProfile) await fs.collection("accounts").doc(me.uid).set({ name, phone: me.email.split("@")[0], city, createdAt: new Date().toISOString() });
       else if (create) {
         const cred = await auth.createUserWithEmailAndPassword(phoneEmail(phone), pass);
-        const acc = { name, phone: "+" + normPhone(phone), city, createdAt: new Date().toISOString() };
+        const acc = { name, phone: "+" + normPhone(phone), city, createdAt: new Date().toISOString(), cgu: CGU_VERSION, cguAt: cguAcceptedAt() };
         if (refBy.length === 8 && refBy !== digits(phone).slice(-8)) acc.referredBy = refBy;
         await fs.collection("accounts").doc(cred.user.uid).set(acc);
       } else await auth.signInWithEmailAndPassword(phoneEmail(phone), pass);
@@ -479,7 +500,9 @@ document.addEventListener("submit", async e => {
   }
   if (e.target.id === "payForm") {
     const msg = $("payMsg");
-    try { await fs.collection("meta").doc("payment").set({ orange: $("nOrange").value.trim(), moov: $("nMoov").value.trim(), wave: $("nWave").value.trim() }); msg.className = "msg ok"; msg.textContent = "Numéros enregistrés."; }
+    const tg = $("nTelegram").value.trim();
+    if (tg && !/^https:\/\/(t\.me|telegram\.me)\//.test(tg)) { msg.className = "msg err"; msg.textContent = "Le lien Telegram doit commencer par https://t.me/"; return; }
+    try { await fs.collection("meta").doc("payment").set({ orange: $("nOrange").value.trim(), moov: $("nMoov").value.trim(), wave: $("nWave").value.trim(), telegram: tg }); msg.className = "msg ok"; msg.textContent = "Numéros enregistrés."; }
     catch (err) { msg.className = "msg err"; msg.textContent = "Enregistrement impossible. Réessaie."; }
   }
 });
@@ -855,6 +878,8 @@ function renderLv() {
 function renderDetail() {
   const m = matches.find(x => x.id === detailId), box = $("detail");
   if (!m) { box.innerHTML = '<div class="empty">Match introuvable. Il ne fait peut-être plus partie de la sélection de la semaine.</div>'; return; }
+  if (!canSee(m)) { box.innerHTML = `<button class="back" data-back>‹ Retour</button><div class="combolock"><h2>${esc(m.home.name)} – ${esc(m.away.name)}</h2>
+    <p class="msg">Ce match se joue ${dayDiff(m.date) === 1 ? "demain" : "le " + esc(dayFmt.format(m.date))}. Son prono est réservé aux membres, qui voient le programme jusqu'à 3 jours à l'avance.</p><button class="cta" data-join>Devenir membre</button></div>`; return; }
   const r = m.r, h = m.home, a = m.away, res = resultOf(m), st = res && res.state;
   const center = st === "in" ? `<div class="dscore on">${res.hs} – ${res.as}</div><div class="dstate on"><span class="pulse"></span>${esc(res.clock)}</div>`
     : st === "post" ? `<div class="dscore">${res.hs} – ${res.as}</div><div class="dstate">${res.ot ? "Terminé (prol.)" : "Terminé"}</div>`
@@ -1025,6 +1050,7 @@ function renderHelp() {
       <a class="cta wa" href="${wa}" target="_blank" rel="noopener">Écrire sur WhatsApp</a>
       <div class="pay"><span>Numéro</span><code>${esc(pretty)}</code><button class="mini" data-copy="${esc(pretty)}">Copier</button></div>
     </div>
+    <button class="linkrow" data-cgu>Conditions d'utilisation <span>›</span></button>
     <div class="faq"><h2>Questions fréquentes</h2>
       ${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div>`;
 }
@@ -1035,16 +1061,36 @@ window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferr
 $("installBtn").onclick = async () => { if (!deferredInstall) return; deferredInstall.prompt(); await deferredInstall.userChoice; deferredInstall = null; $("installBtn").hidden = true; };
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 
+/* ---------- Conditions d'utilisation (à accepter à la première ouverture) ---------- */
+const CGU_VERSION = "2026-10-30";
+const cguAcceptedAt = () => { try { const v = JSON.parse(localStorage.getItem("pl_cgu") || "null"); return v && v.v === CGU_VERSION ? v.at : null; } catch (e) { return null; } };
+let cguThen = null;
+function showCgu(readOnly, then) {
+  cguThen = then || null;
+  const box = $("cgu"); box.hidden = false; document.body.style.overflow = "hidden";
+  box.classList.toggle("ro", !!readOnly);
+  $("cguAge").checked = false; $("cguOk").checked = false; $("cguBtn").disabled = true;
+  $("cguBody").scrollTop = 0;
+}
+function closeCgu() { $("cgu").hidden = true; document.body.style.overflow = ""; const t = cguThen; cguThen = null; if (t) t(); }
+document.addEventListener("change", e => { if (e.target.id === "cguAge" || e.target.id === "cguOk") $("cguBtn").disabled = !($("cguAge").checked && $("cguOk").checked); });
+$("cguBtn").onclick = () => { try { localStorage.setItem("pl_cgu", JSON.stringify({ v: CGU_VERSION, at: new Date().toISOString() })); } catch (e) {} closeCgu(); };
+$("cguClose").onclick = () => closeCgu();
+$("cguRefuse").onclick = () => { $("cguMsg").textContent = "Tu dois accepter les conditions d'utilisation et confirmer avoir 18 ans ou plus pour utiliser Prono Lab."; };
+
 /* ---------- Présentation en 3 slides (première ouverture) ---------- */
 (function intro() {
   let done = false; try { done = localStorage.getItem("pl_intro") === "1"; } catch (e) {}
-  const box = $("intro"); if (done || !box) return;
+  const box = $("intro");
+  if (done || !box) { if (!cguAcceptedAt()) showCgu(false); return; }
   box.hidden = false; document.body.style.overflow = "hidden";
   const sl = $("slides"), dots = [...$("dots").children], next = $("introNext"), login = $("introLogin");
   const idx = () => Math.round(sl.scrollLeft / sl.clientWidth);
   const update = () => { const i = idx(); dots.forEach((d, k) => d.classList.toggle("on", k === i));
     const last = i === dots.length - 1; next.textContent = last ? "Créer mon compte" : "Suivant"; login.hidden = !last; };
   const close = tab => { try { localStorage.setItem("pl_intro", "1"); } catch (e) {} box.hidden = true; document.body.style.overflow = "";
+    if (!cguAcceptedAt()) { showCgu(false, () => close2(tab)); return; } close2(tab); };
+  const close2 = tab => {
     if (tab) { authTab = tab; skipped = false; try { localStorage.removeItem("pl_skip"); } catch (e) {} renderWelcome(); go("compte"); } };
   sl.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
   window.addEventListener("resize", update);
