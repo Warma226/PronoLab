@@ -1,6 +1,6 @@
 // Prono Lab — service worker : l'app s'ouvre même sans réseau,
 // et les matchs sont toujours récupérés en ligne en priorité.
-const CACHE = "pronolab-v3";
+const CACHE = "pronolab-v4";
 const SHELL = ["./", "index.html", "app.js", "config.js", "manifest.webmanifest",
   "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "icons/apple-touch-icon.png"];
 

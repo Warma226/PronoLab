@@ -178,7 +178,73 @@ form input:focus,form select:focus,#aPass:focus{border-color:var(--pitch);outlin
 .introbtns{display:grid;gap:10px;max-width:420px;width:100%;margin:0 auto}
 .introbtns .cta{padding:15px;font-size:1rem}
 .introbtns .linkbtn{justify-self:center}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* Barre du haut, onglets, listes compactes */
+.appbar{display:block;position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding-top:env(safe-area-inset-top,0px)}
+.appbar-in{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:10px;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{padding-block:6px calc(96px + env(safe-area-inset-bottom,0px))}
+.view{display:grid;gap:16px;min-width:0}
+.view>*{min-width:0}
+.sechead{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.days{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 6px}
+.days::-webkit-scrollbar{display:none}
+.days button{flex:none;border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:16px;padding:8px 14px;display:grid;justify-items:center;gap:0;min-width:64px}
+.days button small{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:capitalize}
+.days button b{font-family:var(--display);font-size:1.15rem;font-weight:800;line-height:1.2}
+.days button[aria-selected="true"]{background:var(--pitch);color:var(--pitch-ink)}
+.days button[aria-selected="true"] small{color:inherit;opacity:.85}
+.seg{display:flex;background:var(--chipbg);border-radius:12px;padding:3px;gap:3px;align-self:flex-start}
+.seg button{border:0;background:transparent;border-radius:9px;padding:6px 12px;font-size:.82rem;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.lgcard{background:var(--surface);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.lghead{display:flex;align-items:center;gap:10px;padding:12px 16px 10px;border-bottom:1px solid var(--line)}
+.lghead .flag{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-size:.62rem;font-weight:800;color:#fff;flex:none}
+.lghead b{font-size:.92rem}
+.lghead span{font-size:.76rem;color:var(--muted)}
+.lgcard .m{box-shadow:none;border-radius:0;border-bottom:1px solid var(--line)}
+.lgcard .m:last-child{border-bottom:0}
+.lgcard .m>button{padding:12px 16px}
+/* Live */
+.lrow{display:grid;grid-template-columns:52px minmax(0,1fr) 28px;gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line)}
+.lrow:last-child{border-bottom:0}
+.lmin{font-size:.78rem;font-weight:700;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.lmin.on{color:var(--bad)}
+.lteams{display:grid;gap:5px;min-width:0}
+.lteam{display:flex;align-items:center;gap:8px;min-width:0;font-size:.95rem}
+.lteam img{width:18px;height:18px;object-fit:contain;flex:none}
+.lteam span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lteam.win span{font-weight:700}
+.lscore{display:grid;gap:5px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.lscore.on{color:var(--bad)}
+.livedot{position:absolute;top:6px;right:calc(50% - 18px);width:8px;height:8px;border-radius:50%;background:var(--bad);box-shadow:0 0 0 3px var(--surface)}
+.pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--bad);margin-right:5px;animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.25}}
+/* Combinés */
+.combo{background:var(--surface);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+.combohead{padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--soft)}
+.combohead.big{background:var(--apricot-soft)}
+.combohead h3{font-family:var(--display);font-weight:800;font-size:1.15rem;margin:0}
+.combohead p{margin:2px 0 0;font-size:.8rem;color:var(--muted)}
+.odds{text-align:right}
+.odds b{display:block;font-family:var(--display);font-weight:800;font-size:1.8rem;line-height:1}
+.odds span{font-size:.72rem;font-weight:700;color:var(--muted)}
+.leg{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 18px;border-bottom:1px solid var(--line)}
+.leg .mt{font-weight:600;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.leg .mk{font-size:.82rem;color:var(--muted)}
+.leg .o{grid-row:span 2;align-self:center;text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.leg .o small{display:block;font-size:.7rem;font-weight:600;color:var(--muted)}
+.combofoot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:12px 18px}
+.combolock{background:var(--surface);border-radius:24px;box-shadow:var(--shadow);padding:22px;display:grid;gap:12px;text-align:center;justify-items:center}
+.combolock .blurred{filter:blur(6px);user-select:none;pointer-events:none;width:100%;display:grid;gap:8px}
+.combolock .blurred div{height:44px;border-radius:12px;background:var(--chipbg)}
+#combos{display:grid;gap:16px}
+/* Barre d onglets */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.06);display:grid;grid-template-columns:repeat(4,1fr);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.tabbar button{position:relative;border:0;background:none;display:grid;justify-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:.7rem;font-weight:600;border-radius:14px}
+.tabbar svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabbar button[aria-current="page"]{color:var(--pitch)}
+.tabbar button[aria-current="page"] svg{stroke-width:2.3}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -234,75 +300,93 @@ form input:focus,form select:focus,#aPass:focus{border-color:var(--pitch);outlin
     <button class="linkbtn" id="introLogin" type="button" hidden>J'ai déjà un compte</button>
   </div>
 </div>
-<div class="wrap">
-  <header>
-    <div class="topbar">
-      <div class="brand"><img src="icons/icon-192.png" alt=""><h1>Prono <span>Lab</span></h1></div>
-      <div class="acts">
-        <button class="chip" id="installBtn" hidden>Installer l'app</button>
-        <button class="chip" id="accBtn" hidden></button>
-      </div>
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="brand"><img src="icons/icon-192.png" alt=""><h1>Prono <span>Lab</span></h1></div>
+    <div class="acts">
+      <button class="chip" id="installBtn" hidden>Installer</button>
+      <button class="chip" id="accBtn" hidden></button>
     </div>
-    <p class="sub" id="sub">Les matchs du week-end des cinq grands championnats européens, analysés automatiquement.</p>
-    <span class="meta" id="upd"></span>
-  </header>
+  </div>
+</header>
 
-  <section class="welcome" id="welcome" hidden>
-    <div class="tabs" id="tabs" role="tablist">
-      <button type="button" id="tabCreate" role="tab" aria-selected="true">Créer un compte</button>
-      <button type="button" id="tabLogin" role="tab" aria-selected="false">Se connecter</button>
-    </div>
-    <h2 id="welcomeTitle">Bienvenue sur Prono Lab</h2>
-    <p id="welcomeText"></p>
-    <form id="accForm" autocomplete="on">
-      <label for="aName" data-create>Prénom ou pseudo<input id="aName" maxlength="40" autocomplete="nickname"></label>
-      <label for="aPhone">Numéro de téléphone<input id="aPhone" inputmode="tel" maxlength="20" placeholder="ex. 70 00 00 00" autocomplete="tel"></label>
-      <label for="aPass" id="aPassLab">Mot de passe (6 caractères minimum)</label>
-      <input id="aPass" type="password" minlength="6" autocomplete="current-password">
-      <label for="aCity" data-create>Ville (facultatif)<input id="aCity" maxlength="40" placeholder="ex. Ouagadougou"></label>
-      <button class="cta" type="submit" id="accSubmit">Créer mon compte</button>
-      <button class="linkbtn" type="button" id="forgot" hidden>Mot de passe oublié ?</button>
-      <p class="msg" id="accMsg"></p>
-    </form>
-    <button class="skip" id="skipBtn" type="button">Continuer sans compte</button>
-  </section>
-
-  <section class="club" id="club" hidden></section>
-
-  <section class="top" id="topSec" hidden>
-    <h2>Les plus sûrs du week-end</h2>
-    <div class="picks" id="picks"></div>
-  </section>
-
-  <section style="display:grid;gap:14px">
+<main class="wrap">
+  <section class="view" data-view="matchs">
+    <div class="days" id="days" role="tablist" aria-label="Jour"></div>
+    <section class="top" id="topSec" hidden>
+      <div class="sechead"><h2>Les plus sûrs du week-end</h2></div>
+      <div class="picks" id="picks"></div>
+    </section>
     <div class="bar">
       <div class="chips" id="lgChips" role="group" aria-label="Championnat"></div>
-      <div class="chips" role="group" aria-label="Tri">
-        <button class="chip" id="sTime" aria-pressed="true">Par horaire</button>
-        <button class="chip" id="sConf" aria-pressed="false">Par confiance</button>
+      <div class="seg" role="group" aria-label="Tri">
+        <button id="sTime" aria-pressed="true">Par horaire</button>
+        <button id="sConf" aria-pressed="false">Par confiance</button>
       </div>
     </div>
     <div id="list"><div class="empty">Chargement des matchs du week-end…</div></div>
+    <p class="meta" id="upd"></p>
+    <p class="note">Comment c'est calculé : pour chaque équipe, l'app compare ses buts marqués et encaissés par match à la moyenne de son championnat, ajoute l'avantage du terrain (+10 % / −10 %) et la forme des 5 derniers matchs (±10 %), puis applique un modèle de Poisson. Confiance : <b>Fort</b> à partir de 60 %, <b>Moyen</b> de 45 à 60 %, <b>Risqué</b> en dessous. Ce sont des estimations statistiques : blessures, rotations et enjeux ne sont pas pris en compte. Si tu paries, fixe-toi une limite.</p>
+    <p class="note" id="src"></p>
   </section>
 
-  <p class="note">Comment c'est calculé : pour chaque équipe, l'app compare ses buts marqués et encaissés par match à la moyenne de son championnat, ajoute l'avantage du terrain (+10 % / −10 %) et la forme des 5 derniers matchs (±10 %), puis applique un modèle de Poisson. Confiance : <b>Fort</b> à partir de 60 %, <b>Moyen</b> de 45 à 60 %, <b>Risqué</b> en dessous. Ce sont des estimations statistiques : blessures, rotations et enjeux ne sont pas pris en compte. Si tu paries, fixe-toi une limite.</p>
-  <p class="note" id="src"></p>
+  <section class="view" data-view="live" hidden>
+    <div class="sechead"><h2>En direct</h2><span class="meta" id="liveUpd"></span></div>
+    <div class="days" id="liveDays" role="tablist" aria-label="Jour"></div>
+    <div id="live"><div class="empty">Chargement des scores…</div></div>
+  </section>
 
-  <section class="admin" id="admin" hidden>
-    <h2>Gestion des membres <small class="meta" id="accCount"></small></h2>
-    <form id="payForm">
-      <span class="lab">Tes numéros de paiement (affichés aux visiteurs)</span>
-      <div class="steps">
-        <label for="nOrange">Orange Money<input id="nOrange" inputmode="tel"></label>
-        <label for="nMoov">Moov Money<input id="nMoov" inputmode="tel"></label>
-        <label for="nWave">Wave<input id="nWave" inputmode="tel"></label>
+  <section class="view" data-view="combos" hidden>
+    <div class="sechead"><h2>Combinés du week-end</h2></div>
+    <div id="combos"></div>
+  </section>
+
+  <section class="view" data-view="compte" hidden>
+    <section class="welcome" id="welcome" hidden>
+      <div class="tabs" id="tabs" role="tablist">
+        <button type="button" id="tabCreate" role="tab" aria-selected="true">Créer un compte</button>
+        <button type="button" id="tabLogin" role="tab" aria-selected="false">Se connecter</button>
       </div>
-      <div><button class="cta" type="submit">Enregistrer les numéros</button> <span class="msg" id="payMsg"></span></div>
-    </form>
-    <div style="display:grid;gap:10px"><span class="lab">Demandes en attente</span><div id="reqs"></div></div>
-    <div style="display:grid;gap:8px"><span class="lab">Membres actifs</span><div id="mems"></div></div>
+      <h2 id="welcomeTitle">Bienvenue sur Prono Lab</h2>
+      <p id="welcomeText"></p>
+      <form id="accForm" autocomplete="on">
+        <label for="aName" data-create>Prénom ou pseudo<input id="aName" maxlength="40" autocomplete="nickname"></label>
+        <label for="aPhone">Numéro de téléphone<input id="aPhone" inputmode="tel" maxlength="20" placeholder="ex. 70 00 00 00" autocomplete="tel"></label>
+        <label for="aPass" id="aPassLab">Mot de passe (6 caractères minimum)</label>
+        <input id="aPass" type="password" minlength="6" autocomplete="current-password">
+        <label for="aCity" data-create>Ville (facultatif)<input id="aCity" maxlength="40" placeholder="ex. Ouagadougou"></label>
+        <button class="cta" type="submit" id="accSubmit">Créer mon compte</button>
+        <button class="linkbtn" type="button" id="forgot" hidden>Mot de passe oublié ?</button>
+        <p class="msg" id="accMsg"></p>
+      </form>
+      <button class="skip" id="skipBtn" type="button">Continuer sans compte</button>
+    </section>
+
+    <section class="club" id="club" hidden></section>
+
+    <section class="admin" id="admin" hidden>
+      <h2>Gestion des membres <small class="meta" id="accCount"></small></h2>
+      <form id="payForm">
+        <span class="lab">Tes numéros de paiement (affichés aux visiteurs)</span>
+        <div class="steps">
+          <label for="nOrange">Orange Money<input id="nOrange" inputmode="tel"></label>
+          <label for="nMoov">Moov Money<input id="nMoov" inputmode="tel"></label>
+          <label for="nWave">Wave<input id="nWave" inputmode="tel"></label>
+        </div>
+        <div><button class="cta" type="submit">Enregistrer les numéros</button> <span class="msg" id="payMsg"></span></div>
+      </form>
+      <div style="display:grid;gap:10px"><span class="lab">Demandes en attente</span><div id="reqs"></div></div>
+      <div style="display:grid;gap:8px"><span class="lab">Membres actifs</span><div id="mems"></div></div>
+    </section>
   </section>
-</div>
+</main>
+
+<nav class="tabbar" aria-label="Navigation">
+  <button data-go="matchs" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/></svg><span>Matchs</span></button>
+  <button data-go="live"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4"/></svg><span>Live</span><i class="livedot" id="liveDot" hidden></i></button>
+  <button data-go="combos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 9h6M9 13h6"/></svg><span>Combinés</span></button>
+  <button data-go="compte"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>Compte</span></button>
+</nav>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>

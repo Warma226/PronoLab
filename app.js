@@ -75,6 +75,25 @@ function card(m) {
       <div class="kv"><span>${esc(a.name)}</span><span>${a.gf} marqués · ${a.ga} encaissés · ${a.gp} m.</span></div></div>
   </div>` : LOCKD) : ""}</div>`;
 }
+const LGMETA = { PL: ["ENG", "Angleterre", "#6a4fb3"], LIGA: ["ESP", "Espagne", "#e0873a"], SA: ["ITA", "Italie", "#3a7bd5"], BL: ["GER", "Allemagne", "#d9534f"], L1: ["FRA", "France", "#2c4a7a"] };
+const LGORDER = ["PL", "LIGA", "SA", "BL", "L1"];
+const dayKey = d => d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+let selDay = null;
+function lgHead(k, extra = "") {
+  const m = LGMETA[k] || ["", "", "#888"];
+  return `<div class="lghead"><span class="flag" style="background:${m[2]}">${m[0]}</span><div><b>${LG[k] || k}</b><br><span>${m[1]}${extra}</span></div></div>`;
+}
+function renderDays() {
+  const keys = [...new Set(matches.map(m => dayKey(m.date)))].sort((a, b) => new Date(a.replace(/-/g, "/")) - new Date(b.replace(/-/g, "/")));
+  if (!selDay || !keys.includes(selDay)) {
+    const now = Date.now() - 2 * 3600e3;
+    const nextM = matches.filter(m => m.date.getTime() > now).sort((x, y) => x.date - y.date)[0];
+    selDay = nextM ? dayKey(nextM.date) : keys[0];
+  }
+  const wd = new Intl.DateTimeFormat("fr-FR", { weekday: "short" });
+  $("days").innerHTML = (sort === "conf" ? "" : "") + keys.map(k => { const d = matches.find(m => dayKey(m.date) === k).date;
+    return `<button role="tab" data-day="${k}" aria-selected="${k === selDay}"><small>${wd.format(d).replace(".", "")}</small><b>${d.getDate()}</b></button>`; }).join("");
+}
 function render() {
   if (!matches.length) return;
   const now = Date.now() - 2 * 3600e3;
@@ -93,13 +112,18 @@ function render() {
   $("picks").innerHTML = top.map(m => `<button class="pick" data-id="${esc(m.id)}"><span class="lg">${LG[m.league]} · ${dayFmt.format(m.date).split(" ")[0]} ${hFmt.format(m.date)}</span>
     <span class="teams">${esc(m.home.name)}<br>${esc(m.away.name)}</span>
     <span class="bet"><b>${esc(m.r.pickLabel)}</b><span>${pc(m.r.conf)}%</span></span></button>`).join("");
-  let list = matches.filter(m => filter === "ALL" || m.league === filter);
-  if (sort === "conf") { list.sort((x, y) => y.r.conf - x.r.conf); $("list").innerHTML = '<div class="day">' + list.map(card).join("") + "</div>"; }
-  else {
-    list.sort((x, y) => x.date - y.date); const g = {};
-    list.forEach(m => { const k = dayFmt.format(m.date); (g[k] = g[k] || []).push(m); });
-    $("list").innerHTML = Object.entries(g).map(([k, v]) => `<div class="day"><h3>${k}</h3>${v.map(card).join("")}</div>`).join("") || '<div class="empty">Aucun match pour ce filtre.</div>';
+  renderDays();
+  const list = matches.filter(m => (filter === "ALL" || m.league === filter) && (sort === "conf" || dayKey(m.date) === selDay));
+  $("days").hidden = sort === "conf";
+  if (!list.length) { $("list").innerHTML = '<div class="empty">Aucun match pour ce filtre.</div>'; return; }
+  if (sort === "conf") {
+    list.sort((x, y) => y.r.conf - x.r.conf);
+    $("list").innerHTML = '<div class="lgcard">' + list.map(card).join("") + "</div>";
+    return;
   }
+  list.sort((x, y) => x.date - y.date);
+  $("list").innerHTML = '<div class="day">' + LGORDER.filter(k => list.some(m => m.league === k)).map(k =>
+    `<div class="lgcard">${lgHead(k)}${list.filter(m => m.league === k).map(card).join("")}</div>`).join("") + "</div>";
 }
 function chips() {
   const present = new Set(matches.map(m => m.league));
@@ -113,8 +137,7 @@ async function loadMatches() {
     $("upd").textContent = "Week-end du " + (x.weekend || "") + " · mis à jour le " + new Date(x.updatedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
     $("src").textContent = x.sources ? "Sources : " + x.sources : "";
     if (!matches.length) { $("list").innerHTML = '<div class="empty">Les matchs du prochain week-end arrivent bientôt. La liste se met à jour toute seule chaque semaine.</div>'; return; }
-    $("sub").textContent = matches.length + " matchs des cinq grands championnats européens, analysés automatiquement. Touche un match pour voir le détail.";
-    chips(); render();
+    chips(); render(); renderCombos();
   } catch (e) {
     $("list").innerHTML = '<div class="empty">Les matchs n\'ont pas pu être chargés. Vérifie ta connexion internet puis rouvre l\'app.</div>';
   }
@@ -123,9 +146,9 @@ async function loadMatches() {
 /* ---------- Compte ---------- */
 function renderTop() {
   const b = $("accBtn");
-  if (me) { b.hidden = false; b.textContent = (myAcc && myAcc.name ? myAcc.name + " · " : "") + "Se déconnecter"; }
-  else if (fs) { b.hidden = false; b.textContent = "Se connecter"; }
-  else b.hidden = true;
+  if (!fs) { b.hidden = true; return; }
+  b.hidden = false;
+  b.textContent = me ? ((myAcc && myAcc.name) || "Mon compte") : "Se connecter";
 }
 function renderWelcome() {
   const show = !!fs && (asVisitor ? !skipped : (!me && !skipped) || (me && accLoaded && !myAcc && !isOwner));
@@ -146,7 +169,8 @@ function renderWelcome() {
     "Connecte-toi avec ton numéro de téléphone et ton mot de passe.";
   $("forgot").hidden = create;
 }
-function renderClub() {
+function renderClub() { renderClubBody(); const c = $("club"); if (me && !asVisitor) c.insertAdjacentHTML("beforeend", `<div><button class="mini" id="logoutBtn">Se déconnecter</button></div>`); }
+function renderClubBody() {
   const c = $("club"); c.hidden = false;
   if (!fs) { c.className = "club"; c.innerHTML = `<h2>Espace membre</h2><p class="msg">Les comptes et abonnements arrivent très bientôt.</p>`; return; }
   if (owner()) {
@@ -214,7 +238,7 @@ function renderAdmin() {
   const act = Object.entries(members).filter(([, m]) => new Date(m.until) > new Date()).sort((a, b) => a[1].until.localeCompare(b[1].until));
   $("mems").innerHTML = act.length ? act.map(([id, m]) => `<div class="kv"><span>${esc((accounts[id] && accounts[id].name) || "Client")} · ${esc((accounts[id] && accounts[id].phone) || "")}</span><span>jusqu'au ${esc(new Date(m.until).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }))}</span></div>`).join("") : '<p class="msg">Aucun membre actif.</p>';
 }
-function renderAll() { renderTop(); renderWelcome(); renderClub(); renderAdmin(); render(); }
+function renderAll() { renderTop(); renderWelcome(); renderClub(); renderAdmin(); render(); renderCombos(); }
 
 /* ---------- Firebase ---------- */
 function stopListeners(list) { list.forEach(u => { try { u(); } catch (e) {} }); list.length = 0; }
@@ -263,17 +287,18 @@ const AUTH_ERR = {
 document.addEventListener("click", async e => {
   const t = e.target;
   const c = t.closest("[data-lg]"); if (c) { filter = c.dataset.lg; chips(); render(); return; }
-  if (t.closest("[data-join]")) { $("club").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  const gb = t.closest("[data-go]"); if (gb) { go(gb.dataset.go); return; }
+  if (t.closest("[data-join]")) { go("compte"); setTimeout(() => $("club").scrollIntoView({ behavior: "smooth", block: "start" }), 50); return; }
+  const dy = t.closest("[data-day]"); if (dy) { selDay = dy.dataset.day; render(); return; }
+  const ld = t.closest("[data-lday]"); if (ld) { liveOff = +ld.dataset.lday; loadLive(true); return; }
+  const cc = t.closest("[data-ticket]"); if (cc) { const txt = ticketText(cc.dataset.ticket); try { await navigator.clipboard.writeText(txt); cc.textContent = "Ticket copié"; } catch (err) { cc.textContent = "Copie impossible"; } return; }
+  if (t.closest("#logoutBtn")) { await auth.signOut(); skipped = false; return; }
   if (t.closest("#tabCreate")) { authTab = "create"; renderWelcome(); return; }
   if (t.closest("#tabLogin")) { authTab = "login"; renderWelcome(); return; }
-  if (t.closest("#accBtn")) {
-    if (me) { await auth.signOut(); skipped = false; }
-    else { skipped = false; authTab = "login"; renderWelcome(); window.scrollTo({ top: 0, behavior: "smooth" }); }
-    return;
-  }
-  if (t.closest("#openAcc")) { skipped = false; try { localStorage.removeItem("pl_skip"); } catch (err) {} authTab = "create"; renderWelcome(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+  if (t.closest("#accBtn")) { if (!me) { skipped = false; authTab = "login"; renderWelcome(); } go("compte"); return; }
+  if (t.closest("#openAcc")) { skipped = false; try { localStorage.removeItem("pl_skip"); } catch (err) {} authTab = "create"; renderWelcome(); go("compte"); return; }
   if (t.closest("#skipBtn")) { skipped = true; if (!asVisitor) { try { localStorage.setItem("pl_skip", "1"); } catch (err) {} } renderWelcome(); return; }
-  if (t.closest("#visitBtn")) { asVisitor = true; skipped = false; authTab = "create"; renderAll(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+  if (t.closest("#visitBtn")) { asVisitor = true; skipped = false; authTab = "create"; renderAll(); go("matchs"); return; }
   if (t.closest("#adminBtn")) { asVisitor = false; renderAll(); return; }
   const cp = t.closest("[data-copy]"); if (cp) { try { await navigator.clipboard.writeText(cp.dataset.copy); cp.textContent = "Copié"; } catch (err) {} return; }
   const ok = t.closest("[data-ok]"); if (ok) { validate(ok.dataset.ok, ok); return; }
@@ -339,6 +364,136 @@ $("sTime").onclick = () => { sort = "time"; $("sTime").setAttribute("aria-presse
 $("sConf").onclick = () => { sort = "conf"; $("sConf").setAttribute("aria-pressed", "true"); $("sTime").setAttribute("aria-pressed", "false"); render(); };
 $("forgot").onclick = () => { $("accMsg").className = "msg"; $("accMsg").textContent = "Mot de passe oublié ? Écris à l'administrateur sur WhatsApp au +" + normPhone(CFG.adminPhone) + " pour le réinitialiser."; };
 
+/* ---------- Navigation par onglets ---------- */
+const VIEWS = ["matchs", "live", "combos", "compte"];
+let view = "matchs";
+function go(v, push = true) {
+  if (!VIEWS.includes(v)) v = "matchs";
+  view = v;
+  document.querySelectorAll("[data-view]").forEach(el => el.hidden = el.dataset.view !== v);
+  document.querySelectorAll(".tabbar [data-go]").forEach(b => { if (b.dataset.go === v) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+  if (push && location.hash !== "#" + v) history.replaceState(null, "", "#" + v);
+  window.scrollTo(0, 0);
+  if (v === "live") loadLive(true);
+}
+window.addEventListener("hashchange", () => go(location.hash.slice(1), false));
+
+/* ---------- Live (scores en direct) ---------- */
+const ESPN = { PL: "eng.1", LIGA: "esp.1", SA: "ita.1", BL: "ger.1", L1: "fra.1" };
+let liveOff = 0, liveTimer = null, liveData = null;
+const ymd = d => d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
+async function loadLive(force) {
+  clearTimeout(liveTimer);
+  const d = new Date(); d.setDate(d.getDate() + liveOff);
+  const labels = { "-1": "Hier", "0": "Aujourd'hui", "1": "Demain" };
+  $("liveDays").innerHTML = [-1, 0, 1].map(o => { const x = new Date(); x.setDate(x.getDate() + o);
+    return `<button role="tab" data-lday="${o}" aria-selected="${o === liveOff}"><small>${labels[o]}</small><b>${x.getDate()}</b></button>`; }).join("");
+  if (force && !liveData) $("live").innerHTML = '<div class="empty">Chargement des scores…</div>';
+  const res = await Promise.all(LGORDER.map(k => fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${ESPN[k]}/scoreboard?dates=${ymd(d)}`).then(r => r.ok ? r.json() : null).catch(() => null)));
+  if (res.every(x => !x)) { $("live").innerHTML = '<div class="empty">Les scores en direct ne sont pas disponibles pour le moment. Vérifie ta connexion et réessaie dans quelques minutes.</div>'; return; }
+  liveData = res; let anyLive = false;
+  const blocks = LGORDER.map((k, i) => {
+    const evs = (res[i] && res[i].events) || []; if (!evs.length) return "";
+    const rows = evs.map(ev => {
+      const c = ev.competitions && ev.competitions[0]; if (!c) return "";
+      const st = (ev.status && ev.status.type) || {}, state = st.state;
+      const on = state === "in"; if (on) anyLive = true;
+      const h = c.competitors.find(x => x.homeAway === "home") || c.competitors[0], a = c.competitors.find(x => x.homeAway === "away") || c.competitors[1];
+      const minute = on ? (ev.status.displayClock || st.shortDetail || "") : state === "post" ? "Terminé" : hFmt.format(new Date(ev.date));
+      const sc = x => state === "pre" ? "" : esc(x.score);
+      const win = x => state === "post" && x.winner;
+      const team = x => `<div class="lteam ${win(x) ? "win" : ""}">${x.team.logo ? `<img src="${esc(x.team.logo)}" alt="" loading="lazy">` : ""}<span>${esc(x.team.shortDisplayName || x.team.displayName)}</span></div>`;
+      return `<div class="lrow"><span class="lmin ${on ? "on" : ""}">${on ? '<span class="pulse"></span>' : ""}${esc(minute)}</span>
+        <div class="lteams">${team(h)}${team(a)}</div>
+        <div class="lscore ${on ? "on" : ""}"><span>${sc(h)}</span><span>${sc(a)}</span></div></div>`;
+    }).join("");
+    return `<div class="lgcard">${lgHead(k)}${rows}</div>`;
+  }).join("");
+  $("live").innerHTML = blocks ? `<div class="day">${blocks}</div>` : '<div class="empty">Aucun match des cinq grands championnats ce jour-là.</div>';
+  $("liveDot").hidden = !(anyLive && liveOff === 0);
+  $("liveUpd").textContent = "Actualisé à " + hFmt.format(new Date());
+  if (view === "live") liveTimer = setTimeout(() => loadLive(false), anyLive ? 30000 : 120000);
+}
+async function liveBadge() { // point rouge sur l'onglet Live quand un match est en cours
+  if (view === "live") return;
+  const d = new Date();
+  const res = await Promise.all(LGORDER.map(k => fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${ESPN[k]}/scoreboard?dates=${ymd(d)}`).then(r => r.ok ? r.json() : null).catch(() => null)));
+  $("liveDot").hidden = !res.some(x => x && (x.events || []).some(e => e.status && e.status.type && e.status.type.state === "in"));
+}
+
+/* ---------- Combinés ---------- */
+let combos = [];
+function options(m) {
+  const r = m.r, H = m.home.name, A = m.away.name;
+  return [
+    [r.p1, "1X2 : V1", "Victoire " + H],
+    [r.p2, "1X2 : V2", "Victoire " + A],
+    [r.p1 + r.px, "Double chance : 1X", H + " ou nul"],
+    [r.p2 + r.px, "Double chance : X2", A + " ou nul"],
+    [r.o25, "Total : Plus de 2.5", "Plus de 2,5 buts"],
+    [1 - r.o25, "Total : Moins de 2.5", "Moins de 2,5 buts"],
+    [r.btts, "Les deux équipes marquent : Oui", "Les deux équipes marquent"]
+  ].filter(o => o[0] >= 0.5 && o[0] <= 0.92);
+}
+// Compose un combiné proche de la cote visée : n sélections dont la probabilité
+// est la plus proche possible de la cible par sélection (cote visée ^ (1/n)).
+function build(target, sizes) {
+  const now = Date.now() + 10 * 60e3, up = matches.filter(m => m.date.getTime() > now);
+  let best = null;
+  for (const n of sizes) {
+    const pStar = Math.pow(1 / target, 1 / n);
+    const pool = up.map(m => {
+      const o = options(m).filter(x => x[0] >= pStar - 0.04).sort((x, y) => Math.abs(x[0] - pStar) - Math.abs(y[0] - pStar))[0];
+      return o ? { m, p: o[0], bk: o[1], label: o[2] } : null;
+    }).filter(Boolean).sort((x, y) => (y.p - pStar >= 0 ? 0 : 1) - (x.p - pStar >= 0 ? 0 : 1) || Math.abs(x.p - pStar) - Math.abs(y.p - pStar));
+    const legs = [];
+    for (const c of pool) { if (legs.length >= n) break; if (legs.filter(l => l.m.league === c.m.league).length >= 2) continue; legs.push(c); }
+    if (legs.length < n) continue;
+    let odds = legs.reduce((s, l) => s / l.p, 1);
+    // si la cote est un peu courte, on remplace la sélection la plus sûre par une plus audacieuse
+    if (odds < target * 0.95) {
+      const used = new Set(legs.map(l => l.m.id));
+      const extra = up.filter(m => !used.has(m.id)).flatMap(m => options(m).map(o => ({ m, p: o[0], bk: o[1], label: o[2] })))
+        .filter(c => c.p < pStar).sort((x, y) => y.p - x.p);
+      legs.sort((x, y) => y.p - x.p);
+      for (const c of extra) { const o2 = odds * legs[0].p / c.p; if (o2 >= target * 0.95) { legs[0] = c; odds = o2; break; } }
+    }
+    if (odds < target * 0.95 || odds > target * 1.6) continue;
+    const cand = { legs: legs.sort((x, y) => x.m.date - y.m.date), odds, prob: legs.reduce((s, l) => s * l.p, 1) };
+    if (!best || Math.abs(Math.log(cand.odds / target)) < Math.abs(Math.log(best.odds / target))) best = cand;
+  }
+  return best;
+}
+function ticketText(id) {
+  const c = combos.find(x => x.id === id); if (!c) return "";
+  return `Prono Lab · ${c.title} (cote estimée ${fmt(c.odds)})\n` + c.legs.map((l, i) =>
+    `${i + 1}. ${l.m.home.name} - ${l.m.away.name} (${dayFmt.format(l.m.date).split(" ")[0]} ${hFmt.format(l.m.date)})\n   ${l.bk}`).join("\n");
+}
+function renderCombos() {
+  const box = $("combos"); if (!box || !matches.length) return;
+  combos = [];
+  const safe = build(2, [3, 2, 4]), five = build(5, [4, 3, 5]);
+  if (safe) combos.push({ id: "safe", title: "Combiné sûr", sub: "Les sélections les plus fiables", cls: "", ...safe });
+  if (five) combos.push({ id: "five", title: "Combiné cote 5", sub: "Le coup à gros gain du week-end", cls: "big", ...five });
+  if (!isMember()) {
+    box.innerHTML = `<div class="combolock"><div class="blurred"><div></div><div></div><div></div></div>
+      <h2>${combos.length} combinés prêts pour ce week-end</h2>
+      <p class="msg">Un combiné sûr et un combiné cote 5, avec les libellés 1xBet et Melbet et la copie du ticket en un geste. Réservé aux membres.</p>
+      <button class="cta" data-join>Devenir membre</button></div>`;
+    return;
+  }
+  if (!combos.length) { box.innerHTML = '<div class="empty">Plus assez de matchs à venir ce week-end pour composer un combiné. Les prochains arrivent jeudi.</div>'; return; }
+  box.innerHTML = combos.map(c => `<div class="combo">
+    <div class="combohead ${c.cls}"><div><h3>${c.title}</h3><p>${c.sub} · ${c.legs.length} sélections</p></div>
+      <div class="odds"><b>${fmt(c.odds)}</b><span>${pc(c.prob)} % de chances</span></div></div>
+    ${c.legs.map(l => `<div class="leg"><span class="mt">${esc(l.m.home.name)} – ${esc(l.m.away.name)}</span>
+      <span class="o">${fmt(1 / l.p)}<small>${pc(l.p)} %</small></span>
+      <span class="mk">${esc(l.bk)} · ${LGS[l.m.league]} · ${dayFmt.format(l.m.date).split(" ")[0]} ${hFmt.format(l.m.date)}</span></div>`).join("")}
+    <div class="combofoot"><span class="msg">Cote estimée par le modèle : chez 1xBet ou Melbet, elle sera un peu plus basse.</span>
+      <button class="cta" data-ticket="${c.id}">Copier le ticket</button></div></div>`).join("")
+    + `<p class="note">Un combiné ne passe que si toutes les sélections passent : un combiné cote 5 a environ 1 chance sur 5 de gagner. Mise uniquement ce que tu peux te permettre de perdre.</p>`;
+}
+
 /* ---------- Installation ---------- */
 let deferredInstall = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferredInstall = e; $("installBtn").hidden = false; });
@@ -355,7 +510,7 @@ if ("serviceWorker" in navigator) window.addEventListener("load", () => navigato
   const update = () => { const i = idx(); dots.forEach((d, k) => d.classList.toggle("on", k === i));
     const last = i === dots.length - 1; next.textContent = last ? "Créer mon compte" : "Suivant"; login.hidden = !last; };
   const close = tab => { try { localStorage.setItem("pl_intro", "1"); } catch (e) {} box.hidden = true; document.body.style.overflow = "";
-    if (tab) { authTab = tab; skipped = false; try { localStorage.removeItem("pl_skip"); } catch (e) {} renderWelcome(); window.scrollTo(0, 0); } };
+    if (tab) { authTab = tab; skipped = false; try { localStorage.removeItem("pl_skip"); } catch (e) {} renderWelcome(); go("compte"); } };
   sl.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
   window.addEventListener("resize", update);
   next.onclick = () => { const i = idx(); if (i < dots.length - 1) sl.scrollTo({ left: (i + 1) * sl.clientWidth, behavior: "smooth" }); else close("create"); };
@@ -363,5 +518,7 @@ if ("serviceWorker" in navigator) window.addEventListener("load", () => navigato
   $("introSkip").onclick = () => close(null);
 })();
 
+go(location.hash.slice(1) || "matchs", false);
 loadMatches();
 initFirebase();
+liveBadge(); setInterval(liveBadge, 120000);
