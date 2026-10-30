@@ -71,6 +71,36 @@ const hFmt = new Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digi
 const CL = { fort: "Fort", moyen: "Moyen", risque: "Risqué" };
 const LOCKD = `<div class="lockdet"><span>Buts attendus, scores probables et marchés : réservé aux membres.</span><button class="cta" data-join>Devenir membre</button></div>`;
 
+/* ---------- Logos des équipes (fournis par ESPN, gardés en cache 7 jours) ---------- */
+const LOGO_SRC = { PL: "soccer/eng.1", LIGA: "soccer/esp.1", SA: "soccer/ita.1", BL: "soccer/ger.1", L1: "soccer/fra.1", NHL: "hockey/nhl" };
+let teamLists = {};
+try { const c = JSON.parse(localStorage.getItem("pl_logos") || "null"); if (c && Date.now() - c.at < 7 * 864e5) teamLists = c.lists; } catch (e) {}
+async function loadLogos() {
+  const need = Object.keys(LOGO_SRC).filter(k => !teamLists[k]);
+  if (!need.length) return;
+  await Promise.all(need.map(async k => {
+    try {
+      const r = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${LOGO_SRC[k]}/teams`); if (!r.ok) return;
+      const j = await r.json();
+      const teams = (((j.sports || [])[0] || {}).leagues || [{}])[0].teams || [];
+      teamLists[k] = teams.map(t => t.team).filter(t => t && t.logos && t.logos[0]).map(t => ({
+        displayName: t.displayName, shortDisplayName: t.shortDisplayName, name: t.name, location: t.location, abbreviation: t.abbreviation, logo: t.logos[0].href }));
+    } catch (e) {}
+  }));
+  try { localStorage.setItem("pl_logos", JSON.stringify({ at: Date.now(), lists: teamLists })); } catch (e) {}
+  logoCache.clear();
+  if (matches.length) render(); if (view === "match") renderDetail(); if (view === "combos") renderCombos();
+}
+const logoCache = new Map();
+function logoOf(league, name) {
+  const key = league + "|" + name; if (logoCache.has(key)) return logoCache.get(key);
+  let best = null, bs = 1;
+  for (const t of teamLists[league] || []) { const sc = sim(name, t); if (sc > bs) { bs = sc; best = t.logo; } }
+  logoCache.set(key, best); return best;
+}
+const logoImg = (m, t, cls = "tlogo") => { const u = logoOf(m.league, t.name);
+  return u ? `<img class="${cls}" src="${esc(u)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : `<span class="${cls} ini">${esc(t.name.replace(/^(FC|AS|SC|RC|AC|1\.)\s+/i, "").slice(0, 1).toUpperCase())}</span>`; };
+
 function card(m) {
   const r = m.r, h = m.home, a = m.away, res = resultOf(m), st = res && res.state;
   let right = `<span class="badge c-${r.cls}"><b>${r.pick}</b><small>${CL[r.cls]} ${pc(r.conf)} %</small></span>`;
@@ -85,8 +115,8 @@ function card(m) {
   }
   return `<div class="m"><button data-id="${esc(m.id)}">
     <span class="time">${left}</span>
-    <span class="vs"><span class="row ${r.p1 > r.p2 ? "fav" : ""}"><span class="tn">${esc(h.name)}</span>${formHtml(h.form)}</span>
-      <span class="row ${r.p2 > r.p1 ? "fav" : ""}"><span class="tn">${esc(a.name)}</span>${formHtml(a.form)}</span></span>
+    <span class="vs"><span class="row ${r.p1 > r.p2 ? "fav" : ""}">${logoImg(m, h)}<span class="tn">${esc(h.name)}</span>${formHtml(h.form)}</span>
+      <span class="row ${r.p2 > r.p1 ? "fav" : ""}">${logoImg(m, a)}<span class="tn">${esc(a.name)}</span>${formHtml(a.form)}</span></span>
     <span class="p3"><span class="b"><i style="flex:${r.p1};background:var(--home)"></i><i style="flex:${r.px};background:var(--draw)"></i><i style="flex:${r.p2};background:var(--away)"></i></span>
       <span class="n"><span>1 · ${pc(r.p1)}</span><span>N · ${pc(r.px)}</span><span>2 · ${pc(r.p2)}</span></span></span>
     ${right}
@@ -138,7 +168,7 @@ function render() {
   }
   if (!lock && ov) ov.remove();
   $("picks").innerHTML = top.map(m => `<button class="pick" data-id="${esc(m.id)}"><span class="lg">${LG[m.league]} · ${dayFmt.format(m.date).split(" ")[0]} ${hFmt.format(m.date)}</span>
-    <span class="teams">${esc(m.home.name)}<br>${esc(m.away.name)}</span>
+    <span class="teams"><span class="pt">${logoImg(m, m.home, "pl2")}${esc(m.home.name)}</span><span class="pt">${logoImg(m, m.away, "pl2")}${esc(m.away.name)}</span></span>
     <span class="bet"><b>${esc(m.r.pickLabel)}</b><span>${pc(m.r.conf)}%</span></span></button>`).join("");
   renderDays();
   let w = 0, l = 0; matches.forEach(m => { const x = resultOf(m); if (x && x.state === "post") (wins(m.r.pick, x.hs, x.as, x.ot) ? w++ : l++); });
@@ -193,6 +223,7 @@ async function loadMatches() {
     $("list").innerHTML = '<div class="empty">Les matchs n\'ont pas pu être chargés. Vérifie ta connexion internet puis rouvre l\'app.</div>'; return;
   }
   applySport(); if (view === "match") renderDetail();
+  loadLogos();
 }
 
 /* ---------- Compte ---------- */
@@ -903,9 +934,9 @@ function renderDetail() {
     <div class="dhead">
       <div class="dlg">${lgHead(m.league).replace('class="lghead"', 'class="lghead plain"')}</div>
       <div class="dteams">
-        <div class="dteam"><span class="crest">${esc(h.name.slice(0, 2).toUpperCase())}</span><b>${esc(h.name)}</b><small>Domicile</small></div>
+        <div class="dteam">${logoOf(m.league, h.name) ? logoImg(m, h, "lvlogo") : `<span class="crest">${esc(h.name.slice(0, 2).toUpperCase())}</span>`}<b>${esc(h.name)}</b><small>Domicile</small></div>
         <div class="dmid">${center}</div>
-        <div class="dteam"><span class="crest away">${esc(a.name.slice(0, 2).toUpperCase())}</span><b>${esc(a.name)}</b><small>Extérieur</small></div>
+        <div class="dteam">${logoOf(m.league, a.name) ? logoImg(m, a, "lvlogo") : `<span class="crest away">${esc(a.name.slice(0, 2).toUpperCase())}</span>`}<b>${esc(a.name)}</b><small>Extérieur</small></div>
       </div>
       ${goals ? `<div class="goals">${goals}</div>` : ""}
     </div>
@@ -1010,7 +1041,7 @@ function renderCombos() {
     return `<div class="combo">
     <div class="combohead ${c.cls}"><div><h3>${c.title}</h3><p>${c.sub} · ${c.legs.length} sélections</p>${verdict}</div>
       <div class="odds"><b>${fmt(c.odds)}</b><span>${pc(c.prob)} % de chances</span></div></div>
-    ${c.legs.map((l, i) => `<button class="leg" data-open="${esc(l.m.id)}"><span class="mt">${esc(l.m.home.name)} – ${esc(l.m.away.name)}</span>
+    ${c.legs.map((l, i) => `<button class="leg" data-open="${esc(l.m.id)}"><span class="mt">${logoImg(l.m, l.m.home)}${esc(l.m.home.name)} – ${esc(l.m.away.name)}${logoImg(l.m, l.m.away)}</span>
       <span class="o">${states[i].txt ? `<em class="res ${states[i].cls}">${esc(states[i].txt)}</em>` : fmt(1 / l.p)}<small>${pc(l.p)} %</small></span>
       <span class="mk">${esc(l.bk)} · ${LGS[l.m.league]} · ${hFmt.format(l.m.date)}</span></button>`).join("")}
     <div class="combofoot"><span class="msg">Cote estimée par le modèle : chez 1xBet ou Melbet, elle sera un peu plus basse.</span>

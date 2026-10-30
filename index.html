@@ -429,6 +429,16 @@ h1 span{background:linear-gradient(120deg,var(--pitch),var(--apricot));-webkit-b
 .p3 .b i:first-child{background:linear-gradient(90deg,var(--pitch2),var(--home))!important}
 .themebtn{border:0;background:var(--chipbg);border-radius:12px;width:36px;height:34px;display:grid;place-items:center;font-size:1rem;flex:none}
 .legal{font-size:.76rem;color:var(--muted);text-align:center;margin:0}
+/* Logos des équipes */
+.tlogo{width:20px;height:20px;object-fit:contain;flex:none}
+.tlogo.ini{display:grid;place-items:center;border-radius:50%;background:var(--chipbg);color:var(--muted);font-size:.62rem;font-weight:800}
+.leg .mt{display:flex;align-items:center;gap:6px}
+.pick .teams{display:grid;gap:4px}
+.pick .pt{display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl2{width:22px;height:22px;object-fit:contain;flex:none;background:rgba(255,255,255,.92);border-radius:50%;padding:2px}
+.pl2.ini{display:grid;place-items:center;font-size:.62rem;font-weight:800;color:#1f2b27}
+.dteam .lvlogo{width:58px;height:58px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.12))}
+:root[data-theme="dark"] .tlogo:not(.ini){filter:drop-shadow(0 0 1px rgba(255,255,255,.35))}
 /* Barre d onglets */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.06);display:grid;grid-template-columns:repeat(5,1fr);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 .tabbar button{position:relative;border:0;background:none;display:grid;justify-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:.7rem;font-weight:600;border-radius:14px}
