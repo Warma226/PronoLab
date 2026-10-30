@@ -454,7 +454,7 @@ async function refreshResults() {
     const active = ms.some(m => now > m.date - 15 * 60e3 && now < m.date.getTime() + 150 * 60e3);
     const done = ms.every(m => now > m.date.getTime() + 150 * 60e3);
     if (ms.every(m => now < m.date - 15 * 60e3)) return; // rien n'a commencé ce jour-là
-    await fetchDay(k, active ? 15000 : done ? 3600e3 : 120000);
+    await fetchDay(k, active ? 4000 : done ? 3600e3 : 120000);
     if (active) anyLive = true;
   }));
   render(); if (view === "combos") renderCombos(); if (view === "match") renderDetail();
@@ -465,7 +465,7 @@ async function resultsLoop() {
   clearTimeout(resTimer);
   let live = false; try { live = await refreshResults(); } catch (e) {}
   $("liveDot").hidden = !live;
-  resTimer = setTimeout(resultsLoop, live ? 15000 : 120000);
+  resTimer = setTimeout(resultsLoop, live ? 5000 : 120000);
 }
 document.addEventListener("visibilitychange", () => { if (!document.hidden) { resultsLoop(); if (view === "live") loadLive(false); } });
 
@@ -479,7 +479,7 @@ async function loadLive(force) {
     return `<button role="tab" data-lday="${o}" aria-selected="${o === liveOff}"><small>${labels[o]}</small><b>${x.getDate()}</b></button>`; }).join("");
   const key = ymd(d);
   if (force && !espnDay[key]) $("live").innerHTML = '<div class="empty">Chargement des scores…</div>';
-  const c = await fetchDay(key, 10000);
+  const c = await fetchDay(key, 4000);
   if (!c.ok) { $("live").innerHTML = '<div class="empty">Les scores en direct ne sont pas disponibles pour le moment. Vérifie ta connexion, ils reviendront automatiquement.</div>'; liveTimer = setTimeout(() => loadLive(false), 30000); return; }
   let anyLive = false;
   const blocks = LGORDER.map(k => {
@@ -500,7 +500,7 @@ async function loadLive(force) {
   }).join("");
   $("live").innerHTML = blocks ? `<div class="day">${blocks}</div>` : '<div class="empty">Aucun match des cinq grands championnats ce jour-là.</div>';
   $("liveUpd").textContent = (anyLive ? "En temps réel · " : "") + "actualisé à " + new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-  if (view === "live") liveTimer = setTimeout(() => loadLive(false), anyLive ? 15000 : 60000);
+  if (view === "live") liveTimer = setTimeout(() => loadLive(false), anyLive ? 5000 : 60000);
 }
 
 /* ---------- Page de détail d'un match ---------- */
