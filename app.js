@@ -345,5 +345,23 @@ window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferr
 $("installBtn").onclick = async () => { if (!deferredInstall) return; deferredInstall.prompt(); await deferredInstall.userChoice; deferredInstall = null; $("installBtn").hidden = true; };
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 
+/* ---------- Présentation en 3 slides (première ouverture) ---------- */
+(function intro() {
+  let done = false; try { done = localStorage.getItem("pl_intro") === "1"; } catch (e) {}
+  const box = $("intro"); if (done || !box) return;
+  box.hidden = false; document.body.style.overflow = "hidden";
+  const sl = $("slides"), dots = [...$("dots").children], next = $("introNext"), login = $("introLogin");
+  const idx = () => Math.round(sl.scrollLeft / sl.clientWidth);
+  const update = () => { const i = idx(); dots.forEach((d, k) => d.classList.toggle("on", k === i));
+    const last = i === dots.length - 1; next.textContent = last ? "Créer mon compte" : "Suivant"; login.hidden = !last; };
+  const close = tab => { try { localStorage.setItem("pl_intro", "1"); } catch (e) {} box.hidden = true; document.body.style.overflow = "";
+    if (tab) { authTab = tab; skipped = false; try { localStorage.removeItem("pl_skip"); } catch (e) {} renderWelcome(); window.scrollTo(0, 0); } };
+  sl.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
+  window.addEventListener("resize", update);
+  next.onclick = () => { const i = idx(); if (i < dots.length - 1) sl.scrollTo({ left: (i + 1) * sl.clientWidth, behavior: "smooth" }); else close("create"); };
+  login.onclick = () => close("login");
+  $("introSkip").onclick = () => close(null);
+})();
+
 loadMatches();
 initFirebase();
