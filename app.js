@@ -333,7 +333,7 @@ function renderClub() {
         <div class="price">${left}<small> jour${left > 1 ? "s" : ""}</small></div></div>
         <div class="meter"><i style="width:${Math.min(100, 100 * left / span)}%"></i></div>
         ${left <= 2 ? `<p class="msg err">Ton abonnement se termine bientôt : prolonge-le pour ne rater aucun coupon.</p>` : ""}
-        ${payment.telegram ? `<a class="cta tg" href="${esc(payment.telegram)}" target="_blank" rel="noopener">Rejoindre le canal Telegram des membres</a>` : `<p class="msg">Le lien du canal Telegram t'est communiqué par l'assistance WhatsApp.</p>`}
+        ${(payment.telegram || CFG.telegram) ? `<a class="cta tg" href="${esc(payment.telegram || CFG.telegram)}" target="_blank" rel="noopener">Rejoindre le canal Telegram des membres</a>` : `<p class="msg">Le lien du canal Telegram t'est communiqué par l'assistance WhatsApp.</p>`}
         ${showRenew ? subscribeHtml(req, "Prolonger", "Les jours achetés s'ajoutent à ceux qui restent.") : `<button class="cta" id="renewBtn">Prolonger mon abonnement</button>`}`
       : subscribeHtml(req, mem.until ? "Ton abonnement a expiré" : "Deviens membre", "Débloque les pronos sur 3 jours, les coups sûrs, les coupons du jour, l'analyse complète de chaque match et le canal Telegram privé.")}
     </div>
@@ -409,7 +409,7 @@ function initFirebase() {
   if (!CFG.firebase || !window.firebase) { renderAll(); return; }
   fb = firebase.initializeApp(CFG.firebase); auth = firebase.auth(); fs = firebase.firestore();
   fs.collection("meta").doc("payment").onSnapshot(d => { payment = d.exists ? d.data() : {};
-    if (isOwner) { $("nOrange").value = payment.orange || ""; $("nMoov").value = payment.moov || ""; $("nWave").value = payment.wave || ""; $("nTelegram").value = payment.telegram || ""; }
+    if (isOwner) { $("nOrange").value = payment.orange || ""; $("nMoov").value = payment.moov || ""; $("nWave").value = payment.wave || ""; $("nTelegram").value = payment.telegram || CFG.telegram || ""; }
     renderClub(); }, () => {});
   auth.onAuthStateChanged(u => {
     stopListeners(unsubs); stopListeners(adminUnsubs);
@@ -423,7 +423,7 @@ function initFirebase() {
         adminUnsubs.push(fs.collection("requests").onSnapshot(s => { reqs = s.docs.map(d => ({ id: d.id, ...d.data() })); renderAdmin(); }, () => {}));
         adminUnsubs.push(fs.collection("accounts").onSnapshot(s => { accounts = {}; s.docs.forEach(d => accounts[d.id] = d.data()); renderAdmin(); }, () => {}));
         adminUnsubs.push(fs.collection("members").onSnapshot(s => { members = {}; s.docs.forEach(d => members[d.id] = d.data()); renderAdmin(); }, () => {}));
-        $("nOrange").value = payment.orange || ""; $("nMoov").value = payment.moov || ""; $("nWave").value = payment.wave || ""; $("nTelegram").value = payment.telegram || "";
+        $("nOrange").value = payment.orange || ""; $("nMoov").value = payment.moov || ""; $("nWave").value = payment.wave || ""; $("nTelegram").value = payment.telegram || CFG.telegram || "";
       }
     }
     renderAll();

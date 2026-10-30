@@ -12,6 +12,8 @@ window.PL_CONFIG = {
   },
   // Numéro de l'administrateur (chiffres uniquement, avec l'indicatif 226).
   adminPhone: "22656286557",
+  // Canal Telegram des membres (le lien enregistré dans « Gestion des membres » est prioritaire)
+  telegram: "https://t.me/pronolabofficial",
   plans: {
     week:  { label: "Hebdo",   price: 1000, days: 7,  per: "semaine" },
     month: { label: "Mensuel", price: 3000, days: 30, per: "mois" }
