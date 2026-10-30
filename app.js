@@ -180,9 +180,9 @@ function applySport() {
   document.querySelectorAll("[data-sport]").forEach(b => b.setAttribute("aria-pressed", b.dataset.sport === sport));
   const x = dataMeta[sport];
   $("upd").textContent = x ? (sport === "hockey" ? "Période du " : "Week-end du ") + (x.weekend || "") + " · mis à jour le " + new Date(x.updatedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long" }) : "";
-  $("src").textContent = x && x.sources ? "Sources : " + x.sources : "";
+
   if (!matches.length) {
-    $("list").innerHTML = `<div class="empty">${sport === "hockey" ? "Les matchs de hockey arrivent avec la prochaine mise à jour automatique (chaque matin)." : "Les matchs du prochain week-end arrivent bientôt. La liste se met à jour toute seule chaque semaine."}</div>`;
+    $("list").innerHTML = `<div class="empty">${sport === "hockey" ? "Aucun match de hockey programmé pour le moment. Le programme est actualisé chaque matin." : "Aucun match programmé pour le moment. Le programme est actualisé chaque semaine."}</div>`;
     $("topSec").hidden = true; $("bilan").hidden = true; $("days").innerHTML = ""; $("lgChips").innerHTML = "";
   } else { chips(); render(); }
   renderCombos(); if (view === "live") renderLive(); resultsLoop();
@@ -243,7 +243,7 @@ function subscribeHtml(req, title, sub) {
           <label class="plan" for="pMonth"><input type="radio" name="plan" id="pMonth" value="month" ${selPlan === "month" ? "checked" : ""}><span>${PLANS.month.label} · ${PLANS.month.days} jours</span><b>${cfa(PLANS.month.price)}</b>${save > 0 ? `<em>${save.toLocaleString("fr-FR")} F d'économie</em>` : ""}<em class="pts">+${LOYAL.month} pts</em></label>
         </div>
         <b>2 · Envoie le montant</b>
-        ${nums.length ? nums.map(([k, l]) => `<div class="pay"><span>${l}</span><code>${esc(payment[k])}</code><button class="mini" data-copy="${esc(payment[k])}">Copier</button></div>`).join("") : `<p class="msg">Les numéros de paiement seront affichés ici très bientôt.</p>`}
+        ${nums.length ? nums.map(([k, l]) => `<div class="pay"><span>${l}</span><code>${esc(payment[k])}</code><button class="mini" data-copy="${esc(payment[k])}">Copier</button></div>`).join("") : `<p class="msg">Pour payer, contacte l'assistance WhatsApp dans l'onglet Aide.</p>`}
       </div>
       <div class="step"><b>3 · Confirme ton paiement</b>
         <form id="joinForm">
@@ -258,17 +258,11 @@ function subscribeHtml(req, title, sub) {
 let showRenew = false, showSettings = false;
 function renderClub() {
   const c = $("club"); c.hidden = false;
-  if (!fs) { c.className = "club"; c.innerHTML = `<h2>Espace membre</h2><p class="msg">Les comptes et abonnements arrivent très bientôt.</p>`; return; }
+  if (!fs) { c.className = "club"; c.innerHTML = `<h2>Espace membre</h2><p class="msg">L'espace membre est momentanément indisponible. Vérifie ta connexion puis rouvre l'application.</p>`; return; }
   if (owner()) {
     c.className = "acct";
     c.innerHTML = `<div class="club on"><h2>Espace administrateur</h2><p class="msg">Tu vois tout le contenu débloqué. Les demandes d'abonnement et d'échange de points s'affichent plus bas, dans « Gestion des membres ».</p>
-      <div class="rowbtns"><button class="cta" id="visitBtn">Voir l'app comme un visiteur</button><button class="mini" id="logoutBtn">Se déconnecter</button></div></div>`;
-    return;
-  }
-  if (asVisitor) {
-    c.className = "club";
-    c.innerHTML = `<div class="preview"><span class="msg"><b>Aperçu visiteur</b> : c'est ce que voient tes clients. Rien n'est enregistré.</span><button class="mini" id="adminBtn">Revenir en mode administrateur</button></div>` +
-      subscribeHtml(null, "Deviens membre", "Débloque les pronos sur 3 jours, les coups sûrs, les coupons du jour, l'analyse complète de chaque match et le canal Telegram privé.");
+      <div class="rowbtns"><button class="mini" id="logoutBtn">Se déconnecter</button></div></div>`;
     return;
   }
   if (!me || !myAcc) {
@@ -298,7 +292,7 @@ function renderClub() {
         <div class="price">${left}<small> jour${left > 1 ? "s" : ""}</small></div></div>
         <div class="meter"><i style="width:${Math.min(100, 100 * left / span)}%"></i></div>
         ${left <= 2 ? `<p class="msg err">Ton abonnement se termine bientôt : prolonge-le pour ne rater aucun coupon.</p>` : ""}
-        ${payment.telegram ? `<a class="cta tg" href="${esc(payment.telegram)}" target="_blank" rel="noopener">Rejoindre le canal Telegram des membres</a>` : `<p class="msg">Le lien du canal Telegram des membres arrive très bientôt ici.</p>`}
+        ${payment.telegram ? `<a class="cta tg" href="${esc(payment.telegram)}" target="_blank" rel="noopener">Rejoindre le canal Telegram des membres</a>` : `<p class="msg">Le lien du canal Telegram t'est communiqué par l'assistance WhatsApp.</p>`}
         ${showRenew ? subscribeHtml(req, "Prolonger", "Les jours achetés s'ajoutent à ceux qui restent.") : `<button class="cta" id="renewBtn">Prolonger mon abonnement</button>`}`
       : subscribeHtml(req, mem.until ? "Ton abonnement a expiré" : "Deviens membre", "Débloque les pronos sur 3 jours, les coups sûrs, les coupons du jour, l'analyse complète de chaque match et le canal Telegram privé.")}
     </div>
@@ -402,13 +396,8 @@ const AUTH_ERR = {
   "auth/weak-password": "Le mot de passe doit contenir au moins 6 caractères.",
   "auth/too-many-requests": "Trop d'essais. Patiente quelques minutes puis réessaie.",
   "auth/network-request-failed": "Pas de connexion internet. Vérifie ton réseau et réessaie.",
-  "auth/operation-not-allowed": "La connexion par mot de passe n'est pas activée dans Firebase (Authentication > E-mail/Mot de passe).",
-  "auth/configuration-not-found": "Authentication n'est pas encore activé dans Firebase.",
-  "auth/unauthorized-domain": "Ce site n'est pas dans les domaines autorisés de Firebase.",
   "auth/invalid-email": "Ce numéro de téléphone n'est pas valide.",
-  "permission-denied": "Le compte est créé mais le profil est bloqué : les règles Firestore ne sont pas publiées.",
-  "not-found": "La base Firestore n'existe pas encore dans Firebase.",
-  "unavailable": "Firebase ne répond pas. Vérifie ta connexion et réessaie."
+  "unavailable": "Le service ne répond pas. Vérifie ta connexion et réessaie."
 };
 
 /* ---------- Événements ---------- */
@@ -432,8 +421,7 @@ document.addEventListener("click", async e => {
   if (t.closest("#accBtn")) { if (!me) { skipped = false; authTab = "login"; renderWelcome(); } go("compte"); return; }
   if (t.closest("#openAcc")) { skipped = false; try { localStorage.removeItem("pl_skip"); } catch (err) {} authTab = "create"; renderWelcome(); go("compte"); return; }
   if (t.closest("#skipBtn")) { skipped = true; if (!asVisitor) { try { localStorage.setItem("pl_skip", "1"); } catch (err) {} } renderWelcome(); return; }
-  if (t.closest("#visitBtn")) { asVisitor = true; skipped = false; authTab = "create"; renderAll(); go("matchs"); return; }
-  if (t.closest("#adminBtn")) { asVisitor = false; renderAll(); return; }
+
   const cp = t.closest("[data-copy]"); if (cp) { try { await navigator.clipboard.writeText(cp.dataset.copy); cp.textContent = "Copié"; } catch (err) {} return; }
   const ok = t.closest("[data-ok]"); if (ok) { validate(ok.dataset.ok, ok); return; }
   const no = t.closest("[data-no]"); if (no) { no.disabled = true; try { await fs.collection("requests").doc(no.dataset.no).update({ status: "refused" }); } catch (err) { no.disabled = false; } return; }
@@ -452,7 +440,6 @@ document.addEventListener("submit", async e => {
     const name = $("aName").value.trim(), phone = $("aPhone").value.trim(), city = $("aCity").value.trim(), pass = $("aPass").value;
     const refBy = digits($("aRef").value).slice(-8);
     const needProfile = me && !asVisitor && !myAcc, create = authTab === "create" || needProfile;
-    if (asVisitor) { msg.className = "msg"; msg.textContent = "Aperçu : rien n'est enregistré. Pour un vrai client, son compte est créé ici."; return; }
     if (create && !name) { msg.className = "msg err"; msg.textContent = "Indique ton prénom ou un pseudo."; return; }
     if (!needProfile && digits(phone).length < 8) { msg.className = "msg err"; msg.textContent = "Indique un numéro de téléphone complet."; return; }
     if (!needProfile && pass.length < 6) { msg.className = "msg err"; msg.textContent = "Le mot de passe doit contenir au moins 6 caractères."; return; }
@@ -466,12 +453,11 @@ document.addEventListener("submit", async e => {
         await fs.collection("accounts").doc(cred.user.uid).set(acc);
       } else await auth.signInWithEmailAndPassword(phoneEmail(phone), pass);
       msg.textContent = ""; e.target.reset();
-    } catch (err) { msg.className = "msg err"; msg.textContent = (AUTH_ERR[err.code] || "Ça n'a pas marché.") + " (code : " + (err.code || err.message || "inconnu") + ")"; console.error(err); }
+    } catch (err) { msg.className = "msg err"; msg.textContent = AUTH_ERR[err.code] || "Une erreur est survenue. Vérifie ta connexion et réessaie."; }
     btn.disabled = false; return;
   }
   if (e.target.id === "joinForm") {
     const msg = $("joinMsg"), btn = e.target.querySelector("button");
-    if (asVisitor) { msg.className = "msg"; msg.textContent = "Aperçu : la demande n'est pas envoyée. Celle d'un vrai client apparaît dans « Gestion des membres »."; return; }
     const ref = $("jRef").value.trim(), phone = $("jPhone").value.trim();
     if (!ref || !phone) { msg.className = "msg err"; msg.textContent = "Indique le numéro qui a payé et la référence reçue par SMS."; return; }
     const plan = (document.querySelector('input[name="plan"]:checked') || {}).value || "week";
@@ -1054,6 +1040,20 @@ function renderHelp() {
     <div class="faq"><h2>Questions fréquentes</h2>
       ${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div>`;
 }
+
+/* ---------- Mode nuit ---------- */
+const mq = window.matchMedia ? matchMedia("(prefers-color-scheme: dark)") : null;
+function themeMode() { try { return localStorage.getItem("pl_theme") || "auto"; } catch (e) { return "auto"; } }
+function applyTheme() {
+  const m = themeMode(), dark = m === "dark" || (m === "auto" && mq && mq.matches);
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  $("themeColor").setAttribute("content", dark ? "#0f1513" : "#f2f6f3");
+  $("themeBtn").textContent = dark ? "☀️" : "🌙";
+  $("themeBtn").setAttribute("aria-label", dark ? "Activer le mode jour" : "Activer le mode nuit");
+}
+$("themeBtn").onclick = () => { const dark = document.documentElement.getAttribute("data-theme") === "dark"; try { localStorage.setItem("pl_theme", dark ? "light" : "dark"); } catch (e) {} applyTheme(); };
+if (mq && mq.addEventListener) mq.addEventListener("change", () => { if (themeMode() === "auto") applyTheme(); });
+applyTheme();
 
 /* ---------- Installation ---------- */
 let deferredInstall = null;

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Prono Lab</title>
 <meta name="description" content="Les pronostics foot du week-end des cinq grands championnats européens.">
-<meta name="theme-color" content="#f2f6f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#111715" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" id="themeColor" content="#f2f6f3">
+<script>(function(){var m="auto";try{m=localStorage.getItem("pl_theme")||"auto"}catch(e){}var d=m==="dark"||(m==="auto"&&window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",d?"dark":"light");document.getElementById("themeColor").setAttribute("content",d?"#0f1513":"#f2f6f3")})()</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -20,16 +20,16 @@
   --pitch:#2f9e6e; --pitch-ink:#ffffff; --apricot:#ffb877; --apricot-soft:#fff1e3;
   --home:#3fb07f; --away:#f2896b; --draw:#c3ccc7;
   --good:#2f9e6e; --bad:#e26b55; --chipbg:#edf2ef; --shadow:0 6px 24px rgba(31,43,39,.07);
-  --flood:#ffb877;
+  --flood:#ffb877; --pitch2:#1f7f57; --glow:rgba(47,158,110,.16);
   --display:"Nunito","Trebuchet MS",system-ui,sans-serif;
   --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"DM Mono",ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+@media all{:root[data-theme="dark"]{
   --bg:#111715; --surface:#1a2320; --soft:#1e3229; --ink:#e8efeb; --muted:#97a69f; --line:#26312d;
   --pitch:#4cc28f; --pitch-ink:#0f1a15; --apricot:#ffc48f; --apricot-soft:#3a2c1f;
   --home:#4cc28f; --away:#f39a80; --draw:#56625c; --good:#4cc28f; --bad:#f08470; --chipbg:#222c29;
-  --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark}}
+  --shadow:0 6px 24px rgba(0,0,0,.35); --pitch2:#2f9e6e; --glow:rgba(76,194,143,.12); --bg:#0f1513; color-scheme:dark}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-tap-highlight-color:transparent}
@@ -93,7 +93,7 @@ form input:focus,form select:focus,#aPass:focus{border-color:var(--pitch);outlin
 .plan span{font-size:.78rem;color:var(--muted);font-weight:600}
 .plan b{font-family:var(--display);font-size:1.3rem;font-weight:800;line-height:1.1}
 .plan em{font-style:normal;font-size:.72rem;font-weight:700;color:#8a4b12;background:var(--apricot-soft);border-radius:999px;padding:2px 8px;justify-self:start}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .plan em{color:var(--apricot)}}
+:root[data-theme="dark"] .plan em{color:var(--apricot)}
 .pay{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--bg);border-radius:14px;padding:10px 12px}
 .pay span:first-child{font-weight:600;font-size:.9rem}
 .pay code{font-family:var(--mono);font-size:.88rem;user-select:all}
@@ -141,7 +141,7 @@ form input:focus,form select:focus,#aPass:focus{border-color:var(--pitch);outlin
 .badge small{font-size:.64rem;font-weight:700}
 .c-fort{background:var(--soft);color:var(--pitch)}
 .c-moyen{background:var(--apricot-soft);color:#a35a14}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .c-moyen{color:var(--apricot)}}
+:root[data-theme="dark"] .c-moyen{color:var(--apricot)}
 .c-risque{background:var(--chipbg);color:var(--muted)}
 .det{border-top:1px solid var(--line);padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;background:color-mix(in srgb,var(--bg) 50%,var(--surface))}
 .det .k{display:grid;gap:8px}
@@ -342,7 +342,7 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
 .rowbtns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .loyal{background:var(--surface);border-radius:26px;padding:20px;display:grid;gap:12px;box-shadow:var(--shadow);border:2px solid var(--apricot-soft)}
 .loyal .price{color:#c26a12}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .loyal .price{color:var(--apricot)}}
+:root[data-theme="dark"] .loyal .price{color:var(--apricot)}
 .earn{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .earn div{background:var(--apricot-soft);border-radius:14px;padding:10px 8px;display:grid;text-align:center}
 .earn b{font-family:var(--display);font-weight:800;font-size:1.1rem}
@@ -379,9 +379,9 @@ button.leg{width:100%;background:none;border:0;border-bottom:1px solid var(--lin
 .sportsw{display:flex;background:var(--chipbg);border-radius:12px;padding:3px;gap:3px;margin-left:auto}
 .sportsw button{border:0;background:transparent;border-radius:9px;padding:6px 10px;font-size:.84rem;font-weight:700;color:var(--muted)}
 .sportsw button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-@media (max-width:460px){.sportsw span{display:none}.sportsw button{font-size:1.05rem;padding:5px 10px}}
+@media (max-width:460px){#accBtn{display:none}.sportsw span{display:none}.sportsw button{font-size:1.05rem;padding:5px 10px}}
 h1{white-space:nowrap}
-.appbar-in .acts{margin-left:6px}
+.appbar-in .acts{margin-left:6px;display:flex;gap:6px;align-items:center}
 
 /* Accès par jour, Telegram, conditions d'utilisation */
 .days button{position:relative}
@@ -404,6 +404,31 @@ h1{white-space:nowrap}
 .chk{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;font-weight:500;color:var(--ink)}
 .chk input{width:20px;height:20px;accent-color:var(--pitch);flex:none;margin-top:1px}
 #cguRefuse{justify-self:center}
+
+/* Finitions : dégradés */
+body{background:radial-gradient(900px 420px at 85% -120px,var(--glow),transparent 70%),radial-gradient(700px 360px at -10% 10%,color-mix(in srgb,var(--apricot) 10%,transparent),transparent 70%),var(--bg);background-repeat:no-repeat;background-color:var(--bg);min-height:100vh}
+.appbar{background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 96%,transparent),color-mix(in srgb,var(--bg) 78%,transparent))}
+h1 span{background:linear-gradient(120deg,var(--pitch),var(--apricot));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cta{background:linear-gradient(135deg,var(--pitch),var(--pitch2));box-shadow:0 6px 16px color-mix(in srgb,var(--pitch) 28%,transparent)}
+.cta:disabled{box-shadow:none}
+.cta.wa{background:linear-gradient(135deg,#2fbf71,#1f9a58)}
+.cta.tg{background:linear-gradient(135deg,#37aee2,#1e8bc3)}
+.days button[aria-selected="true"],.chip[aria-pressed="true"]{background:linear-gradient(135deg,var(--pitch),var(--pitch2));color:var(--pitch-ink)}
+.club.on,.assist{background:linear-gradient(160deg,var(--soft),var(--surface) 75%)}
+.loyal{background:linear-gradient(160deg,var(--apricot-soft),var(--surface) 70%)}
+.combohead{background:linear-gradient(135deg,var(--soft),color-mix(in srgb,var(--soft) 40%,var(--surface)))}
+.combohead.big{background:linear-gradient(135deg,var(--apricot-soft),color-mix(in srgb,var(--apricot-soft) 40%,var(--surface)))}
+.lghead{background:linear-gradient(90deg,color-mix(in srgb,var(--soft) 60%,var(--surface)),var(--surface) 70%)}
+.welcome,.profile{background:linear-gradient(170deg,var(--surface) 60%,var(--soft))}
+.bilan{background:linear-gradient(120deg,var(--surface) 55%,var(--soft))}
+.dhead{background:linear-gradient(180deg,var(--surface) 55%,var(--soft))}
+.pick{background:linear-gradient(150deg,var(--pitch) 0%,var(--pitch2) 60%,#145a3e 100%)}
+.tabbar{background:linear-gradient(0deg,var(--surface),color-mix(in srgb,var(--surface) 92%,transparent));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.tabbar button[aria-current="page"] svg{background:linear-gradient(135deg,var(--soft),color-mix(in srgb,var(--pitch) 18%,var(--soft)));border-radius:999px;padding:3px 14px;width:52px;height:30px;box-sizing:border-box}
+.meter i{background:linear-gradient(90deg,var(--pitch2),var(--pitch))}
+.p3 .b i:first-child{background:linear-gradient(90deg,var(--pitch2),var(--home))!important}
+.themebtn{border:0;background:var(--chipbg);border-radius:12px;width:36px;height:34px;display:grid;place-items:center;font-size:1rem;flex:none}
+.legal{font-size:.76rem;color:var(--muted);text-align:center;margin:0}
 /* Barre d onglets */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.06);display:grid;grid-template-columns:repeat(5,1fr);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 .tabbar button{position:relative;border:0;background:none;display:grid;justify-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:.7rem;font-weight:600;border-radius:14px}
@@ -506,6 +531,7 @@ h1{white-space:nowrap}
     <div class="brand"><img src="icons/icon-192.png" alt=""><h1>Prono <span>Lab</span></h1></div>
     <div class="sportsw" role="group" aria-label="Sport"><button data-sport="foot" aria-pressed="true">⚽<span> Foot</span></button><button data-sport="hockey" aria-pressed="false">🏒<span> Hockey</span></button></div>
     <div class="acts">
+      <button class="themebtn" id="themeBtn" type="button" aria-label="Activer le mode nuit">🌙</button>
       <button class="chip" id="installBtn" hidden>Installer</button>
       <button class="chip" id="accBtn" hidden></button>
     </div>
@@ -529,8 +555,8 @@ h1{white-space:nowrap}
     </div>
     <div id="list"><div class="empty">Chargement des matchs du week-end…</div></div>
     <p class="meta" id="upd"></p>
-    <p class="note">Comment c'est calculé : pour chaque équipe, l'app compare ses buts marqués et encaissés par match à la moyenne de son championnat, ajoute l'avantage du terrain (+10 % / −10 %) et la forme des 5 derniers matchs (±10 %), puis applique un modèle de Poisson. Confiance : <b>Fort</b> à partir de 60 %, <b>Moyen</b> de 45 à 60 %, <b>Risqué</b> en dessous. Ce sont des estimations statistiques : blessures, rotations et enjeux ne sont pas pris en compte. Si tu paries, fixe-toi une limite.</p>
-    <p class="note" id="src"></p>
+    <p class="legal">18+ · Les pronostics sont des estimations et ne garantissent aucun gain. Joue de façon responsable.</p>
+    <p class="note" id="src" hidden></p>
   </section>
 
   <section class="view" data-view="live" hidden>
