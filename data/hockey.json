@@ -1,638 +1,8 @@
 {
- "weekend": "31 oct. – 6 nov. 2026",
- "updatedAt": "2026-10-31T05:56:32Z",
- "sources": "ESPN et hockey-reference (NHL), sports.ru et liveresult.ru (KHL), hockeytabeller.se et hurbra.se (SHL), suomikiekko.com et lämäri.fi (Liiga), sihf.ch et sportguide.ch (National League), sport1.de, hessenschau.de et penny-del.org (DEL).",
+ "weekend": "1 – 10 nov. 2026",
+ "updatedAt": "2026-11-04T05:51:53Z",
+ "sources": "hockey-reference, ESPN et statscrew (NHL), ria.ru, sports.ru et liveresult.ru (KHL), hurbra.se (SHL), suomikiekko.com (Liiga), clubs NL (National League), hessenschau.de et deb-online.de (DEL).",
  "matches": [
-  {
-   "id": "khl-avtomobilist-iekaterinbourg-metallurg-magnitogorsk-20261031",
-   "league": "KHL",
-   "leagueName": "KHL",
-   "kickoff": "2026-10-31T12:00:00Z",
-   "leagueAvg": 2.518,
-   "home": {
-    "name": "Avtomobilist Iekaterinbourg",
-    "gp": 20,
-    "gf": 54,
-    "ga": 49,
-    "form": "DVVVV"
-   },
-   "away": {
-    "name": "Metallurg Magnitogorsk",
-    "gp": 22,
-    "gf": 72,
-    "ga": 46,
-    "form": "VDVVD"
-   }
-  },
-  {
-   "id": "shl-frolunda-hc-linkoping-hc-20261031",
-   "league": "SHL",
-   "leagueName": "SHL",
-   "kickoff": "2026-10-31T14:15:00Z",
-   "leagueAvg": 2.694,
-   "home": {
-    "name": "Frölunda HC",
-    "gp": 15,
-    "gf": 51,
-    "ga": 38,
-    "form": "VDVDD"
-   },
-   "away": {
-    "name": "Linköping HC",
-    "gp": 13,
-    "gf": 26,
-    "ga": 47,
-    "form": "DVVDD"
-   }
-  },
-  {
-   "id": "shl-skelleftea-aik-if-bjorkloven-20261031",
-   "league": "SHL",
-   "leagueName": "SHL",
-   "kickoff": "2026-10-31T14:15:00Z",
-   "leagueAvg": 2.694,
-   "home": {
-    "name": "Skellefteå AIK",
-    "gp": 13,
-    "gf": 47,
-    "ga": 28,
-    "form": "VDVVV"
-   },
-   "away": {
-    "name": "IF Björklöven",
-    "gp": 13,
-    "gf": 26,
-    "ga": 41,
-    "form": "DDDDD"
-   }
-  },
-  {
-   "id": "shl-vaxjo-lakers-farjestad-bk-20261031",
-   "league": "SHL",
-   "leagueName": "SHL",
-   "kickoff": "2026-10-31T14:15:00Z",
-   "leagueAvg": 2.694,
-   "home": {
-    "name": "Växjö Lakers",
-    "gp": 13,
-    "gf": 32,
-    "ga": 42,
-    "form": "DVVDD"
-   },
-   "away": {
-    "name": "Färjestad BK",
-    "gp": 13,
-    "gf": 53,
-    "ga": 16,
-    "form": "VVVVV"
-   }
-  },
-  {
-   "id": "liiga-ilves-kalpa-20261031",
-   "league": "LIIGA",
-   "leagueName": "Liiga",
-   "kickoff": "2026-10-31T15:00:00Z",
-   "leagueAvg": 2.61,
-   "home": {
-    "name": "Ilves",
-    "gp": 19,
-    "gf": 51,
-    "ga": 39,
-    "form": "DVDDV"
-   },
-   "away": {
-    "name": "KalPa",
-    "gp": 17,
-    "gf": 46,
-    "ga": 40,
-    "form": "VDVVV"
-   }
-  },
-  {
-   "id": "liiga-jyp-jokerit-20261031",
-   "league": "LIIGA",
-   "leagueName": "Liiga",
-   "kickoff": "2026-10-31T15:00:00Z",
-   "leagueAvg": 2.61,
-   "home": {
-    "name": "JYP",
-    "gp": 16,
-    "gf": 54,
-    "ga": 44,
-    "form": "DVVDV"
-   },
-   "away": {
-    "name": "Jokerit",
-    "gp": 17,
-    "gf": 37,
-    "ga": 57,
-    "form": "DDDVD"
-   }
-  },
-  {
-   "id": "liiga-kookoo-hifk-20261031",
-   "league": "LIIGA",
-   "leagueName": "Liiga",
-   "kickoff": "2026-10-31T15:00:00Z",
-   "leagueAvg": 2.61,
-   "home": {
-    "name": "KooKoo",
-    "gp": 19,
-    "gf": 45,
-    "ga": 78,
-    "form": "VDDVD"
-   },
-   "away": {
-    "name": "HIFK",
-    "gp": 18,
-    "gf": 50,
-    "ga": 55,
-    "form": "DVVVD"
-   }
-  },
-  {
-   "id": "liiga-karpat-jukurit-20261031",
-   "league": "LIIGA",
-   "leagueName": "Liiga",
-   "kickoff": "2026-10-31T15:00:00Z",
-   "leagueAvg": 2.61,
-   "home": {
-    "name": "Kärpät",
-    "gp": 19,
-    "gf": 52,
-    "ga": 50,
-    "form": "VDVDV"
-   },
-   "away": {
-    "name": "Jukurit",
-    "gp": 19,
-    "gf": 47,
-    "ga": 39,
-    "form": "VVDVD"
-   }
-  },
-  {
-   "id": "liiga-pelicans-kiekko-espoo-20261031",
-   "league": "LIIGA",
-   "leagueName": "Liiga",
-   "kickoff": "2026-10-31T15:00:00Z",
-   "leagueAvg": 2.61,
-   "home": {
-    "name": "Pelicans",
-    "gp": 16,
-    "gf": 40,
-    "ga": 35,
-    "form": "DVVVD"
-   },
-   "away": {
-    "name": "Kiekko-Espoo",
-    "gp": 19,
-    "gf": 58,
-    "ga": 49,
-    "form": "DVDVV"
-   }
-  },
-  {
-   "id": "liiga-sport-assat-20261031",
-   "league": "LIIGA",
-   "leagueName": "Liiga",
-   "kickoff": "2026-10-31T15:00:00Z",
-   "leagueAvg": 2.61,
-   "home": {
-    "name": "Sport",
-    "gp": 17,
-    "gf": 32,
-    "ga": 51,
-    "form": "VDDDD"
-   },
-   "away": {
-    "name": "Ässät",
-    "gp": 19,
-    "gf": 44,
-    "ga": 47,
-    "form": "DDDDV"
-   }
-  },
-  {
-   "id": "nhl-boston-bruins-chicago-blackhawks-20261031",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-10-31T17:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "Boston Bruins",
-    "gp": 14,
-    "gf": 50,
-    "ga": 32,
-    "form": "DVVDD"
-   },
-   "away": {
-    "name": "Chicago Blackhawks",
-    "gp": 13,
-    "gf": 27,
-    "ga": 48,
-    "form": "DDDVD"
-   }
-  },
-  {
-   "id": "nhl-detroit-red-wings-st-louis-blues-20261031",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-10-31T17:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "Detroit Red Wings",
-    "gp": 13,
-    "gf": 37,
-    "ga": 38,
-    "form": "DVDVV"
-   },
-   "away": {
-    "name": "St. Louis Blues",
-    "gp": 13,
-    "gf": 39,
-    "ga": 38,
-    "form": "VVDDV"
-   }
-  },
-  {
-   "id": "shl-djurgardens-if-brynas-if-20261031",
-   "league": "SHL",
-   "leagueName": "SHL",
-   "kickoff": "2026-10-31T17:00:00Z",
-   "leagueAvg": 2.694,
-   "home": {
-    "name": "Djurgårdens IF",
-    "gp": 14,
-    "gf": 30,
-    "ga": 39,
-    "form": "VDDVV"
-   },
-   "away": {
-    "name": "Brynäs IF",
-    "gp": 13,
-    "gf": 38,
-    "ga": 36,
-    "form": "VDDDD"
-   }
-  },
-  {
-   "id": "shl-malmo-redhawks-hv71-20261031",
-   "league": "SHL",
-   "leagueName": "SHL",
-   "kickoff": "2026-10-31T17:00:00Z",
-   "leagueAvg": 2.694,
-   "home": {
-    "name": "Malmö Redhawks",
-    "gp": 13,
-    "gf": 42,
-    "ga": 31,
-    "form": "DVDVV"
-   },
-   "away": {
-    "name": "HV71",
-    "gp": 13,
-    "gf": 31,
-    "ga": 48,
-    "form": "DDDDD"
-   }
-  },
-  {
-   "id": "shl-orebro-hk-rogle-bk-20261031",
-   "league": "SHL",
-   "leagueName": "SHL",
-   "kickoff": "2026-10-31T17:00:00Z",
-   "leagueAvg": 2.694,
-   "home": {
-    "name": "Örebro HK",
-    "gp": 13,
-    "gf": 30,
-    "ga": 39,
-    "form": "DVVDV"
-   },
-   "away": {
-    "name": "Rögle BK",
-    "gp": 14,
-    "gf": 37,
-    "ga": 33,
-    "form": "DVVVD"
-   }
-  },
-  {
-   "id": "shl-timra-ik-lulea-hf-20261031",
-   "league": "SHL",
-   "leagueName": "SHL",
-   "kickoff": "2026-10-31T17:00:00Z",
-   "leagueAvg": 2.694,
-   "home": {
-    "name": "Timrå IK",
-    "gp": 13,
-    "gf": 25,
-    "ga": 28,
-    "form": "VVDVV"
-   },
-   "away": {
-    "name": "Luleå HF",
-    "gp": 13,
-    "gf": 33,
-    "ga": 35,
-    "form": "DVDDV"
-   }
-  },
-  {
-   "id": "nhl-nashville-predators-tampa-bay-lightning-20261031",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-10-31T18:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "Nashville Predators",
-    "gp": 13,
-    "gf": 37,
-    "ga": 43,
-    "form": "DDVDD"
-   },
-   "away": {
-    "name": "Tampa Bay Lightning",
-    "gp": 12,
-    "gf": 44,
-    "ga": 38,
-    "form": "VVDDV"
-   }
-  },
-  {
-   "id": "nhl-new-york-islanders-edmonton-oilers-20261031",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-10-31T18:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "New York Islanders",
-    "gp": 13,
-    "gf": 40,
-    "ga": 35,
-    "form": "VDDVV"
-   },
-   "away": {
-    "name": "Edmonton Oilers",
-    "gp": 13,
-    "gf": 56,
-    "ga": 43,
-    "form": "VVDDV"
-   }
-  },
-  {
-   "id": "nl-lausanne-hc-hc-davos-20261031",
-   "league": "NL",
-   "leagueName": "National League",
-   "kickoff": "2026-10-31T18:45:00Z",
-   "leagueAvg": 3.025,
-   "home": {
-    "name": "Lausanne HC",
-    "gp": 19,
-    "gf": 56,
-    "ga": 67,
-    "form": "DDVDD"
-   },
-   "away": {
-    "name": "HC Davos",
-    "gp": 18,
-    "gf": 43,
-    "ga": 52,
-    "form": "VDVDV"
-   }
-  },
-  {
-   "id": "nl-hc-ambri-piotta-hc-lugano-20261031",
-   "league": "NL",
-   "leagueName": "National League",
-   "kickoff": "2026-10-31T18:45:00Z",
-   "leagueAvg": 3.025,
-   "home": {
-    "name": "HC Ambri-Piotta",
-    "gp": 17,
-    "gf": 53,
-    "ga": 50,
-    "form": "VDVVD"
-   },
-   "away": {
-    "name": "HC Lugano",
-    "gp": 17,
-    "gf": 53,
-    "ga": 58,
-    "form": "VDDDV"
-   }
-  },
-  {
-   "id": "nl-geneve-servette-hc-ehc-biel-bienne-20261031",
-   "league": "NL",
-   "leagueName": "National League",
-   "kickoff": "2026-10-31T18:45:00Z",
-   "leagueAvg": 3.025,
-   "home": {
-    "name": "Genève-Servette HC",
-    "gp": 18,
-    "gf": 46,
-    "ga": 53,
-    "form": "DDDVV"
-   },
-   "away": {
-    "name": "EHC Biel-Bienne",
-    "gp": 17,
-    "gf": 55,
-    "ga": 57,
-    "form": "VDVDV"
-   }
-  },
-  {
-   "id": "nl-sc-bern-ev-zug-20261031",
-   "league": "NL",
-   "leagueName": "National League",
-   "kickoff": "2026-10-31T18:45:00Z",
-   "leagueAvg": 3.025,
-   "home": {
-    "name": "SC Bern",
-    "gp": 16,
-    "gf": 45,
-    "ga": 39,
-    "form": "DVVDV"
-   },
-   "away": {
-    "name": "EV Zug",
-    "gp": 12,
-    "gf": 41,
-    "ga": 26,
-    "form": "VVDVV"
-   }
-  },
-  {
-   "id": "nl-sc-rapperswil-jona-lakers-hc-ajoie-20261031",
-   "league": "NL",
-   "leagueName": "National League",
-   "kickoff": "2026-10-31T18:45:00Z",
-   "leagueAvg": 3.025,
-   "home": {
-    "name": "SC Rapperswil-Jona Lakers",
-    "gp": 18,
-    "gf": 48,
-    "ga": 65,
-    "form": "DVVDD"
-   },
-   "away": {
-    "name": "HC Ajoie",
-    "gp": 18,
-    "gf": 54,
-    "ga": 62,
-    "form": "DVDDD"
-   }
-  },
-  {
-   "id": "nl-ehc-kloten-zsc-lions-20261031",
-   "league": "NL",
-   "leagueName": "National League",
-   "kickoff": "2026-10-31T18:45:00Z",
-   "leagueAvg": 3.025,
-   "home": {
-    "name": "EHC Kloten",
-    "gp": 18,
-    "gf": 44,
-    "ga": 65,
-    "form": "VVDVD"
-   },
-   "away": {
-    "name": "ZSC Lions",
-    "gp": 17,
-    "gf": 71,
-    "ga": 38,
-    "form": "DVVVV"
-   }
-  },
-  {
-   "id": "nhl-los-angeles-kings-buffalo-sabres-20261031",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-10-31T20:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "Los Angeles Kings",
-    "gp": 12,
-    "gf": 34,
-    "ga": 42,
-    "form": "VDVDV"
-   },
-   "away": {
-    "name": "Buffalo Sabres",
-    "gp": 13,
-    "gf": 40,
-    "ga": 47,
-    "form": "DDDVV"
-   }
-  },
-  {
-   "id": "nhl-san-jose-sharks-ottawa-senators-20261031",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-10-31T20:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "San Jose Sharks",
-    "gp": 14,
-    "gf": 40,
-    "ga": 47,
-    "form": "VVDDV"
-   },
-   "away": {
-    "name": "Ottawa Senators",
-    "gp": 14,
-    "gf": 44,
-    "ga": 44,
-    "form": "VDVDD"
-   }
-  },
-  {
-   "id": "nhl-montreal-canadiens-pittsburgh-penguins-20261031",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-10-31T23:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "Montreal Canadiens",
-    "gp": 13,
-    "gf": 43,
-    "ga": 38,
-    "form": "DVVVV"
-   },
-   "away": {
-    "name": "Pittsburgh Penguins",
-    "gp": 13,
-    "gf": 43,
-    "ga": 44,
-    "form": "DDVVD"
-   }
-  },
-  {
-   "id": "nhl-vancouver-canucks-toronto-maple-leafs-20261031",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-10-31T23:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "Vancouver Canucks",
-    "gp": 15,
-    "gf": 45,
-    "ga": 68,
-    "form": "DDDVD"
-   },
-   "away": {
-    "name": "Toronto Maple Leafs",
-    "gp": 15,
-    "gf": 56,
-    "ga": 51,
-    "form": "VVVDD"
-   }
-  },
-  {
-   "id": "nhl-dallas-stars-columbus-blue-jackets-20261101",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-11-01T00:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "Dallas Stars",
-    "gp": 13,
-    "gf": 35,
-    "ga": 30,
-    "form": "VVVDD"
-   },
-   "away": {
-    "name": "Columbus Blue Jackets",
-    "gp": 11,
-    "gf": 28,
-    "ga": 36,
-    "form": "DDVVD"
-   }
-  },
-  {
-   "id": "nhl-colorado-avalanche-calgary-flames-20261101",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-11-01T02:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "Colorado Avalanche",
-    "gp": 13,
-    "gf": 54,
-    "ga": 42,
-    "form": "DDVDV"
-   },
-   "away": {
-    "name": "Calgary Flames",
-    "gp": 12,
-    "gf": 28,
-    "ga": 45,
-    "form": "VVVVD"
-   }
-  },
   {
    "id": "khl-admiral-vladivostok-amur-khabarovsk-20261101",
    "league": "KHL",
@@ -652,6 +22,11 @@
     "gf": 37,
     "ga": 33,
     "form": "DVVDD"
+   },
+   "result": {
+    "hs": 2,
+    "as": 5,
+    "ot": false
    }
   },
   {
@@ -673,6 +48,11 @@
     "gf": 60,
     "ga": 53,
     "form": "DVVDD"
+   },
+   "result": {
+    "hs": 1,
+    "as": 3,
+    "ot": false
    }
   },
   {
@@ -694,6 +74,11 @@
     "gf": 39,
     "ga": 45,
     "form": "VDVVD"
+   },
+   "result": {
+    "hs": 2,
+    "as": 1,
+    "ot": true
    }
   },
   {
@@ -715,27 +100,11 @@
     "gf": 63,
     "ga": 37,
     "form": "VDDVV"
-   }
-  },
-  {
-   "id": "liiga-tappara-hpk-20261101",
-   "league": "LIIGA",
-   "leagueName": "Liiga",
-   "kickoff": "2026-11-01T13:00:00Z",
-   "leagueAvg": 2.61,
-   "home": {
-    "name": "Tappara",
-    "gp": 18,
-    "gf": 51,
-    "ga": 43,
-    "form": "DVDVD"
    },
-   "away": {
-    "name": "HPK",
-    "gp": 19,
-    "gf": 39,
-    "ga": 55,
-    "form": "DDDDD"
+   "result": {
+    "hs": 2,
+    "as": 3,
+    "ot": true
    }
   },
   {
@@ -757,6 +126,11 @@
     "gf": 50,
     "ga": 37,
     "form": "VDVVV"
+   },
+   "result": {
+    "hs": 1,
+    "as": 3,
+    "ot": false
    }
   },
   {
@@ -778,6 +152,11 @@
     "gf": 50,
     "ga": 36,
     "form": "VVDVV"
+   },
+   "result": {
+    "hs": 5,
+    "as": 2,
+    "ot": false
    }
   },
   {
@@ -799,6 +178,37 @@
     "gf": 39,
     "ga": 42,
     "form": "DDDDV"
+   },
+   "result": {
+    "hs": 0,
+    "as": 4,
+    "ot": false
+   }
+  },
+  {
+   "id": "liiga-tappara-hpk-20261101",
+   "league": "LIIGA",
+   "leagueName": "Liiga",
+   "kickoff": "2026-11-01T13:00:00Z",
+   "leagueAvg": 2.61,
+   "home": {
+    "name": "Tappara",
+    "gp": 18,
+    "gf": 51,
+    "ga": 43,
+    "form": "DVDVD"
+   },
+   "away": {
+    "name": "HPK",
+    "gp": 19,
+    "gf": 39,
+    "ga": 55,
+    "form": "DDDDD"
+   },
+   "result": {
+    "hs": 0,
+    "as": 3,
+    "ot": false
    }
   },
   {
@@ -820,6 +230,11 @@
     "gf": 58,
     "ga": 39,
     "form": "VVDDV"
+   },
+   "result": {
+    "hs": 3,
+    "as": 1,
+    "ot": false
    }
   },
   {
@@ -841,6 +256,11 @@
     "gf": 59,
     "ga": 64,
     "form": "VDVDD"
+   },
+   "result": {
+    "hs": 3,
+    "as": 2,
+    "ot": false
    }
   },
   {
@@ -862,6 +282,11 @@
     "gf": 46,
     "ga": 62,
     "form": "VDDDV"
+   },
+   "result": {
+    "hs": 0,
+    "as": 4,
+    "ot": false
    }
   },
   {
@@ -883,6 +308,11 @@
     "gf": 55,
     "ga": 32,
     "form": "DVVVV"
+   },
+   "result": {
+    "hs": 2,
+    "as": 1,
+    "ot": false
    }
   },
   {
@@ -904,6 +334,11 @@
     "gf": 43,
     "ga": 48,
     "form": "VVVDD"
+   },
+   "result": {
+    "hs": 5,
+    "as": 2,
+    "ot": false
    }
   },
   {
@@ -925,27 +360,11 @@
     "gf": 35,
     "ga": 41,
     "form": "DDDVD"
-   }
-  },
-  {
-   "id": "nhl-carolina-hurricanes-winnipeg-jets-20261101",
-   "league": "NHL",
-   "leagueName": "NHL",
-   "kickoff": "2026-11-01T18:00:00Z",
-   "leagueAvg": 3.164,
-   "home": {
-    "name": "Carolina Hurricanes",
-    "gp": 15,
-    "gf": 56,
-    "ga": 36,
-    "form": "VDVVV"
    },
-   "away": {
-    "name": "Winnipeg Jets",
-    "gp": 13,
-    "gf": 32,
-    "ga": 42,
-    "form": "DDDDD"
+   "result": {
+    "hs": 4,
+    "as": 3,
+    "ot": true
    }
   },
   {
@@ -967,6 +386,32 @@
     "gf": 30,
     "ga": 49,
     "form": "VDDDV"
+   },
+   "result": {
+    "hs": 3,
+    "as": 2,
+    "ot": true
+   }
+  },
+  {
+   "id": "nhl-carolina-hurricanes-winnipeg-jets-20261101",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-01T18:00:00Z",
+   "leagueAvg": 3.164,
+   "home": {
+    "name": "Carolina Hurricanes",
+    "gp": 15,
+    "gf": 56,
+    "ga": 36,
+    "form": "VDVVV"
+   },
+   "away": {
+    "name": "Winnipeg Jets",
+    "gp": 13,
+    "gf": 32,
+    "ga": 42,
+    "form": "DDDDD"
    }
   },
   {
@@ -1072,6 +517,11 @@
     "gf": 58,
     "ga": 58,
     "form": "DDVDD"
+   },
+   "result": {
+    "hs": 3,
+    "as": 4,
+    "ot": false
    }
   },
   {
@@ -1093,6 +543,11 @@
     "gf": 33,
     "ga": 72,
     "form": "DDDDV"
+   },
+   "result": {
+    "hs": 0,
+    "as": 1,
+    "ot": false
    }
   },
   {
@@ -1198,6 +653,11 @@
     "gf": 63,
     "ga": 37,
     "form": "VDDVV"
+   },
+   "result": {
+    "hs": 3,
+    "as": 7,
+    "ot": false
    }
   },
   {
@@ -1219,6 +679,11 @@
     "gf": 50,
     "ga": 50,
     "form": "DDDVD"
+   },
+   "result": {
+    "hs": 3,
+    "as": 1,
+    "ot": false
    }
   },
   {
@@ -1240,6 +705,11 @@
     "gf": 60,
     "ga": 53,
     "form": "DVVDD"
+   },
+   "result": {
+    "hs": 1,
+    "as": 2,
+    "ot": false
    }
   },
   {
@@ -1478,20 +948,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-04T07:00:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Admiral Vladivostok",
-    "gp": 20,
-    "gf": 50,
-    "ga": 55,
-    "form": "VVDVV"
+    "gp": 21,
+    "gf": 52,
+    "ga": 60,
+    "form": "VDVVD"
    },
    "away": {
     "name": "SKA Saint-Pétersbourg",
-    "gp": 19,
-    "gf": 58,
-    "ga": 58,
-    "form": "DDVDD"
+    "gp": 20,
+    "gf": 62,
+    "ga": 61,
+    "form": "DVDDV"
    }
   },
   {
@@ -1499,20 +969,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-04T10:30:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Sibir Novossibirsk",
-    "gp": 22,
-    "gf": 50,
-    "ga": 65,
-    "form": "VDDDV"
+    "gp": 23,
+    "gf": 51,
+    "ga": 68,
+    "form": "DDDVD"
    },
    "away": {
     "name": "Ak Bars Kazan",
-    "gp": 22,
-    "gf": 48,
-    "ga": 49,
-    "form": "DDVDV"
+    "gp": 23,
+    "gf": 51,
+    "ga": 53,
+    "form": "DVDVD"
    }
   },
   {
@@ -1520,13 +990,13 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-04T11:00:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Traktor Tcheliabinsk",
-    "gp": 20,
-    "gf": 41,
-    "ga": 50,
-    "form": "DVVDD"
+    "gp": 21,
+    "gf": 43,
+    "ga": 53,
+    "form": "VVDDD"
    },
    "away": {
     "name": "Barys Astana",
@@ -1541,20 +1011,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-04T11:30:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Salavat Ioulaïev Oufa",
-    "gp": 21,
-    "gf": 59,
-    "ga": 64,
-    "form": "VDVDD"
+    "gp": 22,
+    "gf": 61,
+    "ga": 67,
+    "form": "DVDDD"
    },
    "away": {
     "name": "Lada Togliatti",
-    "gp": 21,
-    "gf": 33,
+    "gp": 22,
+    "gf": 34,
     "ga": 72,
-    "form": "DDDDV"
+    "form": "DDDVV"
    }
   },
   {
@@ -1562,20 +1032,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-04T14:00:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Spartak Moscou",
-    "gp": 21,
-    "gf": 58,
-    "ga": 39,
-    "form": "VVDDV"
+    "gp": 22,
+    "gf": 59,
+    "ga": 42,
+    "form": "VDDVD"
    },
    "away": {
     "name": "Lokomotiv Iaroslavl",
-    "gp": 20,
+    "gp": 21,
     "gf": 55,
-    "ga": 35,
-    "form": "VDVVV"
+    "ga": 36,
+    "form": "DVVVD"
    }
   },
   {
@@ -1583,20 +1053,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-05T00:30:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Buffalo Sabres",
-    "gp": 13,
-    "gf": 40,
-    "ga": 47,
-    "form": "DDDVV"
+    "gp": 14,
+    "gf": 43,
+    "ga": 49,
+    "form": "DDVVV"
    },
    "away": {
     "name": "Ottawa Senators",
-    "gp": 14,
-    "gf": 44,
-    "ga": 44,
-    "form": "VDVDD"
+    "gp": 16,
+    "gf": 52,
+    "ga": 51,
+    "form": "VDDVD"
    }
   },
   {
@@ -1604,20 +1074,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-05T00:30:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Florida Panthers",
-    "gp": 13,
-    "gf": 39,
-    "ga": 37,
-    "form": "VDDVV"
+    "gp": 15,
+    "gf": 47,
+    "ga": 44,
+    "form": "DVVVD"
    },
    "away": {
     "name": "Chicago Blackhawks",
-    "gp": 13,
-    "gf": 27,
-    "ga": 48,
-    "form": "DDDVD"
+    "gp": 15,
+    "gf": 33,
+    "ga": 58,
+    "form": "DVDDD"
    }
   },
   {
@@ -1625,20 +1095,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-05T03:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Los Angeles Kings",
-    "gp": 12,
-    "gf": 34,
-    "ga": 42,
-    "form": "VDVDV"
+    "gp": 13,
+    "gf": 36,
+    "ga": 45,
+    "form": "DVDVD"
    },
    "away": {
     "name": "San Jose Sharks",
-    "gp": 14,
-    "gf": 40,
-    "ga": 47,
-    "form": "VVDDV"
+    "gp": 16,
+    "gf": 42,
+    "ga": 54,
+    "form": "DDVDD"
    }
   },
   {
@@ -1646,20 +1116,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-05T03:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Seattle Kraken",
-    "gp": 13,
-    "gf": 50,
-    "ga": 46,
-    "form": "DVVDV"
+    "gp": 14,
+    "gf": 52,
+    "ga": 52,
+    "form": "VVDVD"
    },
    "away": {
     "name": "Calgary Flames",
-    "gp": 12,
-    "gf": 28,
-    "ga": 45,
-    "form": "VVVVD"
+    "gp": 15,
+    "gf": 38,
+    "ga": 53,
+    "form": "VDVDV"
    }
   },
   {
@@ -1667,20 +1137,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-05T13:30:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Avangard Omsk",
-    "gp": 19,
-    "gf": 39,
-    "ga": 45,
-    "form": "VDVVD"
+    "gp": 20,
+    "gf": 40,
+    "ga": 47,
+    "form": "DVVDD"
    },
    "away": {
     "name": "CSKA Moscou",
-    "gp": 20,
-    "gf": 63,
-    "ga": 37,
-    "form": "VDDVV"
+    "gp": 22,
+    "gf": 73,
+    "ga": 42,
+    "form": "DVVVV"
    }
   },
   {
@@ -1688,20 +1158,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-05T14:00:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Metallurg Magnitogorsk",
-    "gp": 22,
-    "gf": 72,
-    "ga": 46,
-    "form": "VDVVD"
+    "gp": 24,
+    "gf": 79,
+    "ga": 56,
+    "form": "VVDVD"
    },
    "away": {
     "name": "Neftekhimik Nijnekamsk",
-    "gp": 21,
-    "gf": 60,
-    "ga": 53,
-    "form": "DVVDD"
+    "gp": 23,
+    "gf": 65,
+    "ga": 55,
+    "form": "VDDVV"
    }
   },
   {
@@ -1709,20 +1179,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-05T16:30:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "HC Sotchi",
-    "gp": 20,
-    "gf": 35,
-    "ga": 72,
-    "form": "DVVVD"
+    "gp": 22,
+    "gf": 38,
+    "ga": 75,
+    "form": "VVDVD"
    },
    "away": {
     "name": "Severstal Tcherepovets",
-    "gp": 22,
-    "gf": 50,
-    "ga": 50,
-    "form": "DDDVD"
+    "gp": 23,
+    "gf": 51,
+    "ga": 53,
+    "form": "DDVDD"
    }
   },
   {
@@ -1730,20 +1200,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-05T16:30:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Shanghai Dragons",
-    "gp": 19,
-    "gf": 58,
-    "ga": 48,
-    "form": "VVVVD"
+    "gp": 21,
+    "gf": 64,
+    "ga": 51,
+    "form": "VVDVV"
    },
    "away": {
     "name": "Dynamo Moscou",
-    "gp": 23,
-    "gf": 46,
+    "gp": 24,
+    "gf": 50,
     "ga": 62,
-    "form": "VDDDV"
+    "form": "DDDVV"
    }
   },
   {
@@ -1751,20 +1221,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T00:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Columbus Blue Jackets",
-    "gp": 11,
-    "gf": 28,
-    "ga": 36,
-    "form": "DDVVD"
+    "gp": 13,
+    "gf": 36,
+    "ga": 41,
+    "form": "VVDDV"
    },
    "away": {
     "name": "Dallas Stars",
-    "gp": 13,
-    "gf": 35,
-    "ga": 30,
-    "form": "VVVDD"
+    "gp": 15,
+    "gf": 44,
+    "ga": 36,
+    "form": "VDDVV"
    }
   },
   {
@@ -1772,20 +1242,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T00:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Detroit Red Wings",
-    "gp": 13,
-    "gf": 37,
-    "ga": 38,
-    "form": "DVDVV"
+    "gp": 16,
+    "gf": 48,
+    "ga": 50,
+    "form": "VVDVD"
    },
    "away": {
     "name": "Vegas Golden Knights",
-    "gp": 14,
-    "gf": 51,
-    "ga": 39,
-    "form": "VDDDV"
+    "gp": 17,
+    "gf": 58,
+    "ga": 49,
+    "form": "DVDDV"
    }
   },
   {
@@ -1793,19 +1263,19 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T00:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Montreal Canadiens",
-    "gp": 13,
-    "gf": 43,
-    "ga": 38,
-    "form": "DVVVV"
+    "gp": 15,
+    "gf": 52,
+    "ga": 47,
+    "form": "VVVVD"
    },
    "away": {
     "name": "Utah Mammoth",
-    "gp": 14,
-    "gf": 51,
-    "ga": 46,
+    "gp": 16,
+    "gf": 57,
+    "ga": 54,
     "form": "VDVDV"
    }
   },
@@ -1814,20 +1284,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T00:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "New Jersey Devils",
-    "gp": 13,
-    "gf": 43,
-    "ga": 38,
-    "form": "VVVVD"
+    "gp": 15,
+    "gf": 52,
+    "ga": 43,
+    "form": "VVDVV"
    },
    "away": {
     "name": "St. Louis Blues",
-    "gp": 13,
-    "gf": 39,
-    "ga": 38,
-    "form": "VVDDV"
+    "gp": 15,
+    "gf": 45,
+    "ga": 45,
+    "form": "DDVVD"
    }
   },
   {
@@ -1835,20 +1305,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T00:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "New York Islanders",
-    "gp": 13,
+    "gp": 14,
     "gf": 40,
-    "ga": 35,
-    "form": "VDDVV"
+    "ga": 39,
+    "form": "DDVVD"
    },
    "away": {
     "name": "Carolina Hurricanes",
-    "gp": 15,
-    "gf": 56,
-    "ga": 36,
-    "form": "VDVVV"
+    "gp": 17,
+    "gf": 64,
+    "ga": 40,
+    "form": "VVVVD"
    }
   },
   {
@@ -1856,20 +1326,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T00:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "New York Rangers",
-    "gp": 14,
-    "gf": 44,
-    "ga": 42,
-    "form": "DVDDD"
+    "gp": 16,
+    "gf": 48,
+    "ga": 47,
+    "form": "DDDDV"
    },
    "away": {
     "name": "Philadelphia Flyers",
-    "gp": 15,
-    "gf": 29,
-    "ga": 51,
-    "form": "VVDDD"
+    "gp": 17,
+    "gf": 37,
+    "ga": 58,
+    "form": "DDDVD"
    }
   },
   {
@@ -1877,20 +1347,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T00:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Pittsburgh Penguins",
-    "gp": 13,
-    "gf": 43,
-    "ga": 44,
-    "form": "DDVVD"
+    "gp": 15,
+    "gf": 49,
+    "ga": 52,
+    "form": "VVDDD"
    },
    "away": {
     "name": "Boston Bruins",
-    "gp": 14,
-    "gf": 50,
-    "ga": 32,
-    "form": "DVVDD"
+    "gp": 16,
+    "gf": 58,
+    "ga": 38,
+    "form": "VDDVV"
    }
   },
   {
@@ -1898,20 +1368,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T00:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Tampa Bay Lightning",
-    "gp": 12,
-    "gf": 44,
-    "ga": 38,
-    "form": "VVDDV"
+    "gp": 14,
+    "gf": 52,
+    "ga": 45,
+    "form": "DDVDV"
    },
    "away": {
     "name": "Chicago Blackhawks",
-    "gp": 13,
-    "gf": 27,
-    "ga": 48,
-    "form": "DDDVD"
+    "gp": 15,
+    "gf": 33,
+    "ga": 58,
+    "form": "DVDDD"
    }
   },
   {
@@ -1919,20 +1389,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T00:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Winnipeg Jets",
-    "gp": 13,
-    "gf": 32,
-    "ga": 42,
-    "form": "DDDDD"
+    "gp": 16,
+    "gf": 39,
+    "ga": 58,
+    "form": "DDDDV"
    },
    "away": {
     "name": "Vancouver Canucks",
-    "gp": 15,
-    "gf": 45,
-    "ga": 68,
-    "form": "DDDVD"
+    "gp": 17,
+    "gf": 51,
+    "ga": 77,
+    "form": "DVDDD"
    }
   },
   {
@@ -1940,20 +1410,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T01:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Edmonton Oilers",
-    "gp": 13,
-    "gf": 56,
-    "ga": 43,
-    "form": "VVDDV"
+    "gp": 16,
+    "gf": 67,
+    "ga": 48,
+    "form": "DVVVD"
    },
    "away": {
     "name": "Anaheim Ducks",
-    "gp": 13,
-    "gf": 43,
-    "ga": 50,
-    "form": "DDVDD"
+    "gp": 15,
+    "gf": 54,
+    "ga": 57,
+    "form": "VDDVV"
    }
   },
   {
@@ -1961,20 +1431,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-06T02:30:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Colorado Avalanche",
-    "gp": 13,
-    "gf": 54,
-    "ga": 42,
-    "form": "DDVDV"
+    "gp": 16,
+    "gf": 66,
+    "ga": 53,
+    "form": "DVVVD"
    },
    "away": {
     "name": "Nashville Predators",
-    "gp": 13,
-    "gf": 37,
-    "ga": 43,
-    "form": "DDVDD"
+    "gp": 15,
+    "gf": 46,
+    "ga": 48,
+    "form": "VDDVV"
    }
   },
   {
@@ -1982,20 +1452,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-06T09:00:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Amur Khabarovsk",
-    "gp": 20,
-    "gf": 37,
-    "ga": 33,
-    "form": "DVVDD"
+    "gp": 21,
+    "gf": 42,
+    "ga": 35,
+    "form": "VVDDV"
    },
    "away": {
     "name": "SKA Saint-Pétersbourg",
-    "gp": 19,
-    "gf": 58,
-    "ga": 58,
-    "form": "DDVDD"
+    "gp": 20,
+    "gf": 62,
+    "ga": 61,
+    "form": "DVDDV"
    }
   },
   {
@@ -2003,13 +1473,13 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-06T09:30:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Admiral Vladivostok",
-    "gp": 20,
-    "gf": 50,
-    "ga": 55,
-    "form": "VVDVV"
+    "gp": 21,
+    "gf": 52,
+    "ga": 60,
+    "form": "VDVVD"
    },
    "away": {
     "name": "Barys Astana",
@@ -2024,20 +1494,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-06T14:00:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Traktor Tcheliabinsk",
-    "gp": 20,
-    "gf": 41,
-    "ga": 50,
-    "form": "DVVDD"
+    "gp": 21,
+    "gf": 43,
+    "ga": 53,
+    "form": "VVDDD"
    },
    "away": {
     "name": "Ak Bars Kazan",
-    "gp": 22,
-    "gf": 48,
-    "ga": 49,
-    "form": "DDVDV"
+    "gp": 23,
+    "gf": 51,
+    "ga": 53,
+    "form": "DVDVD"
    }
   },
   {
@@ -2045,20 +1515,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-06T14:00:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Salavat Ioulaïev Oufa",
-    "gp": 21,
-    "gf": 59,
-    "ga": 64,
-    "form": "VDVDD"
+    "gp": 22,
+    "gf": 61,
+    "ga": 67,
+    "form": "DVDDD"
    },
    "away": {
     "name": "Avtomobilist Iekaterinbourg",
-    "gp": 20,
-    "gf": 54,
-    "ga": 49,
-    "form": "DVVVV"
+    "gp": 21,
+    "gf": 57,
+    "ga": 53,
+    "form": "VVVVD"
    }
   },
   {
@@ -2066,20 +1536,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-06T15:00:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Lada Togliatti",
-    "gp": 21,
-    "gf": 33,
+    "gp": 22,
+    "gf": 34,
     "ga": 72,
-    "form": "DDDDV"
+    "form": "DDDVV"
    },
    "away": {
     "name": "Lokomotiv Iaroslavl",
-    "gp": 20,
+    "gp": 21,
     "gf": 55,
-    "ga": 35,
-    "form": "VDVVV"
+    "ga": 36,
+    "form": "DVVVD"
    }
   },
   {
@@ -2087,20 +1557,20 @@
    "league": "KHL",
    "leagueName": "KHL",
    "kickoff": "2026-11-06T16:30:00Z",
-   "leagueAvg": 2.518,
+   "leagueAvg": 2.515,
    "home": {
     "name": "Spartak Moscou",
-    "gp": 21,
-    "gf": 58,
-    "ga": 39,
-    "form": "VVDDV"
+    "gp": 22,
+    "gf": 59,
+    "ga": 42,
+    "form": "VDDVD"
    },
    "away": {
     "name": "Dinamo Minsk",
-    "gp": 21,
+    "gp": 22,
     "gf": 51,
-    "ga": 62,
-    "form": "DDVDV"
+    "ga": 66,
+    "form": "DVDVD"
    }
   },
   {
@@ -2108,20 +1578,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-07T00:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Buffalo Sabres",
-    "gp": 13,
-    "gf": 40,
-    "ga": 47,
-    "form": "DDDVV"
+    "gp": 14,
+    "gf": 43,
+    "ga": 49,
+    "form": "DDVVV"
    },
    "away": {
     "name": "Columbus Blue Jackets",
-    "gp": 11,
-    "gf": 28,
-    "ga": 36,
-    "form": "DDVVD"
+    "gp": 13,
+    "gf": 36,
+    "ga": 41,
+    "form": "VVDDV"
    }
   },
   {
@@ -2129,20 +1599,20 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-07T01:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Calgary Flames",
-    "gp": 12,
-    "gf": 28,
-    "ga": 45,
-    "form": "VVVVD"
+    "gp": 15,
+    "gf": 38,
+    "ga": 53,
+    "form": "VDVDV"
    },
    "away": {
     "name": "Anaheim Ducks",
-    "gp": 13,
-    "gf": 43,
-    "ga": 50,
-    "form": "DDVDD"
+    "gp": 15,
+    "gf": 54,
+    "ga": 57,
+    "form": "VDDVV"
    }
   },
   {
@@ -2150,20 +1620,902 @@
    "league": "NHL",
    "leagueName": "NHL",
    "kickoff": "2026-11-07T01:00:00Z",
-   "leagueAvg": 3.164,
+   "leagueAvg": 3.197,
    "home": {
     "name": "Minnesota Wild",
-    "gp": 15,
-    "gf": 47,
-    "ga": 35,
-    "form": "DVVVD"
+    "gp": 17,
+    "gf": 56,
+    "ga": 38,
+    "form": "VVDVV"
    },
    "away": {
     "name": "San Jose Sharks",
-    "gp": 14,
+    "gp": 16,
+    "gf": 42,
+    "ga": 54,
+    "form": "DDVDD"
+   }
+  },
+  {
+   "id": "khl-avangard-omsk-sibir-novossibirsk-20261107",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-07T11:00:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "Avangard Omsk",
+    "gp": 20,
     "gf": 40,
     "ga": 47,
+    "form": "DVVDD"
+   },
+   "away": {
+    "name": "Sibir Novossibirsk",
+    "gp": 23,
+    "gf": 51,
+    "ga": 68,
+    "form": "DDDVD"
+   }
+  },
+  {
+   "id": "khl-torpedo-nijni-novgorod-dynamo-moscou-20261107",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-07T14:00:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "Torpedo Nijni Novgorod",
+    "gp": 21,
+    "gf": 58,
+    "ga": 43,
+    "form": "VDVDV"
+   },
+   "away": {
+    "name": "Dynamo Moscou",
+    "gp": 24,
+    "gf": 50,
+    "ga": 62,
+    "form": "DDDVV"
+   }
+  },
+  {
+   "id": "nhl-washington-capitals-florida-panthers-20261107",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-07T17:30:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Washington Capitals",
+    "gp": 14,
+    "gf": 49,
+    "ga": 48,
+    "form": "VVVDD"
+   },
+   "away": {
+    "name": "Florida Panthers",
+    "gp": 15,
+    "gf": 47,
+    "ga": 44,
+    "form": "DVVVD"
+   }
+  },
+  {
+   "id": "nhl-nashville-predators-st-louis-blues-20261107",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-07T18:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Nashville Predators",
+    "gp": 15,
+    "gf": 46,
+    "ga": 48,
+    "form": "VDDVV"
+   },
+   "away": {
+    "name": "St. Louis Blues",
+    "gp": 15,
+    "gf": 45,
+    "ga": 45,
+    "form": "DDVVD"
+   }
+  },
+  {
+   "id": "nhl-seattle-kraken-new-york-rangers-20261107",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-07T22:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Seattle Kraken",
+    "gp": 14,
+    "gf": 52,
+    "ga": 52,
+    "form": "VVDVD"
+   },
+   "away": {
+    "name": "New York Rangers",
+    "gp": 16,
+    "gf": 48,
+    "ga": 47,
+    "form": "DDDDV"
+   }
+  },
+  {
+   "id": "nhl-new-york-islanders-new-jersey-devils-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T00:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "New York Islanders",
+    "gp": 14,
+    "gf": 40,
+    "ga": 39,
+    "form": "DDVVD"
+   },
+   "away": {
+    "name": "New Jersey Devils",
+    "gp": 15,
+    "gf": 52,
+    "ga": 43,
+    "form": "VVDVV"
+   }
+  },
+  {
+   "id": "nhl-ottawa-senators-utah-mammoth-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T00:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Ottawa Senators",
+    "gp": 16,
+    "gf": 52,
+    "ga": 51,
+    "form": "VDDVD"
+   },
+   "away": {
+    "name": "Utah Mammoth",
+    "gp": 16,
+    "gf": 57,
+    "ga": 54,
+    "form": "VDVDV"
+   }
+  },
+  {
+   "id": "nhl-toronto-maple-leafs-montreal-canadiens-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T00:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Toronto Maple Leafs",
+    "gp": 17,
+    "gf": 62,
+    "ga": 56,
+    "form": "VDDVD"
+   },
+   "away": {
+    "name": "Montreal Canadiens",
+    "gp": 15,
+    "gf": 52,
+    "ga": 47,
+    "form": "VVVVD"
+   }
+  },
+  {
+   "id": "nhl-carolina-hurricanes-chicago-blackhawks-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T01:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Carolina Hurricanes",
+    "gp": 17,
+    "gf": 64,
+    "ga": 40,
+    "form": "VVVVD"
+   },
+   "away": {
+    "name": "Chicago Blackhawks",
+    "gp": 15,
+    "gf": 33,
+    "ga": 58,
+    "form": "DVDDD"
+   }
+  },
+  {
+   "id": "nhl-dallas-stars-san-jose-sharks-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T01:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Dallas Stars",
+    "gp": 15,
+    "gf": 44,
+    "ga": 36,
+    "form": "VDDVV"
+   },
+   "away": {
+    "name": "San Jose Sharks",
+    "gp": 16,
+    "gf": 42,
+    "ga": 54,
+    "form": "DDVDD"
+   }
+  },
+  {
+   "id": "nhl-minnesota-wild-tampa-bay-lightning-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T01:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Minnesota Wild",
+    "gp": 17,
+    "gf": 56,
+    "ga": 38,
+    "form": "VVDVV"
+   },
+   "away": {
+    "name": "Tampa Bay Lightning",
+    "gp": 14,
+    "gf": 52,
+    "ga": 45,
+    "form": "DDVDV"
+   }
+  },
+  {
+   "id": "nhl-colorado-avalanche-detroit-red-wings-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T02:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Colorado Avalanche",
+    "gp": 16,
+    "gf": 66,
+    "ga": 53,
+    "form": "DVVVD"
+   },
+   "away": {
+    "name": "Detroit Red Wings",
+    "gp": 16,
+    "gf": 48,
+    "ga": 50,
+    "form": "VVDVD"
+   }
+  },
+  {
+   "id": "nhl-los-angeles-kings-pittsburgh-penguins-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T02:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Los Angeles Kings",
+    "gp": 13,
+    "gf": 36,
+    "ga": 45,
+    "form": "DVDVD"
+   },
+   "away": {
+    "name": "Pittsburgh Penguins",
+    "gp": 15,
+    "gf": 49,
+    "ga": 52,
+    "form": "VVDDD"
+   }
+  },
+  {
+   "id": "nhl-edmonton-oilers-vancouver-canucks-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T03:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Edmonton Oilers",
+    "gp": 16,
+    "gf": 67,
+    "ga": 48,
+    "form": "DVVVD"
+   },
+   "away": {
+    "name": "Vancouver Canucks",
+    "gp": 17,
+    "gf": 51,
+    "ga": 77,
+    "form": "DVDDD"
+   }
+  },
+  {
+   "id": "khl-amur-khabarovsk-barys-astana-20261108",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-08T07:00:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "Amur Khabarovsk",
+    "gp": 21,
+    "gf": 42,
+    "ga": 35,
     "form": "VVDDV"
+   },
+   "away": {
+    "name": "Barys Astana",
+    "gp": 21,
+    "gf": 71,
+    "ga": 57,
+    "form": "DDDVV"
+   }
+  },
+  {
+   "id": "khl-neftekhimik-nijnekamsk-lokomotiv-iaroslavl-20261108",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-08T11:00:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "Neftekhimik Nijnekamsk",
+    "gp": 23,
+    "gf": 65,
+    "ga": 55,
+    "form": "VDDVV"
+   },
+   "away": {
+    "name": "Lokomotiv Iaroslavl",
+    "gp": 21,
+    "gf": 55,
+    "ga": 36,
+    "form": "DVVVD"
+   }
+  },
+  {
+   "id": "khl-traktor-tcheliabinsk-avtomobilist-iekaterinbourg-20261108",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-08T11:00:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "Traktor Tcheliabinsk",
+    "gp": 21,
+    "gf": 43,
+    "ga": 53,
+    "form": "VVDDD"
+   },
+   "away": {
+    "name": "Avtomobilist Iekaterinbourg",
+    "gp": 21,
+    "gf": 57,
+    "ga": 53,
+    "form": "VVVVD"
+   }
+  },
+  {
+   "id": "khl-hc-sotchi-dinamo-minsk-20261108",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-08T14:00:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "HC Sotchi",
+    "gp": 22,
+    "gf": 38,
+    "ga": 75,
+    "form": "VVDVD"
+   },
+   "away": {
+    "name": "Dinamo Minsk",
+    "gp": 22,
+    "gf": 51,
+    "ga": 66,
+    "form": "DVDVD"
+   }
+  },
+  {
+   "id": "nhl-boston-bruins-florida-panthers-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T18:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Boston Bruins",
+    "gp": 16,
+    "gf": 58,
+    "ga": 38,
+    "form": "VDDVV"
+   },
+   "away": {
+    "name": "Florida Panthers",
+    "gp": 15,
+    "gf": 47,
+    "ga": 44,
+    "form": "DVVVD"
+   }
+  },
+  {
+   "id": "nhl-buffalo-sabres-vegas-golden-knights-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T20:30:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Buffalo Sabres",
+    "gp": 14,
+    "gf": 43,
+    "ga": 49,
+    "form": "DDVVV"
+   },
+   "away": {
+    "name": "Vegas Golden Knights",
+    "gp": 17,
+    "gf": 58,
+    "ga": 49,
+    "form": "DVDDV"
+   }
+  },
+  {
+   "id": "nhl-winnipeg-jets-tampa-bay-lightning-20261108",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-08T23:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Winnipeg Jets",
+    "gp": 16,
+    "gf": 39,
+    "ga": 58,
+    "form": "DDDDV"
+   },
+   "away": {
+    "name": "Tampa Bay Lightning",
+    "gp": 14,
+    "gf": 52,
+    "ga": 45,
+    "form": "DDVDV"
+   }
+  },
+  {
+   "id": "nhl-calgary-flames-philadelphia-flyers-20261109",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-09T00:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Calgary Flames",
+    "gp": 15,
+    "gf": 38,
+    "ga": 53,
+    "form": "VDVDV"
+   },
+   "away": {
+    "name": "Philadelphia Flyers",
+    "gp": 17,
+    "gf": 37,
+    "ga": 58,
+    "form": "DDDVD"
+   }
+  },
+  {
+   "id": "nhl-toronto-maple-leafs-new-jersey-devils-20261109",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-09T00:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Toronto Maple Leafs",
+    "gp": 17,
+    "gf": 62,
+    "ga": 56,
+    "form": "VDDVD"
+   },
+   "away": {
+    "name": "New Jersey Devils",
+    "gp": 15,
+    "gf": 52,
+    "ga": 43,
+    "form": "VVDVV"
+   }
+  },
+  {
+   "id": "nhl-anaheim-ducks-pittsburgh-penguins-20261109",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-09T01:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Anaheim Ducks",
+    "gp": 15,
+    "gf": 54,
+    "ga": 57,
+    "form": "VDDVV"
+   },
+   "away": {
+    "name": "Pittsburgh Penguins",
+    "gp": 15,
+    "gf": 49,
+    "ga": 52,
+    "form": "VVDDD"
+   }
+  },
+  {
+   "id": "khl-ak-bars-kazan-torpedo-nijni-novgorod-20261109",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-09T16:00:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "Ak Bars Kazan",
+    "gp": 23,
+    "gf": 51,
+    "ga": 53,
+    "form": "DVDVD"
+   },
+   "away": {
+    "name": "Torpedo Nijni Novgorod",
+    "gp": 21,
+    "gf": 58,
+    "ga": 43,
+    "form": "VDVDV"
+   }
+  },
+  {
+   "id": "khl-severstal-tcherepovets-lada-togliatti-20261109",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-09T16:00:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "Severstal Tcherepovets",
+    "gp": 23,
+    "gf": 51,
+    "ga": 53,
+    "form": "DDVDD"
+   },
+   "away": {
+    "name": "Lada Togliatti",
+    "gp": 22,
+    "gf": 34,
+    "ga": 72,
+    "form": "DDDVV"
+   }
+  },
+  {
+   "id": "khl-cska-moscou-sibir-novossibirsk-20261109",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-09T16:30:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "CSKA Moscou",
+    "gp": 22,
+    "gf": 73,
+    "ga": 42,
+    "form": "DVVVV"
+   },
+   "away": {
+    "name": "Sibir Novossibirsk",
+    "gp": 23,
+    "gf": 51,
+    "ga": 68,
+    "form": "DDDVD"
+   }
+  },
+  {
+   "id": "khl-ska-saint-petersbourg-spartak-moscou-20261109",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-09T16:30:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "SKA Saint-Pétersbourg",
+    "gp": 20,
+    "gf": 62,
+    "ga": 61,
+    "form": "DVDDV"
+   },
+   "away": {
+    "name": "Spartak Moscou",
+    "gp": 22,
+    "gf": 59,
+    "ga": 42,
+    "form": "VDDVD"
+   }
+  },
+  {
+   "id": "liiga-tps-kalpa-20261109",
+   "league": "LIIGA",
+   "leagueName": "Liiga",
+   "kickoff": "2026-11-09T16:30:00Z",
+   "leagueAvg": 2.578,
+   "home": {
+    "name": "TPS",
+    "gp": 19,
+    "gf": 53,
+    "ga": 48,
+    "form": "VDDDV"
+   },
+   "away": {
+    "name": "KalPa",
+    "gp": 18,
+    "gf": 46,
+    "ga": 41,
+    "form": "DVVVD"
+   }
+  },
+  {
+   "id": "nhl-edmonton-oilers-new-york-rangers-20261110",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-10T01:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Edmonton Oilers",
+    "gp": 16,
+    "gf": 67,
+    "ga": 48,
+    "form": "DVVVD"
+   },
+   "away": {
+    "name": "New York Rangers",
+    "gp": 16,
+    "gf": 48,
+    "ga": 47,
+    "form": "DDDDV"
+   }
+  },
+  {
+   "id": "nhl-vancouver-canucks-philadelphia-flyers-20261110",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-10T02:30:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Vancouver Canucks",
+    "gp": 17,
+    "gf": 51,
+    "ga": 77,
+    "form": "DVDDD"
+   },
+   "away": {
+    "name": "Philadelphia Flyers",
+    "gp": 17,
+    "gf": 37,
+    "ga": 58,
+    "form": "DDDVD"
+   }
+  },
+  {
+   "id": "nhl-san-jose-sharks-new-york-islanders-20261110",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-10T03:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "San Jose Sharks",
+    "gp": 16,
+    "gf": 42,
+    "ga": 54,
+    "form": "DDVDD"
+   },
+   "away": {
+    "name": "New York Islanders",
+    "gp": 14,
+    "gf": 40,
+    "ga": 39,
+    "form": "DDVVD"
+   }
+  },
+  {
+   "id": "khl-traktor-tcheliabinsk-shanghai-dragons-20261110",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-10T14:00:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "Traktor Tcheliabinsk",
+    "gp": 21,
+    "gf": 43,
+    "ga": 53,
+    "form": "VVDDD"
+   },
+   "away": {
+    "name": "Shanghai Dragons",
+    "gp": 21,
+    "gf": 64,
+    "ga": 51,
+    "form": "VVDVV"
+   }
+  },
+  {
+   "id": "khl-dinamo-minsk-avangard-omsk-20261110",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-10T16:10:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "Dinamo Minsk",
+    "gp": 22,
+    "gf": 51,
+    "ga": 66,
+    "form": "DVDVD"
+   },
+   "away": {
+    "name": "Avangard Omsk",
+    "gp": 20,
+    "gf": 40,
+    "ga": 47,
+    "form": "DVVDD"
+   }
+  },
+  {
+   "id": "khl-neftekhimik-nijnekamsk-salavat-ioulaiev-oufa-20261110",
+   "league": "KHL",
+   "leagueName": "KHL",
+   "kickoff": "2026-11-10T16:30:00Z",
+   "leagueAvg": 2.515,
+   "home": {
+    "name": "Neftekhimik Nijnekamsk",
+    "gp": 23,
+    "gf": 65,
+    "ga": 55,
+    "form": "VDDVV"
+   },
+   "away": {
+    "name": "Salavat Ioulaïev Oufa",
+    "gp": 22,
+    "gf": 61,
+    "ga": 67,
+    "form": "DVDDD"
+   }
+  },
+  {
+   "id": "nhl-montreal-canadiens-minnesota-wild-20261111",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-11T00:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Montreal Canadiens",
+    "gp": 15,
+    "gf": 52,
+    "ga": 47,
+    "form": "VVVVD"
+   },
+   "away": {
+    "name": "Minnesota Wild",
+    "gp": 17,
+    "gf": 56,
+    "ga": 38,
+    "form": "VVDVV"
+   }
+  },
+  {
+   "id": "nhl-ottawa-senators-washington-capitals-20261111",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-11T00:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Ottawa Senators",
+    "gp": 16,
+    "gf": 52,
+    "ga": 51,
+    "form": "VDDVD"
+   },
+   "away": {
+    "name": "Washington Capitals",
+    "gp": 14,
+    "gf": 49,
+    "ga": 48,
+    "form": "VVVDD"
+   }
+  },
+  {
+   "id": "nhl-toronto-maple-leafs-colorado-avalanche-20261111",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-11T00:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Toronto Maple Leafs",
+    "gp": 17,
+    "gf": 62,
+    "ga": 56,
+    "form": "VDDVD"
+   },
+   "away": {
+    "name": "Colorado Avalanche",
+    "gp": 16,
+    "gf": 66,
+    "ga": 53,
+    "form": "DVVVD"
+   }
+  },
+  {
+   "id": "nhl-winnipeg-jets-new-jersey-devils-20261111",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-11T00:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Winnipeg Jets",
+    "gp": 16,
+    "gf": 39,
+    "ga": 58,
+    "form": "DDDDV"
+   },
+   "away": {
+    "name": "New Jersey Devils",
+    "gp": 15,
+    "gf": 52,
+    "ga": 43,
+    "form": "VVDVV"
+   }
+  },
+  {
+   "id": "nhl-columbus-blue-jackets-florida-panthers-20261111",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-11T00:30:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Columbus Blue Jackets",
+    "gp": 13,
+    "gf": 36,
+    "ga": 41,
+    "form": "VVDDV"
+   },
+   "away": {
+    "name": "Florida Panthers",
+    "gp": 15,
+    "gf": 47,
+    "ga": 44,
+    "form": "DVVVD"
+   }
+  },
+  {
+   "id": "nhl-st-louis-blues-detroit-red-wings-20261111",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-11T01:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "St. Louis Blues",
+    "gp": 15,
+    "gf": 45,
+    "ga": 45,
+    "form": "DDVVD"
+   },
+   "away": {
+    "name": "Detroit Red Wings",
+    "gp": 16,
+    "gf": 48,
+    "ga": 50,
+    "form": "VVDVD"
+   }
+  },
+  {
+   "id": "nhl-los-angeles-kings-nashville-predators-20261111",
+   "league": "NHL",
+   "leagueName": "NHL",
+   "kickoff": "2026-11-11T03:00:00Z",
+   "leagueAvg": 3.197,
+   "home": {
+    "name": "Los Angeles Kings",
+    "gp": 13,
+    "gf": 36,
+    "ga": 45,
+    "form": "DVDVD"
+   },
+   "away": {
+    "name": "Nashville Predators",
+    "gp": 15,
+    "gf": 46,
+    "ga": 48,
+    "form": "VDDVV"
    }
   }
  ]
